@@ -28,3 +28,6 @@ frontend-logi/mobile-client/.flutter-plugins-dependencies
 frontend-logi/mobile-client/build/
 frontend-logi/mobile-client/.packages
 frontend-logi/mobile-client/pubspec.lock
+
+
+deploy_all.bat
