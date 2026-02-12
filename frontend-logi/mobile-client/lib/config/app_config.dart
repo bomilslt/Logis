@@ -6,7 +6,7 @@ class AppConfig {
   // API URLs per environment
   static const String androidDevApiUrl = 'http://10.0.2.2:5000/api'; // Android emulator
   static const String webDevApiUrl = 'http://localhost:5000/api'; // Chrome / Web
-  static const String prodApiUrl = 'https://api.expresscargo.com/api';
+  static const String prodApiUrl = 'https://logis-production.up.railway.app/api';
 
   static String get apiUrl {
     const env = String.fromEnvironment('ENV', defaultValue: 'development');

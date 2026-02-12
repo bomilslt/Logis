@@ -12,7 +12,7 @@ const SA_CONFIG = (() => {
     const injected = window.SUPERADMIN_CONFIG || {};
     const isProd = location.hostname !== 'localhost' && location.hostname !== '127.0.0.1';
     return {
-        API_BASE_URL: injected.API_BASE_URL || (isProd ? `${location.protocol}//${location.hostname}` : `http://${location.hostname}:5000`),
+        API_BASE_URL: injected.API_BASE_URL || (isProd ? 'https://logis-production.up.railway.app' : `http://${location.hostname}:5000`),
     };
 })();
 

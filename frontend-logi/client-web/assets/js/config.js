@@ -39,7 +39,7 @@ const ENV_CONFIG = {
     },
     mobile: {
         // Pour l'APK, utiliser l'URL de production
-        API_URL: 'https://api.expresscargo.com/api',
+        API_URL: 'https://logis-production.up.railway.app/api',
         TENANT_ID: 'ec-tenant-001'
     }
 };
