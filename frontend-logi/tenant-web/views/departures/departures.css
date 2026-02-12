@@ -1,0 +1,1087 @@
+/* ========================================
+   Departures View Styles
+======================================== */
+
+.departures-page .page-header {
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Tabs */
+.departures-tabs {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-lg);
+    background: var(--color-gray-100);
+    padding: 4px;
+    border-radius: var(--radius-lg);
+    width: fit-content;
+}
+
+.departure-tab {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.departure-tab:hover {
+    color: var(--color-gray-900);
+}
+
+.departure-tab.active {
+    background: white;
+    color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Departure Cards */
+.departures-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.departure-card {
+    border-left: 4px solid var(--color-gray-300);
+    transition: all var(--transition-fast);
+}
+
+.departure-card.upcoming {
+    border-left-color: var(--color-primary);
+}
+
+.departure-card.today {
+    border-left-color: var(--color-warning);
+    background: var(--color-warning-bg);
+}
+
+.departure-card.departed {
+    border-left-color: var(--color-info);
+}
+
+.departure-card.arrived {
+    border-left-color: var(--color-success);
+}
+
+.departure-card.cancelled {
+    border-left-color: var(--color-error);
+    opacity: 0.6;
+}
+
+.departure-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.departure-main-info {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+}
+
+.departure-details {
+    flex: 1;
+}
+
+.departure-route {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-xs);
+}
+
+.route-arrow {
+    color: var(--color-gray-400);
+}
+
+.departure-transport {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.days-until {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    background: var(--color-gray-100);
+    padding: 2px var(--spacing-sm);
+    border-radius: var(--radius-sm);
+}
+
+.days-until.urgent,
+.timing-badge.urgent {
+    color: var(--color-warning);
+    background: var(--color-warning-bg);
+    font-weight: var(--font-weight-medium);
+}
+
+.timing-badge {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    background: var(--color-gray-100);
+    padding: 2px var(--spacing-sm);
+    border-radius: var(--radius-sm);
+}
+
+.timing-badge.in-transit {
+    color: var(--color-info);
+    background: var(--color-info-bg);
+}
+
+/* Calendar icon colors by status */
+.departure-calendar-icon.departed {
+    background: var(--color-info);
+}
+
+.departure-calendar-icon.arrived {
+    background: var(--color-success);
+}
+
+.departure-calendar-icon.today {
+    background: var(--color-warning);
+}
+
+.departure-timing {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.timing-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.departure-badges {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.departure-stats {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.departure-stat {
+    text-align: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-gray-100);
+    border-radius: var(--radius-md);
+    min-width: 80px;
+}
+
+.departure-stat-value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
+.departure-stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.departure-notes {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    margin: 0 0 var(--spacing-md) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.departure-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+/* Calendar mini */
+.departure-calendar-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+}
+
+.departure-calendar-icon .day {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+}
+
+.departure-calendar-icon .month {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+}
+
+/* Empty state */
+.departures-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--spacing-2xl) var(--spacing-lg);
+    min-height: 300px;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+}
+
+.departures-empty svg {
+    width: 64px;
+    height: 64px;
+    color: var(--color-gray-300);
+    margin-bottom: var(--spacing-md);
+}
+
+.departures-empty p {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-500);
+    margin: 0;
+}
+
+/* Dark mode */
+[data-theme="dark"] .departures-empty {
+    background: var(--color-gray-100);
+    border-color: var(--color-gray-200);
+}
+
+[data-theme="dark"] .departures-empty svg {
+    color: var(--color-gray-500);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .departure-header {
+        flex-direction: column;
+    }
+    
+    .departure-badges {
+        align-self: flex-start;
+    }
+    
+    .departure-route {
+        font-size: var(--font-size-base);
+    }
+    
+    .departure-timing {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+}
+
+/* Dark mode */
+[data-theme="dark"] .departures-tabs {
+    background: var(--color-gray-800);
+}
+
+[data-theme="dark"] .departure-tab {
+    color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .departure-tab:hover {
+    color: var(--color-gray-200);
+}
+
+[data-theme="dark"] .departure-tab.active {
+    background: var(--color-gray-700);
+    color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .departure-stat {
+    background: var(--color-gray-200);
+}
+
+[data-theme="dark"] .days-until {
+    background: var(--color-gray-200);
+}
+
+[data-theme="dark"] .departure-actions {
+    border-color: var(--color-gray-300);
+}
+
+
+/* ========================================
+   Departure Packages Modal
+======================================== */
+
+.departure-packages-header {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.departure-route-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    font-weight: var(--font-weight-medium);
+}
+
+.departure-packages-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: var(--spacing-md);
+}
+
+.departure-packages-list .empty-state {
+    padding: var(--spacing-xl);
+    text-align: center;
+    color: var(--color-gray-500);
+}
+
+.departure-packages-list .empty-state svg {
+    opacity: 0.3;
+    margin-bottom: var(--spacing-sm);
+}
+
+.departure-packages-actions {
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.table-sm {
+    font-size: var(--font-size-sm);
+}
+
+.table-sm th,
+.table-sm td {
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* Dark mode */
+[data-theme="dark"] .departure-packages-header {
+    border-color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .departure-packages-actions {
+    border-color: var(--color-gray-300);
+}
+
+
+/* ========================================
+   Add Package Section in Modal
+======================================== */
+
+.add-package-section {
+    margin-top: var(--spacing-sm);
+}
+
+.add-package-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+}
+
+.add-package-select {
+    flex: 1;
+}
+
+.packages-summary {
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+/* Dark mode */
+[data-theme="dark"] .packages-summary {
+    border-color: var(--color-gray-300);
+}
+
+
+/* ========================================
+   Auto-Assign Section in Modal
+======================================== */
+
+.auto-assign-section {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.auto-assign-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-gray-100);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-sm);
+}
+
+.auto-assign-info.has-packages {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.auto-assign-info svg {
+    flex-shrink: 0;
+}
+
+/* Dark mode */
+[data-theme="dark"] .auto-assign-section {
+    border-color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .auto-assign-info {
+    background: var(--color-gray-200);
+}
+
+[data-theme="dark"] .auto-assign-info.has-packages {
+    background: var(--color-success-bg);
+}
+
+
+/* ========================================
+   Packages Modal with Tabs
+======================================== */
+
+.departure-packages-modal {
+    min-height: 400px;
+}
+
+.departure-stats-mini {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.packages-modal-tabs {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--color-gray-200);
+    padding-bottom: var(--spacing-xs);
+}
+
+.modal-tab {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: none;
+    border: none;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    cursor: pointer;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    transition: all var(--transition-fast);
+}
+
+.modal-tab:hover {
+    color: var(--color-text);
+    background: var(--color-gray-100);
+}
+
+.modal-tab.active {
+    color: var(--color-primary);
+    background: var(--color-primary-bg);
+    font-weight: var(--font-weight-medium);
+}
+
+.modal-tab-content {
+    display: none;
+    padding: var(--spacing-md) 0;
+}
+
+.modal-tab-content.active {
+    display: block;
+}
+
+/* Scan Section */
+.scan-section {
+    text-align: center;
+    padding: var(--spacing-md);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.scan-instruction {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+}
+
+.scan-input-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.scan-input {
+    flex: 1;
+    font-family: monospace;
+    text-align: center;
+    font-size: var(--font-size-lg);
+}
+
+.scan-status {
+    margin-top: var(--spacing-md);
+    min-height: 50px;
+}
+
+.scan-result {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+}
+
+.scan-result.success {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.scan-result.success.removed {
+    background: var(--color-info-bg);
+    color: var(--color-info);
+}
+
+.scan-result.warning {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.scan-result.error {
+    background: var(--color-error-bg);
+    color: var(--color-error);
+}
+
+.scan-result-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.scan-result-info strong {
+    font-family: monospace;
+}
+
+.scan-result-info span {
+    font-size: var(--font-size-xs);
+    opacity: 0.8;
+}
+
+/* Manual Section */
+.manual-section {
+    padding: var(--spacing-md) 0;
+}
+
+.section-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--color-gray-400);
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-md);
+}
+
+.section-divider::before,
+.section-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.section-divider span {
+    padding: 0 var(--spacing-md);
+}
+
+/* Dark mode */
+[data-theme="dark"] .packages-modal-tabs {
+    border-color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .modal-tab:hover {
+    background: var(--color-gray-200);
+}
+
+[data-theme="dark"] .scan-section {
+    background: var(--color-gray-200);
+}
+
+[data-theme="dark"] .section-divider::before,
+[data-theme="dark"] .section-divider::after {
+    border-color: var(--color-gray-300);
+}
+
+
+/* ========================================
+   Scan Feedback Animations
+======================================== */
+
+/* Flash sur l'input */
+.scan-input.flash-success {
+    animation: flash-success 0.3s ease;
+}
+
+.scan-input.flash-error {
+    animation: flash-error 0.3s ease;
+}
+
+.scan-input.flash-warning {
+    animation: flash-warning 0.3s ease;
+}
+
+@keyframes flash-success {
+    0%, 100% { background: var(--color-white); }
+    50% { background: var(--color-success-bg); border-color: var(--color-success); }
+}
+
+@keyframes flash-error {
+    0%, 100% { background: var(--color-white); }
+    50% { background: var(--color-error-bg); border-color: var(--color-error); }
+}
+
+@keyframes flash-warning {
+    0%, 100% { background: var(--color-white); }
+    50% { background: var(--color-warning-bg); border-color: var(--color-warning); }
+}
+
+/* Compteur de scans */
+.scan-counter {
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    text-align: center;
+}
+
+.scan-counter span {
+    display: inline-block;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+    min-width: 20px;
+}
+
+.scan-counter span.bump {
+    animation: bump 0.2s ease;
+}
+
+@keyframes bump {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+}
+
+/* Dark mode */
+[data-theme="dark"] .scan-input.flash-success {
+    animation: flash-success-dark 0.3s ease;
+}
+
+[data-theme="dark"] .scan-input.flash-error {
+    animation: flash-error-dark 0.3s ease;
+}
+
+[data-theme="dark"] .scan-input.flash-warning {
+    animation: flash-warning-dark 0.3s ease;
+}
+
+@keyframes flash-success-dark {
+    0%, 100% { background: var(--color-gray-200); }
+    50% { background: var(--color-success-bg); border-color: var(--color-success); }
+}
+
+@keyframes flash-error-dark {
+    0%, 100% { background: var(--color-gray-200); }
+    50% { background: var(--color-error-bg); border-color: var(--color-error); }
+}
+
+@keyframes flash-warning-dark {
+    0%, 100% { background: var(--color-gray-200); }
+    50% { background: var(--color-warning-bg); border-color: var(--color-warning); }
+}
+
+
+/* ========================================
+   Departure Detail Modal
+======================================== */
+
+.departure-detail-modal {
+    padding: var(--spacing-sm) 0;
+}
+
+.departure-detail-header {
+    text-align: center;
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-gray-200);
+    margin-bottom: var(--spacing-md);
+}
+
+.departure-route-big {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-sm);
+}
+
+.departure-route-big .route-arrow {
+    color: var(--color-gray-400);
+}
+
+.departure-meta {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+/* Tracking Section */
+.departure-tracking-section {
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.departure-tracking-section .section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-md);
+}
+
+.departure-tracking-section tracking-progress {
+    display: block;
+}
+
+/* Current Carrier Section */
+.current-carrier-section,
+.carrier-history-section {
+    margin-bottom: var(--spacing-md);
+}
+
+.current-carrier-section .section-title,
+.carrier-history-section .section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-sm);
+}
+
+.carrier-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-sm);
+}
+
+.carrier-card.active {
+    border-color: var(--color-primary);
+    background: var(--color-primary-bg);
+}
+
+.carrier-card.past {
+    opacity: 0.7;
+    background: var(--color-gray-50);
+}
+
+.carrier-info {
+    flex: 1;
+    min-width: 150px;
+}
+
+.carrier-name {
+    display: block;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-800);
+}
+
+.carrier-tracking {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    font-family: monospace;
+}
+
+.carrier-status {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.carrier-status-badge {
+    font-size: var(--font-size-xs);
+    padding: 2px var(--spacing-sm);
+    background: var(--color-info-bg);
+    color: var(--color-info);
+    border-radius: var(--radius-sm);
+}
+
+.carrier-location {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.carrier-dates {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.carrier-final-status {
+    font-size: var(--font-size-xs);
+    padding: 2px var(--spacing-sm);
+    background: var(--color-success-bg);
+    color: var(--color-success);
+    border-radius: var(--radius-sm);
+}
+
+.carrier-final-location {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.no-carrier-section {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.no-carrier-section p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Stats Section */
+.departure-stats-section {
+    display: flex;
+    justify-content: space-around;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.stat-box {
+    text-align: center;
+}
+
+.stat-box .stat-value {
+    display: block;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
+.stat-box .stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.departure-notes-detail {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    padding: var(--spacing-sm);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-sm);
+}
+
+/* Carrier Form */
+.carrier-form .current-carrier-info {
+    padding: var(--spacing-sm);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+}
+
+/* Dark mode */
+[data-theme="dark"] .departure-detail-header {
+    border-color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .departure-tracking-section {
+    background: var(--color-gray-200);
+}
+
+[data-theme="dark"] .carrier-card {
+    background: var(--color-gray-100);
+    border-color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .carrier-card.active {
+    background: var(--color-primary-bg);
+}
+
+[data-theme="dark"] .carrier-card.past {
+    background: var(--color-gray-200);
+}
+
+[data-theme="dark"] .departure-stats-section,
+[data-theme="dark"] .no-carrier-section {
+    background: var(--color-gray-200);
+}
+
+
+/* Carrier Badge */
+.carrier-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: var(--color-info-bg);
+    color: var(--color-info);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+.carrier-badge .carrier-status {
+    opacity: 0.8;
+    font-weight: normal;
+}
+
+/* Carrier Form in Modal */
+.carrier-form .form-hint {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    margin-top: 4px;
+}
+
+.carrier-form .current-carrier-info {
+    padding: var(--spacing-sm);
+    background: var(--color-gray-100);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.carrier-form .toggle-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+}
+
+.carrier-form .toggle-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+
+/* ========================================
+   Fix dropdown overflow in modal
+======================================== */
+
+.add-package-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+}
+
+.add-package-select {
+    flex: 1;
+    position: relative;
+}
+
+/* Ensure dropdown doesn't overflow modal */
+.departure-packages-modal .search-select-dropdown {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Support for dropUp option - dropdown opens upward */
+.search-select.drop-up .search-select-dropdown {
+    bottom: 100%;
+    top: auto;
+    margin-bottom: var(--spacing-xs);
+    margin-top: 0;
+}
+
+/* Modal body should allow overflow for dropdowns */
+.modal-body {
+    overflow: auto;
+}
+
+/* But limit the modal content scroll */
+.departure-packages-modal {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.departure-packages-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Manual section needs relative positioning for dropdown */
+.manual-section {
+    position: relative;
+}

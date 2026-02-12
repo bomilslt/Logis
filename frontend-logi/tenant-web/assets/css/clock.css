@@ -1,0 +1,40 @@
+/**
+ * Clock Component Styles
+ * Matching calculator LCD display style
+ */
+
+.header-clock {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 8px;
+    
+    /* LCD screen effect like calculator */
+    background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+    box-shadow: 
+        inset 0 2px 6px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+        0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid #0d1117;
+}
+
+.clock-time {
+    font-size: 1.1rem;
+    font-weight: 300;
+    font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+    color: #22d3ee;
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+    letter-spacing: 2px;
+}
+
+/* Responsive - hide on very small screens */
+@media (max-width: 480px) {
+    .header-clock {
+        display: none;
+    }
+}
+
+/* Dark theme */
+[data-theme="dark"] .header-clock {
+    background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+}

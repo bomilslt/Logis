@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renouveler Abonnement - LucidFlow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --surface: #ffffff;
+            --bg: #f9fafb;
+            --text: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 480px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: var(--primary);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .logo {
+            height: 40px;
+            margin-bottom: 15px;
+            filter: brightness(0) invert(1);
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .price-tag {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 8px;
+        }
+
+        .price-amount {
+            display: block;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .price-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .provider-select {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .provider-option {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.2s;
+        }
+
+        .provider-option.selected {
+            border-color: var(--primary);
+            background: #eef2ff;
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="card-header">
+            <img src="/assets/logo_bomilSolutions.png" alt="LucidFlow" class="logo">
+            <h2>Renouvellement</h2>
+            <p style="opacity: 0.8; margin: 0;">Online & Offline Licence</p>
+        </div>
+
+        <div class="card-body">
+            <div class="price-tag">
+                <span class="price-amount">{{ price }} FCFA</span>
+                <span class="price-desc">Abonnement Mensuel</span>
+            </div>
+
+            <form id="renewForm">
+                <div class="form-group">
+                    <label for="storeCode">Code Boutique</label>
+                    <input type="text" id="storeCode" placeholder="Ex: STORE-123" required
+                        style="text-transform: uppercase;">
+                    <small style="color: var(--text-muted);">Trouvez ce code dans vos Paramètres</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Durée</label>
+                    <select id="duration">
+                        <option value="30">1 Mois ({{ price }} FCFA)</option>
+                        <option value="90">3 Mois ({{ price|int * 3 }} FCFA)</option>
+                        <option value="180">6 Mois ({{ price|int * 6 }} FCFA)</option>
+                        <option value="360">1 An ({{ price|int * 12 }} FCFA)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Mode de Paiement</label>
+                    <div class="provider-select" id="providerSelect">
+                        {% for provider in providers %}
+                        <div class="provider-option" data-value="{{ provider }}">
+                            {{ provider|title }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" id="selectedProvider" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email (pour reçu)</label>
+                    <input type="email" id="email" placeholder="votre@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Téléphone</label>
+                    <input type="tel" id="phone" placeholder="Numéro Mobile Money..." required>
+                </div>
+
+                <div id="errorMsg" style="color: #ef4444; margin-bottom: 15px; text-align: center;" class="hidden">
+                </div>
+
+                <button type="submit" class="btn" id="payBtn">Payer & Renouveler</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Provider Selection Logic
+        const providers = document.querySelectorAll('.provider-option');
+        const providerInput = document.getElementById('selectedProvider');
+
+        if (providers.length > 0) {
+            // Select first by default
+            selectProvider(providers[0]);
+        }
+
+        providers.forEach(p => {
+            p.addEventListener('click', () => selectProvider(p));
+        });
+
+        function selectProvider(el) {
+            providers.forEach(p => p.classList.remove('selected'));
+            el.classList.add('selected');
+            providerInput.value = el.dataset.value;
+        }
+
+        // Form Submission
+        document.getElementById('renewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('payBtn');
+            const errorMsg = document.getElementById('errorMsg');
+
+            // Basic validation
+            if (!providerInput.value) {
+                errorMsg.textContent = "Veuillez sélectionner un mode de paiement";
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = "Initialisation...";
+            errorMsg.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/payment/init', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        provider: providerInput.value,
+                        storeCode: document.getElementById('storeCode').value.toUpperCase(),
+                        duration: parseInt(document.getElementById('duration').value),
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('phone').value
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Redirect to payment page
+                    window.location.href = result.data.payment_url;
+                } else {
+                    throw new Error(result.error || "Erreur inconnue");
+                }
+
+            } catch (err) {
+                errorMsg.textContent = "Erreur: " + err.message;
+                errorMsg.classList.remove('hidden');
+                btn.disabled = false;
+                btn.textContent = "Payer & Renouveler";
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.kiro/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Notes (personal)
+notes.md
+
+# Backend
+backend-logi/__pycache__/
+backend-logi/*.db
+backend-logi/instance/
+backend-logi/.env
+backend-logi/uploads/
+backend-logi/audit.log
+backend-logi/venv/
+
+# Mobile client
+frontend-logi/mobile-client/.dart_tool/
+frontend-logi/mobile-client/.flutter-plugins
+frontend-logi/mobile-client/.flutter-plugins-dependencies
+frontend-logi/mobile-client/build/
+frontend-logi/mobile-client/.packages
+frontend-logi/mobile-client/pubspec.lock

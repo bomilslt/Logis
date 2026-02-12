@@ -1,0 +1,19 @@
+/* ========================================
+   Warehouses View Styles
+======================================== */
+
+.warehouses-page .warehouse-card {
+    margin-bottom: var(--spacing-md);
+}
+
+.warehouses-page code {
+    font-family: monospace;
+    background: var(--color-gray-100);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+}
+
+[data-theme="dark"] .warehouses-page code {
+    background: var(--color-gray-200);
+}

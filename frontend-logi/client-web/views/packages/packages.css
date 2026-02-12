@@ -1,0 +1,122 @@
+/* ========================================
+   Packages View Styles
+======================================== */
+
+.packages-view {
+    padding-bottom: var(--spacing-xl);
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
+}
+
+.page-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-900);
+}
+
+.filters-bar {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.filters-bar .search-input-wrapper {
+    flex: 1;
+}
+
+.filter-select {
+    width: auto;
+    min-width: 150px;
+}
+
+@media (max-width: 480px) {
+    .filters-bar {
+        flex-direction: column;
+    }
+    
+    .filter-select {
+        width: 100%;
+    }
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.pagination-info {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+/* Departure info in package card */
+.package-departure-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm);
+    margin: var(--spacing-sm) 0;
+    background: var(--color-primary-bg);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+}
+
+.package-departure-info svg {
+    flex-shrink: 0;
+}
+
+.package-departure-info strong {
+    font-weight: var(--font-weight-semibold);
+}
+
+[data-theme="dark"] .package-departure-info {
+    background: var(--color-primary-bg);
+}
+
+
+/* Tracking group */
+.package-tracking-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.package-tracking-internal {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary);
+    font-family: monospace;
+}
+
+.package-tracking {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+/* Payment status in package card */
+.package-amount {
+    font-weight: var(--font-weight-medium);
+}
+
+.package-amount.paid {
+    color: var(--color-success);
+}
+
+.package-amount.partial {
+    color: var(--color-warning);
+}
+
+.package-amount.unpaid {
+    color: var(--color-error);
+}

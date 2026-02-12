@@ -1,0 +1,194 @@
+/* Add-ons Grid */
+.addons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.addon-card {
+    background: var(--bg-surface, #fff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: var(--radius-md, 8px);
+    padding: var(--spacing-md, 1rem);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.addon-card:hover {
+    box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+    border-color: var(--color-primary, #3b82f6);
+    transform: translateY(-2px);
+}
+
+.addon-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm, 0.5rem);
+}
+
+.addon-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary, #1e293b);
+    margin: 0;
+}
+
+.addon-price {
+    font-weight: 700;
+    color: var(--color-primary, #3b82f6);
+    font-size: 1.1rem;
+}
+
+.addon-desc {
+    color: var(--text-secondary, #64748b);
+    font-size: 0.95rem;
+    margin-bottom: var(--spacing-md, 1rem);
+    flex-grow: 1;
+    line-height: 1.5;
+}
+
+.btn-buy-addon {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: transparent;
+    border: 2px solid var(--color-primary, #3b82f6);
+    color: var(--color-primary, #3b82f6);
+    font-weight: 600;
+    border-radius: var(--radius-md, 6px);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.btn-buy-addon:hover {
+    background-color: var(--color-primary, #3b82f6);
+    color: white;
+}
+
+/* Dark Mode Adjustments */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-surface: #1e293b;
+        --border-color: #334155;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+    }
+}
+
+[data-theme="dark"] .addon-card {
+    background: var(--bg-surface);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .addon-title {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .addon-desc {
+    color: var(--text-secondary);
+}
+
+/* Custom Modal Styles (if not present globally) */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.custom-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.custom-modal {
+    background: var(--bg-card, #fff);
+    border-radius: var(--radius-lg, 12px);
+    padding: var(--spacing-lg, 1.5rem);
+    width: 90%;
+    max-width: 400px;
+    box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
+    transform: translateY(20px);
+    transition: all 0.3s;
+}
+
+.custom-modal-overlay.active .custom-modal {
+    transform: translateY(0);
+}
+
+.modal-header {
+    margin-bottom: 1rem;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary, #1e293b);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-body {
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary, #64748b);
+    line-height: 1.6;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.btn-modal {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md, 6px);
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+
+.btn-cancel {
+    background: var(--bg-tertiary, #f1f5f9);
+    color: var(--text-primary, #475569);
+}
+
+.btn-cancel:hover {
+    background: var(--bg-tertiary-hover, #e2e8f0);
+}
+
+.btn-confirm {
+    background: var(--color-primary, #3b82f6);
+    color: white;
+}
+
+.btn-confirm:hover {
+    background: var(--color-primary-hover, #2563eb);
+}
+
+[data-theme="dark"] .custom-modal {
+    background: var(--bg-card, #1e293b);
+}
+
+[data-theme="dark"] .btn-cancel {
+    background: #334155;
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .btn-cancel:hover {
+    background: #475569;
+}

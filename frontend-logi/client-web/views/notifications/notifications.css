@@ -1,0 +1,178 @@
+/* ========================================
+   Notifications View Styles
+======================================== */
+
+.notifications-view {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-bottom: var(--spacing-xl);
+}
+
+.notifications-view .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    gap: var(--spacing-sm);
+}
+
+.notifications-view .page-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
+}
+
+.notifications-view .page-actions .btn {
+    white-space: nowrap;
+}
+
+@media (max-width: 400px) {
+    .notifications-view .page-actions .btn-text {
+        display: none;
+    }
+}
+
+.swipe-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    margin-bottom: var(--spacing-md);
+    transition: opacity 0.3s ease;
+}
+
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+/* Notification Wrapper for swipe */
+.notification-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+}
+
+.notification-delete-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-error);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding-left: var(--spacing-lg);
+    color: white;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    opacity: 0;
+    transition: opacity 0.1s ease;
+    border-radius: var(--radius-lg);
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-gray-200);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow var(--transition-fast);
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+}
+
+.notification-item:hover {
+    border-color: var(--color-gray-300);
+    box-shadow: var(--shadow-sm);
+}
+
+.notification-item.unread {
+    background: var(--color-primary-bg);
+    border-color: var(--color-primary-bg);
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: var(--color-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--color-gray-500);
+}
+
+.notification-item.unread .notification-icon {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-xs);
+}
+
+.notification-message {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-xs);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.notification-time {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+}
+
+.notification-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    flex-shrink: 0;
+    margin-top: var(--spacing-xs);
+}
+
+/* Dark mode */
+[data-theme="dark"] .notification-item {
+    background: var(--color-gray-100);
+    border-color: var(--color-gray-200);
+}
+
+[data-theme="dark"] .notification-item.unread {
+    background: var(--color-primary-bg);
+    border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .notification-icon {
+    background: var(--color-gray-200);
+}
+
+[data-theme="dark"] .notification-title {
+    color: var(--color-gray-800);
+}
+
+[data-theme="dark"] .notification-message {
+    color: var(--color-gray-500);
+}

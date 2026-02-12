@@ -1,0 +1,21 @@
+/* ========================================
+   Profile View Styles
+======================================== */
+
+.profile-page .card {
+    margin-bottom: var(--spacing-md);
+}
+
+.profile-page .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary-bg);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-md);
+}

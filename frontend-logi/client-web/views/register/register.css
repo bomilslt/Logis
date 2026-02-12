@@ -1,0 +1,17 @@
+/* ========================================
+   Register View Styles
+======================================== */
+
+/* Herite des styles de login.css */
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+@media (max-width: 480px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}

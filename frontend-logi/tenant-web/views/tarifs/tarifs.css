@@ -1,0 +1,366 @@
+/* ========================================
+   Tarifs View Styles
+======================================== */
+
+/* Navigation */
+.tarifs-nav {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-lg);
+    background: var(--color-gray-100);
+    padding: 4px;
+    border-radius: var(--radius-lg);
+    width: fit-content;
+}
+
+.tarifs-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    background: transparent;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-600);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tarifs-nav-btn:hover {
+    color: var(--color-gray-900);
+}
+
+.tarifs-nav-btn.active {
+    background: white;
+    color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Config Section */
+.config-section {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-gray-200);
+    padding: var(--spacing-lg);
+}
+
+.config-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-lg);
+    gap: var(--spacing-md);
+}
+
+.config-section-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-xs);
+}
+
+.config-section-desc {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+/* Config Cards Grid */
+.config-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.config-card {
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-gray-200);
+    overflow: hidden;
+}
+
+.config-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-white);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.config-card-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-800);
+}
+
+.config-card-flag {
+    font-size: var(--font-size-lg);
+}
+
+.config-card-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.config-card-body {
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
+/* Cities & Warehouses Tags */
+.cities-list,
+.warehouses-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.city-tag,
+.warehouse-tag {
+    display: inline-block;
+    padding: 2px var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-sm);
+    color: var(--color-gray-600);
+}
+
+/* City/Warehouse Input Rows */
+.city-input-row,
+.warehouse-input-row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.city-input-row .form-input,
+.warehouse-input-row .form-input {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
+/* Routes */
+.routes-filter {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+    max-width: 500px;
+}
+
+.routes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.route-card {
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-gray-200);
+    overflow: hidden;
+}
+
+.route-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-white);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.route-path {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.route-arrow {
+    color: var(--color-gray-400);
+}
+
+.route-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.route-card-body {
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.route-rates-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.rate-tag {
+    display: inline-block;
+    padding: 2px var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    background: var(--color-primary-light);
+    /* color: var(--color-primary); */
+    border-radius: var(--radius-sm);
+}
+
+/* Route Rates Form (Modal) */
+.route-rates-form {
+    margin: var(--spacing-md) 0;
+}
+
+.rates-section {
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-sm);
+    overflow: hidden;
+}
+
+.rates-section-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.rates-section-header .toggle-label {
+    margin: 0;
+    font-weight: var(--font-weight-medium);
+}
+
+.rates-section-body {
+    padding: var(--spacing-md);
+}
+
+.rates-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+}
+
+.rates-grid .form-group {
+    margin-bottom: 0;
+}
+
+.rates-grid .form-label {
+    font-size: var(--font-size-xs);
+    margin-bottom: 2px;
+}
+
+.rates-grid .form-input {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
+/* Rate Items */
+.rate-items-list {
+    margin-bottom: var(--spacing-sm);
+}
+
+.rate-item-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 80px 80px auto;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    align-items: center;
+}
+
+.rate-item-row .form-input {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
+.rate-item-row select.form-input {
+    padding-right: var(--spacing-xs);
+}
+
+@media (max-width: 768px) {
+    .tarifs-nav {
+        flex-wrap: wrap;
+    }
+    
+    .config-section-header {
+        flex-direction: column;
+    }
+    
+    .config-cards-grid,
+    .routes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .routes-filter {
+        grid-template-columns: 1fr;
+    }
+    
+    .rate-item-row {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .city-input-row,
+    .warehouse-input-row {
+        grid-template-columns: 80px 1fr auto;
+    }
+}
+
+/* Dark Mode */
+[data-theme="dark"] .tarifs-nav {
+    background: var(--color-gray-800);
+}
+
+[data-theme="dark"] .tarifs-nav-btn {
+    color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .tarifs-nav-btn:hover {
+    color: var(--color-gray-200);
+}
+
+[data-theme="dark"] .tarifs-nav-btn.active {
+    background: var(--color-gray-700);
+    color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .config-section {
+    background: var(--color-gray-100);
+    border-color: var(--color-gray-200);
+}
+
+[data-theme="dark"] .config-section-title {
+    color: var(--color-gray-800);
+}
+
+[data-theme="dark"] .config-card,
+[data-theme="dark"] .route-card {
+    background: var(--color-gray-200);
+    border-color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .config-card-header,
+[data-theme="dark"] .route-card-header {
+    background: var(--color-gray-100);
+    border-color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .config-card-title {
+    color: var(--color-gray-700);
+}
+
+[data-theme="dark"] .city-tag,
+[data-theme="dark"] .warehouse-tag {
+    background: var(--color-gray-100);
+    border-color: var(--color-gray-300);
+    color: var(--color-gray-600);
+}
+
+[data-theme="dark"] .rates-section {
+    border-color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .rates-section-header {
+    background: var(--color-gray-200);
+    border-color: var(--color-gray-300);
+}

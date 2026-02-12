@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGi Super Admin</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo-icon">⚙️</div>
+                <h1>LOGi Super Admin</h1>
+                <p>Plateforme d'administration</p>
+            </div>
+            <form id="login-form" autocomplete="on">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" name="email" placeholder="admin@example.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Mot de passe</label>
+                    <input type="password" id="login-password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="login-btn">
+                    <span class="btn-text">Se connecter</span>
+                    <span class="btn-loader hidden">⏳</span>
+                </button>
+                <div id="login-error" class="alert alert-error hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app-layout hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <span class="logo-icon">⚙️</span>
+                    <span class="logo-text">LOGi Admin</span>
+                </div>
+                <button id="sidebar-toggle" class="sidebar-toggle" title="Réduire">☰</button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+                <a href="#tenants" class="nav-item" data-page="tenants">
+                    <span class="nav-icon">🏢</span>
+                    <span class="nav-label">Tenants</span>
+                </a>
+                <a href="#plans" class="nav-item" data-page="plans">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-label">Plans</span>
+                </a>
+                <a href="#subscriptions" class="nav-item" data-page="subscriptions">
+                    <span class="nav-icon">💳</span>
+                    <span class="nav-label">Abonnements</span>
+                </a>
+                <a href="#payments" class="nav-item" data-page="payments">
+                    <span class="nav-icon">💰</span>
+                    <span class="nav-label">Paiements</span>
+                </a>
+                <a href="#providers" class="nav-item" data-page="providers">
+                    <span class="nav-icon">🔌</span>
+                    <span class="nav-label">Providers</span>
+                </a>
+                <div class="nav-divider"></div>
+                <a href="#config" class="nav-item" data-page="config">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Configuration</span>
+                </a>
+                <a href="#admins" class="nav-item" data-page="admins">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">Admins</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="admin-info">
+                    <span class="admin-name" id="admin-name">Admin</span>
+                    <span class="admin-email" id="admin-email">admin@logi.com</span>
+                </div>
+                <button id="logout-btn" class="btn btn-sm btn-ghost" title="Déconnexion">🚪 Déconnexion</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button id="mobile-menu-btn" class="mobile-menu-btn">☰</button>
+                    <h2 id="page-title" class="page-title">Dashboard</h2>
+                </div>
+                <div class="top-bar-right">
+                    <span id="platform-status" class="badge badge-success">En ligne</span>
+                </div>
+            </header>
+            <div id="page-content" class="page-content">
+                <!-- Dynamic content loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal Container -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div id="modal-content" class="modal-content">
+            <!-- Dynamic modal content -->
+        </div>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/views/dashboard.js"></script>
+    <script src="assets/js/views/tenants.js"></script>
+    <script src="assets/js/views/plans.js"></script>
+    <script src="assets/js/views/subscriptions.js"></script>
+    <script src="assets/js/views/payments.js"></script>
+    <script src="assets/js/views/providers.js"></script>
+    <script src="assets/js/views/config.js"></script>
+    <script src="assets/js/views/admins.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

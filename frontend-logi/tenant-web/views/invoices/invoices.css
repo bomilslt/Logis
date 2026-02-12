@@ -1,0 +1,15 @@
+/* ========================================
+   Invoices View Styles
+======================================== */
+
+.invoices-page .invoice-amount {
+    font-weight: var(--font-weight-semibold);
+}
+
+.invoices-page .invoice-amount.pending {
+    color: var(--color-warning);
+}
+
+.invoices-page .invoice-amount.paid {
+    color: var(--color-success);
+}

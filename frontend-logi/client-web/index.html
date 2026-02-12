@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a56db">
+    <meta name="description" content="Express Cargo - Suivi de colis Chine-Afrique">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Express Cargo">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/images/icon-192.png">
+    <title>Express Cargo - Suivi de colis</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.1/dist/jspdf.plugin.autotable.min.js"></script>
+    
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <style>
+        body { margin: 0; }
+        #app { opacity: 0; pointer-events: none; transition: opacity 420ms ease; }
+        body.splash-hidden #app { opacity: 1; pointer-events: auto; }
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(1200px 600px at 20% 10%, rgba(26, 86, 219, 0.35), transparent 60%),
+                        radial-gradient(900px 500px at 90% 20%, rgba(34, 211, 238, 0.18), transparent 55%),
+                        linear-gradient(135deg, #0b1220 0%, #0f1f45 50%, #0b1220 100%);
+            color: #ffffff;
+            z-index: 99999;
+            opacity: 1;
+            transition: opacity 420ms ease;
+        }
+        body.splash-hidden #splash-screen { opacity: 0; }
+        .splash-card {
+            width: min(420px, 92vw);
+            padding: 28px 22px 18px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        .splash-logo {
+            height: 54px;
+            width: auto;
+            margin: 6px auto 16px;
+            display: block;
+            filter: drop-shadow(0 8px 18px rgba(26, 86, 219, 0.35));
+        }
+        .splash-subtitle {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            font-size: 13px;
+            opacity: 0.78;
+            letter-spacing: 0.2px;
+            margin: 0 0 18px;
+        }
+        .splash-loader {
+            width: 52px;
+            height: 52px;
+            border-radius: 999px;
+            margin: 0 auto 10px;
+            border: 3px solid rgba(255, 255, 255, 0.12);
+            border-top-color: rgba(34, 211, 238, 0.95);
+            border-right-color: rgba(26, 86, 219, 0.95);
+            animation: splashSpin 900ms linear infinite;
+        }
+        .splash-dots {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+            height: 14px;
+            margin-bottom: 8px;
+        }
+        .splash-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.8);
+            opacity: 0.35;
+            animation: splashPulse 1000ms ease-in-out infinite;
+        }
+        .splash-dot:nth-child(2) { animation-delay: 150ms; }
+        .splash-dot:nth-child(3) { animation-delay: 300ms; }
+        .splash-brand {
+            position: fixed;
+            right: 16px;
+            bottom: 14px;
+            opacity: 0.78;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            user-select: none;
+            pointer-events: none;
+        }
+        .splash-brand img { height: 85px; width: auto; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.35)); }
+        @keyframes splashSpin { to { transform: rotate(360deg); } }
+        @keyframes splashPulse {
+            0%, 100% { transform: translateY(0); opacity: 0.35; }
+            50% { transform: translateY(-3px); opacity: 0.95; }
+        }
+    </style>
+    <script>
+        window.Splash = {
+            hide() {
+                document.body.classList.add('splash-hidden');
+                const el = document.getElementById('splash-screen');
+                if (!el) return;
+                const remove = () => { if (el && el.parentNode) el.parentNode.removeChild(el); };
+                el.addEventListener('transitionend', remove, { once: true });
+                setTimeout(remove, 900);
+            }
+        };
+    </script>
+</head>
+<body>
+    <div id="splash-screen" aria-hidden="true">
+        <div class="splash-card">
+            <img class="splash-logo" src="assets/logo/logo_expressCargo.png" alt="Express Cargo">
+            <p class="splash-subtitle">Chargement en cours…</p>
+            <div class="splash-loader"></div>
+            <div class="splash-dots" aria-hidden="true">
+                <span class="splash-dot"></span>
+                <span class="splash-dot"></span>
+                <span class="splash-dot"></span>
+            </div>
+        </div>
+        <div class="splash-brand" aria-hidden="true">
+            <img src="assets/logo/logo_bomilSolutions.png" alt="bomilSolutions">
+        </div>
+    </div>
+    <div id="app">
+        <!-- Header -->
+        <header class="header" id="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <a href="#/dashboard" class="header-logo">
+                        <img src="assets/images/logo.svg" alt="Express Cargo" class="logo">
+                        <span class="logo-text">Express Cargo</span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="header-nav" id="header-nav">
+                    <a href="#/dashboard" class="header-nav-item" data-view="dashboard">
+                        <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#home"></use></svg>
+                        <span>Accueil</span>
+                    </a>
+                    <a href="#/packages" class="header-nav-item" data-view="packages">
+                        <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#package"></use></svg>
+                        <span>Mes colis</span>
+                    </a>
+                    <a href="#/new-package" class="header-nav-item" data-view="new-package">
+                        <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#plus"></use></svg>
+                        <span>Nouveau</span>
+                    </a>
+                    <a href="#/calculator" class="header-nav-item" data-view="calculator">
+                        <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#calculator"></use></svg>
+                        <span>Tarifs</span>
+                    </a>
+                    <a href="#/track" class="header-nav-item" data-view="track">
+                        <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#search"></use></svg>
+                        <span>Suivre</span>
+                    </a>
+                    <a href="#/history" class="header-nav-item" data-view="history">
+                        <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#clock"></use></svg>
+                        <span>Historique</span>
+                    </a>
+                </nav>
+                
+                <div class="header-right">
+                    <button class="btn-icon" id="btn-notifications" aria-label="Notifications">
+                        <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#bell"></use></svg>
+                        <span class="badge" id="notification-badge" hidden>0</span>
+                    </button>
+                    <button class="btn-icon" id="btn-profile" aria-label="Profil">
+                        <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#user"></use></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+            <!-- Views will be loaded here -->
+        </main>
+
+        <!-- Bottom Navigation (Mobile) -->
+        <nav class="bottom-nav" id="bottom-nav">
+            <a href="#/dashboard" class="nav-item active" data-view="dashboard">
+                <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#home"></use></svg>
+                <span>Accueil</span>
+            </a>
+            <a href="#/packages" class="nav-item" data-view="packages">
+                <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#package"></use></svg>
+                <span>Colis</span>
+            </a>
+            <a href="#/new-package" class="nav-item nav-item-primary" data-view="new-package">
+                <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#plus"></use></svg>
+                <span>Nouveau</span>
+            </a>
+            <a href="#/track" class="nav-item" data-view="track">
+                <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#search"></use></svg>
+                <span>Suivre</span>
+            </a>
+            <a href="#/calculator" class="nav-item" data-view="calculator">
+                <svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#calculator"></use></svg>
+                <span>Tarifs</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal Container -->
+    <div id="modal-container"></div>
+
+    <!-- View Styles -->
+    <link rel="stylesheet" href="views/login/login.css">
+    <link rel="stylesheet" href="views/register/register.css">
+    <link rel="stylesheet" href="views/forgot-password/forgot-password.css">
+    <link rel="stylesheet" href="views/dashboard/dashboard.css">
+    <link rel="stylesheet" href="views/packages/packages.css">
+    <link rel="stylesheet" href="views/package-detail/package-detail.css">
+    <link rel="stylesheet" href="views/new-package/new-package.css">
+    <link rel="stylesheet" href="views/track/track.css">
+    <link rel="stylesheet" href="views/profile/profile.css">
+    <link rel="stylesheet" href="views/notifications/notifications.css">
+    <link rel="stylesheet" href="views/history/history.css">
+    <link rel="stylesheet" href="views/calculator/calculator.css">
+    <link rel="stylesheet" href="views/templates/templates.css">
+    <link rel="stylesheet" href="views/not-found/not-found.css">
+    <link rel="stylesheet" href="assets/css/otp-modal.css">
+
+    <!-- Scripts -->
+    <!-- Security: Sanitize utility for XSS protection -->
+    <script src="assets/js/utils/sanitize.js"></script>
+    <!-- Export Service: PDF/Excel generation -->
+    <script src="assets/js/utils/export-service.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/router.js"></script>
+    <script src="assets/js/components/toast.js"></script>
+    <script src="assets/js/components/modal.js"></script>
+    <script src="assets/js/components/loader.js"></script>
+    <script src="assets/js/components/icons.js"></script>
+    <script src="assets/js/components/search-select.js"></script>
+    <script src="assets/js/components/date-picker.js"></script>
+    <script src="assets/js/components/datatable.js"></script>
+    <script src="assets/js/components/pagination.js"></script>
+    <script src="assets/js/components/tracking-progress.js"></script>
+    <script src="assets/js/components/otp-modal.js"></script>
+    
+    <!-- Services -->
+    <script src="assets/js/services/cache.js"></script>
+    <script src="assets/js/services/shipping.js"></script>
+    <script src="assets/js/services/departures.js"></script>
+    <script src="assets/js/services/templates.js"></script>
+    <script src="assets/js/services/notifications.js"></script>
+    <script src="assets/js/services/photos.js"></script>
+    <script src="assets/js/services/pdf.js"></script>
+    <script src="assets/js/services/push.js"></script>
+    <script src="assets/js/services/realtime.js"></script>
+    
+    <!-- Views -->
+    <script src="views/index.js"></script>
+    <script src="views/login/login.js"></script>
+    <script src="views/register/register.js"></script>
+    <script src="views/forgot-password/forgot-password.js"></script>
+    <script src="views/dashboard/dashboard.js"></script>
+    <script src="views/packages/packages.js"></script>
+    <script src="views/package-detail/package-detail.js"></script>
+    <script src="views/new-package/new-package.js"></script>
+    <script src="views/track/track.js"></script>
+    <script src="views/profile/profile.js"></script>
+    <script src="views/notifications/notifications.js"></script>
+    <script src="views/history/history.js"></script>
+    <script src="views/calculator/calculator.js"></script>
+    <script src="views/templates/templates.js"></script>
+    <script src="views/not-found/not-found.js"></script>
+    
+    <!-- App Init -->
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

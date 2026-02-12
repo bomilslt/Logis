@@ -1,0 +1,238 @@
+/**
+ * Styles pour la page d'accès refusé
+ */
+
+.access-denied-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
+    padding: var(--spacing-lg);
+}
+
+.access-denied-container {
+    max-width: 600px;
+    text-align: center;
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-xl);
+    border: 1px solid var(--color-gray-200);
+}
+
+.access-denied-icon {
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.8;
+}
+
+.access-denied-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-error);
+    margin-bottom: var(--spacing-md);
+}
+
+.access-denied-message {
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-gray-600);
+    line-height: 1.6;
+}
+
+.access-denied-message p {
+    margin-bottom: var(--spacing-sm);
+}
+
+.access-denied-message strong {
+    color: var(--color-gray-800);
+}
+
+.access-denied-details {
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    text-align: left;
+    border: 1px solid var(--color-gray-200);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+    font-size: var(--font-size-sm);
+}
+
+.detail-item:not(:last-child) {
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.detail-item strong {
+    color: var(--color-gray-700);
+    font-weight: var(--font-weight-medium);
+}
+
+.access-denied-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: var(--spacing-lg);
+}
+
+.access-denied-help {
+    margin-top: var(--spacing-lg);
+    text-align: left;
+}
+
+.access-denied-help details {
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-gray-200);
+}
+
+.access-denied-help summary {
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-700);
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition-fast);
+}
+
+.access-denied-help summary:hover {
+    background: var(--color-gray-100);
+}
+
+.help-content {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.help-content p {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+}
+
+.help-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+/* Debug info styles */
+.debug-info {
+    text-align: left;
+}
+
+.debug-info h3 {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-gray-800);
+}
+
+.debug-json {
+    background: var(--color-gray-900);
+    color: var(--color-gray-100);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-family: monospace;
+    font-size: var(--font-size-xs);
+    max-height: 400px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.debug-actions {
+    margin-top: var(--spacing-md);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .access-denied-page {
+        padding: var(--spacing-md);
+    }
+    
+    .access-denied-container {
+        padding: var(--spacing-lg);
+    }
+    
+    .access-denied-title {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .access-denied-actions {
+        flex-direction: column;
+    }
+    
+    .access-denied-actions .btn {
+        width: 100%;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+    }
+    
+    .help-actions {
+        flex-direction: column;
+    }
+    
+    .help-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Dark mode */
+[data-theme="dark"] .access-denied-container {
+    background: var(--color-gray-100);
+    border-color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .access-denied-message {
+    color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .access-denied-message strong {
+    color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .access-denied-details {
+    background: var(--color-gray-200);
+    border-color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .detail-item {
+    color: var(--color-gray-300);
+}
+
+[data-theme="dark"] .detail-item strong {
+    color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .access-denied-help details {
+    background: var(--color-gray-200);
+    border-color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .access-denied-help summary {
+    color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .access-denied-help summary:hover {
+    background: var(--color-gray-300);
+}
+
+[data-theme="dark"] .help-content {
+    color: var(--color-gray-300);
+    border-color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .debug-json {
+    background: var(--color-gray-800);
+    color: var(--color-gray-100);
+}

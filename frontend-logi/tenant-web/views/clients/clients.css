@@ -1,0 +1,13 @@
+/* ========================================
+   Clients View Styles
+======================================== */
+
+.clients-page .client-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.clients-page .client-phone {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}

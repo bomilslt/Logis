@@ -1,0 +1,211 @@
+/* ========================================
+   Package Detail View Styles
+======================================== */
+
+.package-detail-page .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: var(--color-gray-500);
+    font-size: var(--font-size-sm);
+}
+
+.detail-value {
+    font-weight: var(--font-weight-medium);
+    text-align: right;
+}
+
+.detail-section-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Actions grid */
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.action-box {
+    padding: var(--spacing-md);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+}
+
+.action-box h4 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-md);
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding-left: var(--spacing-xl);
+}
+
+.timeline-container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: var(--spacing-sm);
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-gray-200);
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: var(--spacing-lg);
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: calc(-1 * var(--spacing-xl) + 2px);
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-gray-300);
+    border: 2px solid var(--color-white);
+}
+
+.timeline-item.active .timeline-dot {
+    background: var(--color-primary);
+    width: 12px;
+    height: 12px;
+    left: calc(-1 * var(--spacing-xl) + 1px);
+}
+
+.timeline-title {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-800);
+}
+
+.timeline-date {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.timeline-location {
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-xs);
+}
+
+.timeline-notes {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin-top: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-sm);
+}
+
+.timeline-by {
+    margin-top: var(--spacing-xs);
+}
+
+/* Photo upload in modal */
+.photo-upload {
+    border: 2px dashed var(--color-gray-300);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.photo-upload:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-bg);
+}
+
+.photo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--color-gray-500);
+}
+
+.photo-preview {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: var(--radius-md);
+}
+
+/* Delivery photo */
+.delivery-photo {
+    max-width: 100%;
+    max-height: 150px;
+    border-radius: var(--radius-md);
+    margin-top: var(--spacing-sm);
+}
+
+/* Dark mode */
+[data-theme="dark"] .detail-row {
+    border-color: var(--color-gray-200);
+}
+
+[data-theme="dark"] .timeline::before {
+    background: var(--color-gray-300);
+}
+
+[data-theme="dark"] .timeline-dot {
+    border-color: var(--color-gray-100);
+}
+
+[data-theme="dark"] .timeline-notes {
+    background: var(--color-gray-200);
+}
+
+[data-theme="dark"] .action-box {
+    background: var(--color-gray-200);
+}
+
+[data-theme="dark"] .photo-upload {
+    border-color: var(--color-gray-400);
+}
+
+
+/* Tracking Progress Integration */
+.card-body tracking-progress {
+    display: block;
+}
+
+.card-body:has(tracking-progress) {
+    padding: var(--spacing-sm);
+}

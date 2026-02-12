@@ -1,0 +1,88 @@
+/* ========================================
+   Client Detail View Styles
+======================================== */
+
+.client-detail-page .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--spacing-md);
+}
+
+@media (max-width: 900px) {
+    .client-detail-page .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0 var(--spacing-lg);
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: var(--color-gray-500);
+    font-size: var(--font-size-sm);
+}
+
+.detail-value {
+    font-weight: var(--font-weight-medium);
+}
+
+/* Checkbox list for payment */
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    max-height: 150px;
+    overflow-y: auto;
+    padding: var(--spacing-sm);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+}
+
+.checkbox-item input {
+    width: 16px;
+    height: 16px;
+}
+
+/* Code styling */
+code {
+    font-family: monospace;
+    background: var(--color-gray-100);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+}
+
+/* Dark mode */
+[data-theme="dark"] .detail-row {
+    border-color: var(--color-gray-200);
+}
+
+[data-theme="dark"] .checkbox-list {
+    background: var(--color-gray-200);
+}
+
+[data-theme="dark"] code {
+    background: var(--color-gray-200);
+}
