@@ -4,7 +4,7 @@
  * 
  * Configuration:
  *   - En dev: utilise http://localhost:5000 automatiquement
- *   - En prod: surchargez via window.SUPERADMIN_CONFIG = { API_BASE_URL: 'https://api.example.com' }
+ *   - En prod: surchargez via window.SUPERADMIN_CONFIG = { API_BASE_URL: 'https://logis-production.up.railway.app' }
  *     ou injectez dans index.html avant ce script
  */
 

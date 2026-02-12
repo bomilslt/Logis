@@ -34,7 +34,7 @@ const ENV_CONFIG = {
     },
     production: {
         // Ces valeurs seront surchargées par window.EXPRESS_CARGO_CONFIG
-        API_URL: 'https://api.expresscargo.com/api',
+        API_URL: 'https://logis-production.up.railway.app/api',
         TENANT_ID: 'ec-tenant-001'
     },
     mobile: {

@@ -101,9 +101,9 @@ echo   DEPLOYMENT COMPLETE
 echo ==========================================
 echo.
 echo   Main repo    : github.com/%GITHUB_USER%/%REPO_NAME%
-echo   Client Web   : client.expresscargo.com   (%CLIENT_REPO%)
-echo   Tenant Admin : admin.expresscargo.com     (%ADMIN_REPO%)
-echo   Super Admin  : superadmin.expresscargo.com (%SUPERADMIN_REPO%)
+echo   Client Web   : logisclient.bomils.com   (%CLIENT_REPO%)
+echo   Tenant Admin : logisadmin.bomils.com     (%ADMIN_REPO%)
+echo   Super Admin  : logissuperadmin.bomils.com (%SUPERADMIN_REPO%)
 echo   Backend      : Deploy separately on Railway
 echo.
 echo   NOTE: Make sure the 3 GitHub repos exist and
