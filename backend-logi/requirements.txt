@@ -20,6 +20,7 @@ cryptography==41.0.7
 
 # HTTP requests (pour les APIs externes)
 requests==2.31.0
+httpx==0.25.2
 
 # Tâches asynchrones
 celery==5.3.4
