@@ -74,7 +74,7 @@ python-socketio==5.10.0
 
 # Production server
 gunicorn==21.2.0
-eventlet==0.35.1
+gevent==23.9.1
 
 # Testing
 pytest==7.4.3
