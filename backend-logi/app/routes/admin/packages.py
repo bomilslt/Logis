@@ -8,6 +8,7 @@ from flask_jwt_extended import get_jwt_identity
 from app import db
 from app.routes.admin import admin_bp
 from app.models import Package, PackageHistory, User, Departure, Warehouse
+from app.models.package import _money
 from app.utils.decorators import admin_required, permission_required, admin_or_permission_required, module_required
 from app.utils.audit import audit_log, AuditAction
 from app.utils.helpers import (
@@ -425,19 +426,19 @@ def admin_receive_package(package_id):
     if can_manage_amounts and package.unit_price:
         # Déterminer la quantité facturable selon le type
         if package.final_weight is not None:
-            package.amount = round(package.final_weight * package.unit_price, 2)
+            package.amount = _money(package.final_weight * package.unit_price)
         elif package.final_cbm is not None:
-            package.amount = round(package.final_cbm * package.unit_price, 2)
+            package.amount = _money(package.final_cbm * package.unit_price)
         elif package.final_quantity is not None:
-            package.amount = round(package.final_quantity * package.unit_price, 2)
+            package.amount = _money(package.final_quantity * package.unit_price)
         else:
             # Utiliser les estimations client si pas de valeurs finales
             if package.weight:
-                package.amount = round(package.weight * package.unit_price, 2)
+                package.amount = _money(package.weight * package.unit_price)
             elif package.cbm:
-                package.amount = round(package.cbm * package.unit_price, 2)
+                package.amount = _money(package.cbm * package.unit_price)
             elif package.quantity:
-                package.amount = round(package.quantity * package.unit_price, 2)
+                package.amount = _money(package.quantity * package.unit_price)
     
     # Historique
     notes_parts = ['Colis reçu en entrepôt']

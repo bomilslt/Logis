@@ -5,8 +5,16 @@ Gère les colis des clients avec suivi complet
 
 from app import db
 from datetime import datetime
+from decimal import Decimal, ROUND_HALF_UP
 import uuid
 from app.models.enums import PackageStatus, TransportMode, PackageType
+
+
+def _money(value):
+    """Arrondi monétaire fiable via Decimal (corrige les flottants SQLite)"""
+    if value is None:
+        return None
+    return float(Decimal(str(value)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP))
 
 
 class Package(db.Model):
@@ -255,7 +263,7 @@ class Package(db.Model):
             'final_weight': self.final_weight,
             'final_cbm': self.final_cbm,
             'final_quantity': self.final_quantity,
-            'unit_price': self.unit_price,
+            'unit_price': _money(self.unit_price),
             # Valeurs effectives (final si disponible, sinon estimation)
             'effective_weight': self.final_weight if self.final_weight is not None else self.weight,
             'effective_cbm': self.final_cbm if self.final_cbm is not None else self.cbm,
@@ -266,7 +274,7 @@ class Package(db.Model):
                 'width': self.width,
                 'height': self.height
             },
-            'declared_value': round(self.declared_value, 2) if self.declared_value else self.declared_value,
+            'declared_value': _money(self.declared_value),
             'currency': self.currency,
             'origin': {
                 'address': self.origin_address,
@@ -288,11 +296,11 @@ class Package(db.Model):
             'departure_id': self.departure_id,
             'status': self.status,
             'current_location': self.current_location,
-            'amount': round(self.amount, 2) if self.amount else self.amount,
+            'amount': _money(self.amount),
             'amount_currency': self.amount_currency,
-            'paid_amount': round(self.paid_amount, 2) if self.paid_amount else self.paid_amount,
+            'paid_amount': _money(self.paid_amount),
             'payment_status': self.payment_status,
-            'remaining_amount': round(self.remaining_amount, 2),
+            'remaining_amount': _money(self.remaining_amount),
             'photos': self.photos or [],
             'is_editable': self.is_editable,
             'created_at': self.created_at.isoformat() if self.created_at else None,

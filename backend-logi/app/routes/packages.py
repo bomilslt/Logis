@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, g
 from flask_jwt_extended import get_jwt_identity
 from app import db
 from app.models import Package, PackageHistory, User, Tenant, Departure, TenantConfig
+from app.models.package import _money
 from app.utils.decorators import tenant_required, get_current_tenant_id
 from app.utils.helpers import generate_tracking_number
 from datetime import datetime, date
@@ -297,7 +298,7 @@ def create_package():
             length=float(data['length']) if data.get('length') else None,
             width=float(data['width']) if data.get('width') else None,
             height=float(data['height']) if data.get('height') else None,
-            declared_value=float(data['declared_value']) if data.get('declared_value') else None,
+            declared_value=_money(float(data['declared_value'])) if data.get('declared_value') else None,
             currency=data.get('currency', 'USD')[:3].upper(),
             quantity=int(data.get('quantity', 1)),
             origin_address=data.get('origin_address', '').strip()[:500] or None,
@@ -428,7 +429,7 @@ def update_package(package_id):
         if 'height' in data:
             package.height = float(data['height']) if data['height'] else None
         if 'declared_value' in data:
-            package.declared_value = float(data['declared_value']) if data['declared_value'] else None
+            package.declared_value = _money(float(data['declared_value'])) if data['declared_value'] else None
         if 'currency' in data:
             package.currency = data['currency'][:3].upper() if data['currency'] else 'USD'
         if 'quantity' in data:
