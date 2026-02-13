@@ -166,8 +166,14 @@ def create_tenant():
     if Tenant.query.filter_by(slug=slug).first():
         return jsonify({'error': 'Ce slug existe déjà'}), 409
     
+    # Custom tenant ID (optional)
+    custom_id = data.get('id', '').strip()
+    if custom_id:
+        if Tenant.query.get(custom_id):
+            return jsonify({'error': 'Ce Tenant ID existe déjà'}), 409
+    
     # Créer le tenant
-    tenant = Tenant(
+    tenant_kwargs = dict(
         name=name,
         slug=slug,
         email=email,
@@ -175,6 +181,10 @@ def create_tenant():
         address=data.get('address'),
         is_active=True
     )
+    if custom_id:
+        tenant_kwargs['id'] = custom_id
+    
+    tenant = Tenant(**tenant_kwargs)
     db.session.add(tenant)
     db.session.flush()  # Pour avoir l'ID
     
