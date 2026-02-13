@@ -14,7 +14,7 @@ Views.departures = {
         main.innerHTML = `
             <div class="departures-page">
                 <div class="page-header">
-                    <h1 class="page-title">Departs programmes</h1>
+                    <h1 class="page-title">${I18n.t('departures.title')}</h1>
                     <button class="btn btn-primary" id="btn-new-departure" title="Programmer un nouveau départ">
                         ${Icons.get('plus', {size:16})} Programmer un depart
                     </button>

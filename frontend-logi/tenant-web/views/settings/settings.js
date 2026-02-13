@@ -13,7 +13,7 @@ Views.settings = {
         main.innerHTML = `
             <div class="settings-page">
                 <div class="page-header">
-                    <h1 class="page-title">Parametres</h1>
+                    <h1 class="page-title">${I18n.t('settings.title')}</h1>
                 </div>
                 
                 <div class="settings-tabs">

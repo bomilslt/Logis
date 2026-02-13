@@ -10,7 +10,7 @@ Views.profile = {
         main.innerHTML = `
             <div class="profile-page">
                 <div class="page-header">
-                    <h1 class="page-title">Mon profil</h1>
+                    <h1 class="page-title">${I18n.t('profile.title')}</h1>
                 </div>
                 
                 <div class="card">

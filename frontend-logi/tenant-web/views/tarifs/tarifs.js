@@ -24,7 +24,7 @@ Views.tarifs = {
         main.innerHTML = `
             <div class="tarifs-page">
                 <div class="page-header">
-                    <h1 class="page-title">Configuration des tarifs</h1>
+                    <h1 class="page-title">${I18n.t('tarifs.title')}</h1>
                 </div>
                 
                 <div class="tarifs-nav">

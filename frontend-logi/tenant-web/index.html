@@ -227,7 +227,7 @@
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#home"></use>
                     </svg>
-                    <span>Dashboard</span>
+                    <span data-i18n="nav.dashboard">Dashboard</span>
                 </a>
 
                 <!-- Opérations quotidiennes -->
@@ -235,19 +235,19 @@
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#package"></use>
                     </svg>
-                    <span>Colis</span>
+                    <span data-i18n="nav.packages">Colis</span>
                 </a>
                 <a href="#/departures" class="nav-link" data-view="departures">
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#truck"></use>
                     </svg>
-                    <span>Départs</span>
+                    <span data-i18n="nav.departures">Départs</span>
                 </a>
                 <a href="#/pickups-payments" class="nav-link" data-view="pickups-payments">
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#credit-card"></use>
                     </svg>
-                    <span>Retraits et Paiements</span>
+                    <span data-i18n="nav.pickups_payments">Retraits et Paiements</span>
                 </a>
 
                 <!-- Gestion -->
@@ -255,13 +255,13 @@
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#users"></use>
                     </svg>
-                    <span>Clients</span>
+                    <span data-i18n="nav.clients">Clients</span>
                 </a>
                 <a href="#/reports" class="nav-link" data-view="reports">
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#trending-up"></use>
                     </svg>
-                    <span>Rapports</span>
+                    <span data-i18n="nav.reports">Rapports</span>
                 </a>
 
                 <!-- Configuration métier -->
@@ -269,13 +269,13 @@
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#map-pin"></use>
                     </svg>
-                    <span>Trajets et Tarifs</span>
+                    <span data-i18n="nav.tarifs">Trajets et Tarifs</span>
                 </a>
                 <a href="#/announcements" class="nav-link" data-view="announcements">
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#megaphone"></use>
                     </svg>
-                    <span>Annonces</span>
+                    <span data-i18n="nav.announcements">Annonces</span>
                 </a>
 
                 <!-- Administration -->
@@ -283,25 +283,25 @@
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#user-cog"></use>
                     </svg>
-                    <span>Personnel</span>
+                    <span data-i18n="nav.staff">Personnel</span>
                 </a>
                 <a href="#/payroll" class="nav-link" data-view="payroll">
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#briefcase"></use>
                     </svg>
-                    <span>RH / Paie</span>
+                    <span data-i18n="nav.payroll">RH / Paie</span>
                 </a>
                 <a href="#/settings" class="nav-link" data-view="settings">
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#settings"></use>
                     </svg>
-                    <span>Paramètres</span>
+                    <span data-i18n="nav.settings">Paramètres</span>
                 </a>
                 <a href="#/guide" class="nav-link" data-view="guide">
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#book-open"></use>
                     </svg>
-                    <span>Guide & Support</span>
+                    <span data-i18n="nav.guide">Guide & Support</span>
                 </a>
 
                 <!-- Dev/Debug -->
@@ -309,7 +309,7 @@
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#zap"></use>
                     </svg>
-                    <span>Test Webhooks</span>
+                    <span data-i18n="nav.test_webhooks">Test Webhooks</span>
                 </a>
             </nav>
 
@@ -318,20 +318,24 @@
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#user"></use>
                     </svg>
-                    <span>Mon profil</span>
+                    <span data-i18n="nav.profile">Mon profil</span>
                 </a>
                 <a href="#/subscription" class="nav-link" data-view="subscription">
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#credit-card"></use>
                     </svg>
-                    <span>Mon Abonnement</span>
+                    <span data-i18n="nav.subscription">Mon Abonnement</span>
                 </a>
                 <button class="nav-link" id="btn-logout">
                     <svg class="icon" viewBox="0 0 24 24">
                         <use href="#log-out"></use>
                     </svg>
-                    <span>Deconnexion</span>
+                    <span data-i18n="nav.logout">Déconnexion</span>
                 </button>
+                <div class="lang-switcher" id="lang-switcher">
+                    <button class="lang-btn active" data-lang="fr" title="Français">FR</button>
+                    <button class="lang-btn" data-lang="en" title="English">EN</button>
+                </div>
             </div>
         </aside>
 
@@ -351,18 +355,18 @@
                         </svg>
                     </div>
                     <div class="header-user-info">
-                        <span class="header-user-name" id="header-user-name">Utilisateur</span>
+                        <span class="header-user-name" id="header-user-name" data-i18n="header.user_default">Utilisateur</span>
                         <span class="header-user-role" id="header-user-role">Admin</span>
                     </div>
                 </div>
                 <div class="header-actions">
                     <div id="header-clock-container"></div>
-                    <button class="btn-icon" id="btn-calculator" title="Calculatrice">
+                    <button class="btn-icon" id="btn-calculator" title="Calculatrice" data-i18n-title="header.calculator">
                         <svg class="icon" viewBox="0 0 24 24">
                             <use href="#calculator"></use>
                         </svg>
                     </button>
-                    <button class="btn-icon" id="btn-estimator" title="Estimateur de tarifs">
+                    <button class="btn-icon" id="btn-estimator" title="Estimateur de tarifs" data-i18n-title="header.estimator">
                         <svg class="icon" viewBox="0 0 24 24">
                             <use href="#dollar-sign"></use>
                         </svg>
@@ -397,6 +401,9 @@
     <script src="assets/js/utils/sanitize.js"></script>
     <!-- Export Service: PDF/Excel generation -->
     <script src="assets/js/utils/export-service.js"></script>
+    <script src="assets/js/i18n/fr.js"></script>
+    <script src="assets/js/i18n/en.js"></script>
+    <script src="assets/js/i18n/i18n.js"></script>
     <script src="assets/js/config.js"></script>
     <script src="assets/js/api.js"></script>
     <script src="assets/js/store.js"></script>

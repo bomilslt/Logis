@@ -13,7 +13,7 @@ Views.dashboard = {
         if (cached) {
             this.renderDashboard(cached);
         } else {
-            main.innerHTML = Loader.page('Chargement...');
+            main.innerHTML = Loader.page(I18n.t('loading'));
         }
         
         this.loadDashboard(!!cached);
@@ -73,9 +73,9 @@ Views.dashboard = {
                 main.innerHTML = `
                     <div class="error-state">
                         ${Icons.get('alert-circle', {size:48})}
-                        <h3>Erreur de chargement</h3>
+                        <h3>${I18n.t('error_loading')}</h3>
                         <p>${error.message}</p>
-                        <button class="btn btn-primary" onclick="Views.dashboard.loadDashboard()">Reessayer</button>
+                        <button class="btn btn-primary" onclick="Views.dashboard.loadDashboard()">${I18n.t('retry')}</button>
                     </div>
                 `;
             }
@@ -95,7 +95,7 @@ Views.dashboard = {
         main.innerHTML = `
             <div class="dashboard">
                 <div class="page-header">
-                    <h1 class="page-title">Dashboard</h1>
+                    <h1 class="page-title">${I18n.t('dashboard.title')}</h1>
                     <div class="header-actions">
                         <span class="text-sm text-muted" id="last-update">Mis a jour: ${new Date().toLocaleTimeString('fr-FR')}</span>
                         <button class="btn btn-ghost btn-sm" onclick="Views.dashboard.refreshDashboard(this)" title="Actualiser le tableau de bord">
@@ -110,7 +110,7 @@ Views.dashboard = {
                         <div class="stat-icon bg-primary">${Icons.get('package', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value">${stats.packages.total}</span>
-                            <span class="stat-label">Total colis</span>
+                            <span class="stat-label">${I18n.t('dashboard.total_packages')}</span>
                             <span class="stat-sub">${stats.packages.pending} en attente · ${stats.packages.in_transit} en transit</span>
                         </div>
                     </div>
@@ -118,7 +118,7 @@ Views.dashboard = {
                         <div class="stat-icon bg-success">${Icons.get('dollar-sign', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value">${this.formatMoney(stats.revenue.month)}</span>
-                            <span class="stat-label">Revenus du mois</span>
+                            <span class="stat-label">${I18n.t('dashboard.revenue')}</span>
                             <span class="stat-change ${growth >= 0 ? 'positive' : 'negative'}">${growth >= 0 ? '+' : ''}${growth}% vs mois dernier</span>
                         </div>
                     </div>
@@ -126,14 +126,14 @@ Views.dashboard = {
                         <div class="stat-icon bg-warning">${Icons.get('clock', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value">${this.formatMoney(stats.revenue.pending)}</span>
-                            <span class="stat-label">Paiements en attente</span>
+                            <span class="stat-label">${I18n.t('payments.pending')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-info">${Icons.get('users', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value">${stats.clients.active}</span>
-                            <span class="stat-label">Clients actifs</span>
+                            <span class="stat-label">${I18n.t('nav.clients')}</span>
                             <span class="stat-sub text-success">+${stats.clients.new_this_month} ce mois</span>
                         </div>
                     </div>
@@ -142,7 +142,7 @@ Views.dashboard = {
                 <!-- Stats aujourd'hui -->
                 <div class="today-stats card mb-md">
                     <div class="card-body">
-                        <h3 class="today-title">Aujourd'hui</h3>
+                        <h3 class="today-title">${I18n.t('dashboard.today')}</h3>
                         <div class="today-grid">
                             <div class="today-item">
                                 <span class="today-value">${stats.today.received}</span>
@@ -165,8 +165,8 @@ Views.dashboard = {
                     <!-- Colis recents -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Colis recents</h3>
-                            <a href="#/packages" class="btn btn-sm btn-ghost">Voir tout</a>
+                            <h3 class="card-title">${I18n.t('dashboard.recent_packages')}</h3>
+                            <a href="#/packages" class="btn btn-sm btn-ghost">${I18n.t('all')}</a>
                         </div>
                         <div class="card-body">
                             <div class="table-wrapper table-responsive-cards">
@@ -197,7 +197,7 @@ Views.dashboard = {
                     <!-- Activite recente -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Activite recente</h3>
+                            <h3 class="card-title">${I18n.t('dashboard.recent_activity')}</h3>
                         </div>
                         <div class="card-body">
                             <div class="activity-list">

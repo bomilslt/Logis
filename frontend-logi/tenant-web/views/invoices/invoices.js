@@ -13,9 +13,9 @@ Views.invoices = {
         main.innerHTML = `
             <div class="invoices-page">
                 <div class="page-header">
-                    <h1 class="page-title">Factures</h1>
+                    <h1 class="page-title">${I18n.t('invoices.title')}</h1>
                     <button class="btn btn-primary" id="btn-new-invoice">
-                        ${Icons.get('plus', {size:16})} Nouvelle facture
+                        ${Icons.get('plus', {size:16})} ${I18n.t('invoices.new_invoice')}
                     </button>
                 </div>
                 

@@ -12,9 +12,9 @@ Views.staff = {
         main.innerHTML = `
             <div class="staff-page">
                 <div class="page-header">
-                    <h1 class="page-title">Employes</h1>
+                    <h1 class="page-title">${I18n.t('staff.title')}</h1>
                     <button class="btn btn-primary" id="btn-add-staff">
-                        ${Icons.get('plus', {size:16})} Ajouter
+                        ${Icons.get('plus', {size:16})} ${I18n.t('staff.new_staff')}
                     </button>
                 </div>
                 
@@ -32,7 +32,7 @@ Views.staff = {
             this.staffList = cached.staff || [];
             this.renderTable();
         } else {
-            document.getElementById('staff-table').innerHTML = Loader.page('Chargement...');
+            document.getElementById('staff-table').innerHTML = Loader.page(I18n.t('loading'));
         }
         
         await this.loadData(!!cached);

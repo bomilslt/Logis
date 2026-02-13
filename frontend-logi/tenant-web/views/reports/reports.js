@@ -17,7 +17,7 @@ Views.reports = {
         main.innerHTML = `
             <div class="reports-page">
                 <div class="page-header">
-                    <h1 class="page-title">Rapports</h1>
+                    <h1 class="page-title">${I18n.t('reports.title')}</h1>
                     <div class="header-actions">
                         <button class="btn btn-outline" id="btn-export-pdf">
                             ${Icons.get('download', {size:16})} Export PDF

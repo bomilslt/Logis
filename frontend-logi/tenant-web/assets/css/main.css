@@ -2701,3 +2701,56 @@ code {
         grid-template-columns: 1fr;
     }
 }
+
+/* ========================================
+   LANGUAGE SWITCHER
+======================================== */
+.lang-switcher {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    margin-top: 4px;
+}
+
+.lang-btn {
+    flex: 1;
+    padding: 6px 0;
+    border: 1px solid var(--color-gray-300);
+    background: transparent;
+    color: var(--color-gray-500);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.lang-btn:hover {
+    background: var(--color-gray-100);
+    color: var(--color-gray-700);
+}
+
+.lang-btn.active {
+    background: var(--color-primary);
+    color: var(--color-white);
+    border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .lang-btn {
+    border-color: var(--color-gray-600);
+    color: var(--color-gray-400);
+}
+
+[data-theme="dark"] .lang-btn:hover {
+    background: var(--color-gray-700);
+    color: var(--color-gray-200);
+}
+
+[data-theme="dark"] .lang-btn.active {
+    background: var(--color-primary);
+    color: var(--color-white);
+    border-color: var(--color-primary);
+}

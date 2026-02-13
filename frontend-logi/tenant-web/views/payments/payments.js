@@ -15,13 +15,13 @@ Views.payments = {
         main.innerHTML = `
             <div class="payments-page">
                 <div class="page-header">
-                    <h1 class="page-title">Paiements</h1>
+                    <h1 class="page-title">${I18n.t('payments.title')}</h1>
                     <div class="header-actions">
-                        <button class="btn btn-outline" id="btn-export" title="Exporter la liste des paiements">
-                            ${Icons.get('download', {size:16})} Export
+                        <button class="btn btn-outline" id="btn-export" title="${I18n.t('packages.export_list')}">
+                            ${Icons.get('download', {size:16})} ${I18n.t('export')}
                         </button>
-                        <button class="btn btn-primary" id="btn-new-payment" title="Enregistrer un nouveau paiement">
-                            ${Icons.get('plus', {size:16})} Nouveau paiement
+                        <button class="btn btn-primary" id="btn-new-payment" title="${I18n.t('payments.new_payment')}">
+                            ${Icons.get('plus', {size:16})} ${I18n.t('payments.new_payment')}
                         </button>
                     </div>
                 </div>
@@ -30,28 +30,28 @@ Views.payments = {
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <span class="stat-card-title">Encaissements du jour</span>
+                            <span class="stat-card-title">${I18n.t('payments.today_collections')}</span>
                             <div class="stat-card-icon success">${Icons.get('dollar-sign')}</div>
                         </div>
                         <div class="stat-card-value" id="stat-today">-</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <span class="stat-card-title">Cette semaine</span>
+                            <span class="stat-card-title">${I18n.t('payments.this_week')}</span>
                             <div class="stat-card-icon primary">${Icons.get('trending-up')}</div>
                         </div>
                         <div class="stat-card-value" id="stat-week">-</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <span class="stat-card-title">Ce mois</span>
+                            <span class="stat-card-title">${I18n.t('payments.this_month')}</span>
                             <div class="stat-card-icon info">${Icons.get('calendar')}</div>
                         </div>
                         <div class="stat-card-value" id="stat-month">-</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <span class="stat-card-title">En attente</span>
+                            <span class="stat-card-title">${I18n.t('payments.pending')}</span>
                             <div class="stat-card-icon warning">${Icons.get('clock')}</div>
                         </div>
                         <div class="stat-card-value" id="stat-pending">-</div>

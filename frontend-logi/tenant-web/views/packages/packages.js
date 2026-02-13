@@ -18,13 +18,13 @@ Views.packages = {
         main.innerHTML = `
             <div class="packages-page">
                 <div class="page-header">
-                    <h1 class="page-title">Colis</h1>
+                    <h1 class="page-title">${I18n.t('packages.title')}</h1>
                     <div class="header-actions">
-                        <button class="btn btn-outline" id="btn-export" title="Exporter la liste des colis">
-                            ${Icons.get('download', {size:16})} Export
+                        <button class="btn btn-outline" id="btn-export" title="${I18n.t('packages.export_list')}">
+                            ${Icons.get('download', {size:16})} ${I18n.t('export')}
                         </button>
-                        <button class="btn btn-primary" id="btn-receive" title="Enregistrer la réception d'un colis">
-                            ${Icons.get('package', {size:16})} Recevoir colis
+                        <button class="btn btn-primary" id="btn-receive" title="${I18n.t('packages.receive')}">
+                            ${Icons.get('package', {size:16})} ${I18n.t('packages.receive')}
                         </button>
                     </div>
                 </div>
@@ -34,9 +34,9 @@ Views.packages = {
                     <div class="card-body">
                         <div class="filters-grid">
                             <div class="form-group">
-                                <label class="form-label">Recherche</label>
+                                <label class="form-label">${I18n.t('search')}</label>
                                 <input type="text" id="filter-search" class="form-input" 
-                                    placeholder="Tracking, client, telephone..." value="${this.filters.search}">
+                                    placeholder="${I18n.t('packages.search_placeholder')}" value="${this.filters.search}">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Statut</label>

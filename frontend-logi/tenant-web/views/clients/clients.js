@@ -15,13 +15,13 @@ Views.clients = {
         main.innerHTML = `
             <div class="clients-page">
                 <div class="page-header">
-                    <h1 class="page-title">Clients</h1>
+                    <h1 class="page-title">${I18n.t('clients.title')}</h1>
                     <div class="header-actions">
-                        <button class="btn btn-outline" id="btn-export" title="Exporter la liste des clients">
-                            ${Icons.get('download', {size:16})} Export
+                        <button class="btn btn-outline" id="btn-export" title="${I18n.t('packages.export_list')}">
+                            ${Icons.get('download', {size:16})} ${I18n.t('export')}
                         </button>
-                        <button class="btn btn-primary" id="btn-new-client" title="Créer un nouveau client">
-                            ${Icons.get('plus', {size:16})} Nouveau client
+                        <button class="btn btn-primary" id="btn-new-client" title="${I18n.t('clients.new_client')}">
+                            ${Icons.get('plus', {size:16})} ${I18n.t('clients.new_client')}
                         </button>
                     </div>
                 </div>

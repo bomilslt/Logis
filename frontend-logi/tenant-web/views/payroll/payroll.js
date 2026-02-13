@@ -14,13 +14,13 @@ Views.payroll = {
         main.innerHTML = `
             <div class="payroll-page">
                 <div class="page-header">
-                    <h1 class="page-title">Ressources Humaines</h1>
+                    <h1 class="page-title">${I18n.t('payroll.title')}</h1>
                     <div class="header-actions">
                         <button class="btn btn-outline" id="btn-add-expense">
-                            ${Icons.get('plus', {size:16})} Charge diverse
+                            ${Icons.get('plus', {size:16})} ${I18n.t('payroll.new_expense')}
                         </button>
                         <button class="btn btn-primary" id="btn-add-employee">
-                            ${Icons.get('user-plus', {size:16})} Nouvel employe
+                            ${Icons.get('user-plus', {size:16})} ${I18n.t('payroll.new_employee')}
                         </button>
                     </div>
                 </div>

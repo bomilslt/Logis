@@ -12,13 +12,13 @@ Views.announcements = {
         main.innerHTML = `
             <div class="announcements-page">
                 <div class="page-header">
-                    <h1 class="page-title">Annonces</h1>
+                    <h1 class="page-title">${I18n.t('announcements.title')}</h1>
                     <button class="btn btn-primary" id="btn-new">
-                        ${Icons.get('plus', {size:16})} Nouvelle annonce
+                        ${Icons.get('plus', {size:16})} ${I18n.t('announcements.new_announcement')}
                     </button>
                 </div>
                 
-                <div id="announcements-list">${Loader.page('Chargement...')}</div>
+                <div id="announcements-list">${Loader.page(I18n.t('loading'))}</div>
             </div>
         `;
         

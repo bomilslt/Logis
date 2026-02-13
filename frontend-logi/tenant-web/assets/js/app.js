@@ -8,6 +8,7 @@ const App = {
     init() {
         this.loadSvgSprite();
         this.initTheme();
+        this.initI18n();
         this.initClock();
         Toast.init();
         Modal.init();
@@ -36,8 +37,8 @@ const App = {
                 nameEl.textContent = user.full_name || user.first_name || user.email || 'Utilisateur';
             }
             if (roleEl) {
-                const roleLabels = { admin: 'Administrateur', manager: 'Manager', staff: 'Agent', accountant: 'Comptable' };
-                roleEl.textContent = roleLabels[user.role] || user.role || 'Staff';
+                const roleKey = 'roles.' + (user.role || 'staff');
+                roleEl.textContent = I18n.t(roleKey, user.role || 'Staff');
             }
             if (avatarEl && user.avatar) {
                 const safeUrl = Sanitize?.sanitizeUrl ? Sanitize.sanitizeUrl(user.avatar) : null;
@@ -84,6 +85,20 @@ const App = {
                 document.body.insertBefore(div, document.body.firstChild);
             })
             .catch(e => console.warn('SVG sprite load failed:', e));
+    },
+
+    initI18n() {
+        I18n.register('fr', LANG_FR);
+        I18n.register('en', LANG_EN);
+        I18n.init();
+
+        // Re-render current view on language change
+        I18n.onChange(() => {
+            this.updateHeaderUser();
+            // Re-render the current view to apply translations
+            const hash = location.hash.slice(1) || '/dashboard';
+            Router.navigate(hash);
+        });
     },
 
     initTheme() {
@@ -138,6 +153,21 @@ const App = {
         // Tarif estimator button
         document.getElementById('btn-estimator')?.addEventListener('click', () => {
             this.showTarifEstimator();
+        });
+
+        // Language switcher
+        document.querySelectorAll('#lang-switcher .lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.dataset.lang;
+                I18n.setLocale(lang);
+                document.querySelectorAll('#lang-switcher .lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+        // Set active lang button on init
+        const currentLang = I18n.locale;
+        document.querySelectorAll('#lang-switcher .lang-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.lang === currentLang);
         });
 
         // Logout
