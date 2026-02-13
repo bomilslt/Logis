@@ -156,23 +156,19 @@ def superadmin_login():
     
     csrf_token = get_csrf_token_for_user(admin.id)
 
-    # Cookie-mode (Option 1) pour superadmin-web
-    if app_channel == 'web_superadmin':
-        response = jsonify({
-            'user': admin.to_dict(),
-            'csrf_token': csrf_token
-        })
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
-        return response
-
-    # Fallback API/bearer
-    return jsonify({
+    # Always return tokens in body (cross-origin: GitHub Pages ≠ Railway)
+    response = jsonify({
         'access_token': access_token,
         'refresh_token': refresh_token,
         'csrf_token': csrf_token,
         'user': admin.to_dict()
     })
+    
+    # Also set cookies for same-origin setups
+    set_access_cookies(response, access_token)
+    set_refresh_cookies(response, refresh_token)
+    
+    return response
 
 
 @superadmin_bp.route('/auth/refresh', methods=['POST'])
@@ -216,12 +212,9 @@ def superadmin_refresh():
 
     new_csrf_token = get_csrf_token_for_user(admin.id)
 
-    if app_channel == 'web_superadmin':
-        response = jsonify({'csrf_token': new_csrf_token})
-        set_access_cookies(response, access_token)
-        return response
-
-    return jsonify({'access_token': access_token, 'csrf_token': new_csrf_token})
+    response = jsonify({'access_token': access_token, 'csrf_token': new_csrf_token})
+    set_access_cookies(response, access_token)
+    return response
 
 
 @superadmin_bp.route('/auth/logout', methods=['POST'])
