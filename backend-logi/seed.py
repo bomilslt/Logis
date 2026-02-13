@@ -176,8 +176,8 @@ def seed():
         if existing_plans == 0:
             plans = [
                 SubscriptionPlan(
-                    code='logi_starter',
-                    name='LOGi Starter',
+                    code='starter',
+                    name='Starter',
                     description='Idéal pour les petites entreprises de livraison',
                     price_monthly=15000,
                     price_yearly=150000,
@@ -199,8 +199,8 @@ def seed():
                     display_order=1,
                 ),
                 SubscriptionPlan(
-                    code='logi_pro',
-                    name='LOGi Pro',
+                    code='pro',
+                    name='Pro',
                     description='Pour les entreprises en croissance',
                     price_monthly=35000,
                     price_yearly=350000,
@@ -224,8 +224,8 @@ def seed():
                     display_order=2,
                 ),
                 SubscriptionPlan(
-                    code='logi_business',
-                    name='LOGi Business',
+                    code='business',
+                    name='Business',
                     description='Solution complète pour les grandes entreprises',
                     price_monthly=75000,
                     price_yearly=750000,
@@ -248,8 +248,8 @@ def seed():
                     display_order=3,
                 ),
                 SubscriptionPlan(
-                    code='logi_enterprise',
-                    name='LOGi Enterprise',
+                    code='enterprise',
+                    name='Enterprise',
                     description='Sur mesure, sans limites',
                     price_monthly=150000,
                     price_yearly=1500000,
@@ -282,7 +282,7 @@ def seed():
         from app.models.subscription import Subscription
         sub = Subscription.query.filter_by(tenant_id=TENANT_ID).first()
         if not sub:
-            starter = SubscriptionPlan.query.filter_by(code='logi_starter').first()
+            starter = SubscriptionPlan.query.filter_by(code='starter').first()
             if starter:
                 now = datetime.utcnow()
                 sub = Subscription(

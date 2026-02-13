@@ -181,8 +181,17 @@ def get_renewal_link():
     if advance:
         message = "Bonjour, je souhaite effectuer un paiement anticipé pour :\n"
         
-    message += f"- Code: {tenant.slug}\n"
+    message += f"- Tenant ID: {tenant.id}\n"
     message += f"- Nom: {tenant.name}\n"
+    message += f"- Code: {tenant.slug}\n"
+    
+    # Add current plan and expiration info
+    subscription = Subscription.query.filter_by(tenant_id=tenant_id).first()
+    if subscription:
+        plan_name = subscription.plan.name if subscription.plan else 'Inconnu'
+        message += f"- Plan actuel: {plan_name}\n"
+        if subscription.current_period_end:
+            message += f"- Expiration: {subscription.current_period_end.strftime('%d/%m/%Y')}\n"
     
     encoded_message = urllib.parse.quote(message)
     url = f"https://wa.me/{whatsapp_number}?text={encoded_message}"

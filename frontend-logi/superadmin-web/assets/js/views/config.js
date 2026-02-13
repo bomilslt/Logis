@@ -174,13 +174,13 @@ const ConfigView = (() => {
     }
 
     async function savePlatformConfig() {
-        const settings = {
+        const data = {
             platform_name: document.getElementById('pf-name').value.trim(),
             support_email: document.getElementById('pf-support').value.trim()
         };
 
         try {
-            await API.put('/api/superadmin/config', { settings });
+            await API.put('/api/superadmin/config', data);
             Utils.showToast('Configuration plateforme enregistrée', 'success');
         } catch (err) {
             Utils.showToast(err.message, 'error');

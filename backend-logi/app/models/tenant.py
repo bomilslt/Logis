@@ -76,16 +76,25 @@ class Tenant(db.Model):
         return self.entitlements.get(key, default)
     
     def to_dict(self, include_entitlements=False):
+        # Subscription status
+        sub_status = 'none'
+        if self.subscription:
+            sub_status = self.subscription.status or 'none'
+        
         result = {
             'id': self.id,
             'name': self.name,
             'slug': self.slug,
             'email': self.email,
+            'contact_email': self.email,
             'phone': self.phone,
             'address': self.address,
             'is_active': self.is_active,
             'allowed_channels': self.allowed_channels or DEFAULT_CHANNELS,
-            'created_at': self.created_at.isoformat()
+            'subscription_status': sub_status,
+            'settings': self.settings or {},
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
         if include_entitlements:
             result['entitlements'] = self.entitlements or {}

@@ -187,78 +187,10 @@ const SubscriptionView = {
     },
 
     async loadAddons() {
-        try {
-            const billingUrl = window.CONFIG?.BILLING_API_URL || 'http://localhost:5002/api/public';
-            const response = await fetch(`${billingUrl}/plans/add-ons`);
-            const data = await response.json();
-
-            this.renderAddons(data.add_ons || []);
-
-        } catch (e) {
-            console.error('Addons load error', e);
-            document.getElementById('addons-container').innerHTML = '<div class="text-muted">Aucune offre disponible pour le moment</div>';
-        }
-    },
-
-    renderAddons(addons) {
+        // Add-ons are not available without an external billing service
         const container = document.getElementById('addons-container');
-        if (!addons || addons.length === 0) {
-            container.innerHTML = '<div class="text-muted">Aucune offre disponible pour le moment</div>';
-            return;
-        }
-
-        container.innerHTML = addons.map(addon => `
-            <div class="addon-card">
-                <div class="addon-header">
-                    <h4 class="addon-title">${addon.name}</h4>
-                    <span class="addon-price">${this.formatCurrency(addon.price, addon.currency)}</span>
-                </div>
-                <p class="addon-desc">${addon.description}</p>
-                <button class="btn-buy-addon" onclick="SubscriptionView.buyAddon('${addon.code}', '${addon.name}', ${addon.price}, '${addon.currency}')">
-                    Acheter
-                </button>
-            </div>
-        `).join('');
-    },
-
-    async buyAddon(addonCode, addonName, price, currency) {
-        // Confirmation via Custom Modal
-        const confirmed = await this.showConfirmModal(
-            'Confirmation d\'achat',
-            `Voulez-vous acheter l'option <strong>${addonName}</strong> pour <strong>${this.formatCurrency(price, currency)}</strong> ?`
-        );
-
-        if (!confirmed) return;
-
-        const user = Store.getUser();
-        if (!user || !user.tenant_id) {
-            Toast.error("Impossible d'identifier le compte.");
-            return;
-        }
-
-        try {
-            const billingUrl = window.CONFIG?.BILLING_API_URL || 'http://localhost:5002/api/public';
-            const response = await fetch(`${billingUrl}/orders`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    product: 'logi',
-                    target_id: user.tenant_id,
-                    order_type: 'addon',
-                    add_ons: [{ code: addonCode, quantity: 1 }],
-                    currency: currency || 'XAF'
-                })
-            });
-
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'Erreur lors de la commande');
-
-            const checkoutBase = billingUrl.replace('/api/public', '');
-            window.location.href = `${checkoutBase}/checkout?order_id=${data.order_id}`;
-
-        } catch (error) {
-            console.error(error);
-            Toast.error("Erreur lors de la commande: " + error.message);
+        if (container) {
+            container.innerHTML = '<div class="text-muted">Aucune offre complémentaire disponible pour le moment</div>';
         }
     },
 
@@ -373,62 +305,26 @@ const SubscriptionView = {
     },
 
     async startRenewal() {
-        // 1. Get Tenant Info from Store or Backend
-        // We know we are 'logi' product and 'tenant_id' is needed.
-        // Actually, for public/orders, we need { product: 'logi', target_id: 'tenant_id' }
-        // We can get tenant_id from Store.getUser().tenant_id if available, or fetch /subscription returns it?
-        // Let's assume Store has it.
-
-        const user = Store.getUser();
-        if (!user || !user.tenant_id) {
-            Toast.error("Impossible d'identifier le compte (Tenant ID manquant).");
-            return;
-        }
-
         const btn = document.querySelector('.btn-renew');
         const oldText = btn.innerHTML;
-        btn.innerHTML = 'Initialisation...';
+        btn.innerHTML = 'Chargement...';
         btn.disabled = true;
 
         try {
-            // 2. Créer une commande de renouvellement via l'API Publique du Billing Service
-            // Note: On traverse via le backend-logi qui n'a PAS de proxy vers Billing public.
-            // Donc on doit appeler l'URL du Billing Service directement depuis le JS (CORS doit l'autoriser).
-            // L'URL du Billing Service doit être dans CONFIG.
-
-            // Si CONFIG.BILLING_API_URL n'existe pas, on présume localhost:5002 pour le dev
-            const billingUrl = window.CONFIG?.BILLING_API_URL || 'http://localhost:5002/api/public';
-
-            const response = await fetch(`${billingUrl}/orders`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    product: 'logi',
-                    target_id: user.tenant_id,
-                    duration_months: 1, // Default to 1 month, user can change later? Or simple flow
-                    currency: 'XAF' // Default currency
-                })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Erreur lors de la création de la commande');
+            // Call backend to get the renewal link (WhatsApp, URL, or email)
+            const response = await API.request('/subscription/renewal-link');
+            const data = response.data || response;
+            
+            if (data.url) {
+                // Open the renewal link (WhatsApp, mailto, or custom URL)
+                window.open(data.url, '_blank');
+            } else {
+                Toast.warning('Aucun lien de renouvellement configuré. Contactez le support.');
             }
-
-            // 3. Rediriger vers le Checkout
-            // URL: /checkout?order_id=...
-            // Billing Service serves checkout at root /checkout usually? 
-            // Wait, checkout.py says route is /checkout. Blueprint registered at /checkout?
-            // "checkout_bp = Blueprint('checkout', __name__, url_prefix='/checkout')"
-            // So URL is http://localhost:5002/checkout?order_id=...
-
-            const checkoutBase = billingUrl.replace('/api/public', ''); // virer /api/public pour revenir à la racine
-            window.location.href = `${checkoutBase}/checkout?order_id=${data.order_id}`;
-
         } catch (error) {
-            console.error(error);
-            Toast.error(error.message);
+            console.error('Renewal error:', error);
+            Toast.error(error.message || 'Impossible de charger le lien de renouvellement');
+        } finally {
             btn.innerHTML = oldText;
             btn.disabled = false;
         }
