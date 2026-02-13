@@ -33,7 +33,7 @@ const MODULE_VIEWS = {
 };
 
 // Vues accessibles sans condition de module (tout admin/staff connecté)
-const ALWAYS_ALLOWED_VIEWS = ['dashboard', 'profile', 'subscription'];
+const ALWAYS_ALLOWED_VIEWS = ['dashboard', 'profile', 'subscription', 'guide'];
 
 // Vues réservées au développement / super-admin
 const DEV_VIEWS = ['test-webhooks'];
