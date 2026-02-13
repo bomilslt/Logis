@@ -65,6 +65,7 @@ const Store = {
         sessionStorage.removeItem(CONFIG.STORAGE_KEYS.REFRESH_TOKEN);
         sessionStorage.removeItem(CONFIG.STORAGE_KEYS.USER);
         sessionStorage.removeItem('csrf_token');
+        if (typeof ViewCache !== 'undefined') ViewCache.clear();
     },
     
     // ==================== GENERIC STORAGE ====================

@@ -78,8 +78,28 @@ Views.clients = {
         `;
         
         this.initFilters();
-        this.loadClients();
+        
+        // Show cached data instantly
+        const cacheKey = 'clients:list:' + this.currentPage;
+        const cached = ViewCache.get(cacheKey);
+        if (cached) {
+            this._applyCachedClients(cached);
+        }
+        
+        this.loadClients(!!cached);
         this.attachEvents();
+    },
+    
+    _applyCachedClients(data) {
+        const clients = data.clients || [];
+        this.allClients = clients;
+        const totalEl = document.getElementById('stat-total');
+        const activeEl = document.getElementById('stat-active');
+        const newEl = document.getElementById('stat-new');
+        if (totalEl) totalEl.textContent = data.total || clients.length;
+        if (activeEl) activeEl.textContent = data.active_count || clients.filter(c => c.is_active).length;
+        if (newEl) newEl.textContent = data.new_this_month || '-';
+        this.renderClientsList(clients, data);
     },
     
     initFilters() {
@@ -99,18 +119,13 @@ Views.clients = {
         });
     },
     
-    async loadClients() {
+    async loadClients(silent = false) {
         const container = document.getElementById('clients-list');
-        container.innerHTML = Loader.page('Chargement...');
+        if (!silent) container.innerHTML = Loader.page('Chargement...');
+        
+        const cacheKey = 'clients:list:' + this.currentPage;
         
         try {
-            console.log('Loading clients with params:', {
-                page: this.currentPage,
-                per_page: this.pageSize,
-                search: this.filters.search || undefined,
-                status: this.filters.status || undefined
-            });
-            
             const data = await API.clients.getAll({
                 page: this.currentPage,
                 per_page: this.pageSize,
@@ -118,44 +133,39 @@ Views.clients = {
                 status: this.filters.status || undefined
             });
             
-            console.log('API response:', data);
-            
-            const clients = data.clients || [];
-            this.allClients = clients;
-            
-            console.log('Clients count:', clients.length);
-            
-            const totalEl = document.getElementById('stat-total');
-            const activeEl = document.getElementById('stat-active');
-            const newEl = document.getElementById('stat-new');
-            
-            if (totalEl) totalEl.textContent = data.total || clients.length;
-            if (activeEl) activeEl.textContent = data.active_count || clients.filter(c => c.is_active).length;
-            if (newEl) newEl.textContent = data.new_this_month || '-';
-            
-            if (clients.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        ${Icons.get('users', {size:48})}
-                        <p class="empty-state-title">Aucun client trouve</p>
-                    </div>
-                `;
-                return;
+            // Only re-render if data changed or first load
+            if (!silent || ViewCache.hasChanged(cacheKey, data)) {
+                ViewCache.set(cacheKey, data);
+                this._applyCachedClients(data);
             }
-            
-            this.renderList(clients, data.total || clients.length);
             
         } catch (error) {
             console.error('Load clients error:', error);
+            if (!ViewCache.get(cacheKey)) {
+                container.innerHTML = `
+                    <div class="error-state">
+                        ${Icons.get('alert-circle', {size:48})}
+                        <h3>Erreur de chargement</h3>
+                        <p>${error.message}</p>
+                        <button class="btn btn-primary" onclick="Views.clients.loadClients()">Reessayer</button>
+                    </div>
+                `;
+            }
+        }
+    },
+    
+    renderClientsList(clients, data) {
+        const container = document.getElementById('clients-list');
+        if (clients.length === 0) {
             container.innerHTML = `
-                <div class="error-state">
-                    ${Icons.get('alert-circle', {size:48})}
-                    <h3>Erreur de chargement</h3>
-                    <p>${error.message}</p>
-                    <button class="btn btn-primary" onclick="Views.clients.loadClients()">Reessayer</button>
+                <div class="empty-state">
+                    ${Icons.get('users', {size:48})}
+                    <p class="empty-state-title">Aucun client trouve</p>
                 </div>
             `;
+            return;
         }
+        this.renderList(clients, data.total || clients.length);
     },
 
     renderList(clients, total) {

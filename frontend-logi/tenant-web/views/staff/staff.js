@@ -19,30 +19,44 @@ Views.staff = {
                 </div>
                 
                 <div class="card">
-                    <div class="card-body" id="staff-table">${Loader.page('Chargement...')}</div>
+                    <div class="card-body" id="staff-table"></div>
                 </div>
             </div>
         `;
         
         document.getElementById('btn-add-staff')?.addEventListener('click', () => this.showForm());
         
-        await this.loadData();
+        // Show cached data instantly, then refresh silently
+        const cached = ViewCache.get('staff:list');
+        if (cached) {
+            this.staffList = cached.staff || [];
+            this.renderTable();
+        } else {
+            document.getElementById('staff-table').innerHTML = Loader.page('Chargement...');
+        }
+        
+        await this.loadData(!!cached);
     },
     
-    async loadData() {
+    async loadData(silent = false) {
         try {
             const data = await API.staff.getAll();
-            this.staffList = data.staff || [];
-            this.renderTable();
+            if (!silent || ViewCache.hasChanged('staff:list', data)) {
+                ViewCache.set('staff:list', data);
+                this.staffList = data.staff || [];
+                this.renderTable();
+            }
         } catch (error) {
             console.error('Load staff error:', error);
-            document.getElementById('staff-table').innerHTML = `
-                <div class="empty-state">
-                    ${Icons.get('alert-circle', {size:32})}
-                    <p>Erreur de chargement: ${error.message}</p>
-                    <button class="btn btn-outline" onclick="Views.staff.loadData()">Reessayer</button>
-                </div>
-            `;
+            if (!ViewCache.get('staff:list')) {
+                document.getElementById('staff-table').innerHTML = `
+                    <div class="empty-state">
+                        ${Icons.get('alert-circle', {size:32})}
+                        <p>Erreur de chargement: ${error.message}</p>
+                        <button class="btn btn-outline" onclick="Views.staff.loadData()">Reessayer</button>
+                    </div>
+                `;
+            }
         }
     },
     
@@ -374,6 +388,7 @@ Views.staff = {
                 }
             }
             Modal.close();
+            ViewCache.onMutate('staff');
             await this.loadData();
         } catch (error) {
             console.error('Save staff error:', error);
@@ -529,6 +544,7 @@ Views.staff = {
             Loader.button(btn, true, { text: '' });
             await API.staff.toggleActive(id);
             Toast.success(staff.is_active ? 'Employe desactive' : 'Employe active');
+            ViewCache.onMutate('staff');
             await this.loadData();
         } catch (error) {
             Toast.error(`Erreur: ${error.message}`);

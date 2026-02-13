@@ -7,9 +7,16 @@ Views.dashboard = {
     
     render() {
         const main = document.getElementById('main-content');
-        main.innerHTML = Loader.page('Chargement...');
         
-        this.loadDashboard();
+        // Show cached data instantly if available
+        const cached = ViewCache.get('dashboard:all');
+        if (cached) {
+            this.renderDashboard(cached);
+        } else {
+            main.innerHTML = Loader.page('Chargement...');
+        }
+        
+        this.loadDashboard(!!cached);
         
         // Rafraichir toutes les 30 secondes
         this.startAutoRefresh();
@@ -51,14 +58,39 @@ Views.dashboard = {
                 API.dashboard.getRecentActivity(5)
             ]);
             
-            const stats = statsData.stats || statsData;
-            const recentPackages = recentPkgData.packages || recentPkgData;
-            const recentActivity = activityData.activity || activityData;
+            const freshData = { statsData, recentPkgData, activityData };
+            
+            // Only re-render if data changed or first load
+            if (!silent || ViewCache.hasChanged('dashboard:all', freshData)) {
+                ViewCache.set('dashboard:all', freshData);
+                this.renderDashboard(freshData);
+            }
+        } catch (error) {
+            console.error('Dashboard load error:', error);
+            // If we have cached data, keep showing it
+            if (!ViewCache.get('dashboard:all')) {
+                const main = document.getElementById('main-content');
+                main.innerHTML = `
+                    <div class="error-state">
+                        ${Icons.get('alert-circle', {size:48})}
+                        <h3>Erreur de chargement</h3>
+                        <p>${error.message}</p>
+                        <button class="btn btn-primary" onclick="Views.dashboard.loadDashboard()">Reessayer</button>
+                    </div>
+                `;
+            }
+        }
+    },
 
-            const growth = stats.revenue?.prev_month > 0 
-                ? ((stats.revenue.month - stats.revenue.prev_month) / stats.revenue.prev_month * 100).toFixed(1)
-                : 0;
-            const main = document.getElementById('main-content');
+    renderDashboard(data) {
+        const stats = (data.statsData?.stats || data.statsData);
+        const recentPackages = (data.recentPkgData?.packages || data.recentPkgData);
+        const recentActivity = (data.activityData?.activity || data.activityData);
+
+        const growth = stats.revenue?.prev_month > 0 
+            ? ((stats.revenue.month - stats.revenue.prev_month) / stats.revenue.prev_month * 100).toFixed(1)
+            : 0;
+        const main = document.getElementById('main-content');
         
         main.innerHTML = `
             <div class="dashboard">
@@ -212,18 +244,6 @@ Views.dashboard = {
                 </div>
             </div>
         `;
-        } catch (error) {
-            console.error('Dashboard load error:', error);
-            const main = document.getElementById('main-content');
-            main.innerHTML = `
-                <div class="error-state">
-                    ${Icons.get('alert-circle', {size:48})}
-                    <h3>Erreur de chargement</h3>
-                    <p>${error.message}</p>
-                    <button class="btn btn-primary" onclick="Views.dashboard.loadDashboard()">Reessayer</button>
-                </div>
-            `;
-        }
     },
 
     getActivityIcon(type) {

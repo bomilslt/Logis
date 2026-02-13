@@ -24,23 +24,34 @@ Views.announcements = {
         
         document.getElementById('btn-new')?.addEventListener('click', () => this.showForm());
         
-        await this.loadData();
+        const cached = ViewCache.get('announcements:list');
+        if (cached) {
+            this.announcements = cached.announcements || [];
+            this.renderList();
+        }
+        
+        await this.loadData(!!cached);
     },
     
-    async loadData() {
+    async loadData(silent = false) {
         try {
             const data = await API.announcements.getAll();
-            this.announcements = data.announcements || [];
-            this.renderList();
+            if (!silent || ViewCache.hasChanged('announcements:list', data)) {
+                ViewCache.set('announcements:list', data);
+                this.announcements = data.announcements || [];
+                this.renderList();
+            }
         } catch (error) {
             console.error('Load announcements error:', error);
-            document.getElementById('announcements-list').innerHTML = `
-                <div class="empty-state">
-                    ${Icons.get('alert-circle', {size:32})}
-                    <p>Erreur de chargement: ${error.message}</p>
-                    <button class="btn btn-outline" onclick="Views.announcements.loadData()">Reessayer</button>
-                </div>
-            `;
+            if (!ViewCache.get('announcements:list')) {
+                document.getElementById('announcements-list').innerHTML = `
+                    <div class="empty-state">
+                        ${Icons.get('alert-circle', {size:32})}
+                        <p>Erreur de chargement: ${error.message}</p>
+                        <button class="btn btn-outline" onclick="Views.announcements.loadData()">Reessayer</button>
+                    </div>
+                `;
+            }
         }
     },
     
@@ -331,6 +342,7 @@ Views.announcements = {
                 }
             }
             Modal.close();
+            ViewCache.onMutate('announcements');
             await this.loadData();
         } catch (error) {
             console.error('Save announcement error:', error);
@@ -350,6 +362,7 @@ Views.announcements = {
             await API.announcements.toggleActive(id);
             const ann = this.announcements.find(a => a.id === id);
             Toast.success(ann?.is_active ? 'Annonce desactivee' : 'Annonce activee');
+            ViewCache.onMutate('announcements');
             await this.loadData();
         } catch (error) {
             Toast.error(`Erreur: ${error.message}`);
@@ -364,6 +377,7 @@ Views.announcements = {
                 Loader.button(btn, true, { text: '' });
                 await API.announcements.delete(id);
                 Toast.success('Annonce supprimee');
+                ViewCache.onMutate('announcements');
                 await this.loadData();
             } catch (error) {
                 Toast.error(`Erreur: ${error.message}`);

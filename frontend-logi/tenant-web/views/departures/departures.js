@@ -31,28 +31,38 @@ Views.departures = {
             </div>
         `;
         
-        this.loadDataAndRender();
+        // Show cached data instantly
+        const cached = ViewCache.get('departures:list');
+        if (cached) {
+            this.departures = cached.departures || [];
+            this.renderDepartures();
+        }
+        
+        this.loadDataAndRender(!!cached);
         this.attachEvents();
     },
     
-    async loadDataAndRender() {
-        await this.loadData();
+    async loadDataAndRender(silent = false) {
+        await this.loadData(silent);
         this.renderDepartures();
     },
     
-    async loadData() {
+    async loadData(silent = false) {
         try {
-            // Charger depuis l'API
             const data = await API.departures.getAll();
-            this.departures = data.departures || [];
+            if (!silent || ViewCache.hasChanged('departures:list', data)) {
+                ViewCache.set('departures:list', data);
+                this.departures = data.departures || [];
+            }
         } catch (error) {
             console.error('Load departures error:', error);
-            // Fallback sur localStorage
-            const stored = localStorage.getItem('ec_departures');
-            if (stored) {
-                try { this.departures = JSON.parse(stored); return; } catch(e) {}
+            if (!ViewCache.get('departures:list')) {
+                const stored = localStorage.getItem('ec_departures');
+                if (stored) {
+                    try { this.departures = JSON.parse(stored); return; } catch(e) {}
+                }
+                this.departures = [];
             }
-            this.departures = [];
         }
     },
     

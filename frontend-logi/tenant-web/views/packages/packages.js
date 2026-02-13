@@ -88,7 +88,14 @@ Views.packages = {
             </div>
         `;
         
-        this.loadPackages();
+        // Show cached data instantly
+        const cacheKey = 'packages:list:' + this.currentPage + ':' + this.filters.status;
+        const cached = ViewCache.get(cacheKey);
+        if (cached) {
+            this._renderPackagesData(cached);
+        }
+        
+        this.loadPackages(!!cached);
         await this.initFilters();
         this.attachEvents();
     },
@@ -149,9 +156,11 @@ Views.packages = {
         });
     },
     
-    async loadPackages() {
+    async loadPackages(silent = false) {
         const container = document.getElementById('packages-list');
-        container.innerHTML = Loader.page('Chargement...');
+        if (!silent) container.innerHTML = Loader.page('Chargement...');
+        
+        const cacheKey = 'packages:list:' + this.currentPage + ':' + this.filters.status;
         
         try {
             const data = await API.packages.getAll({
@@ -164,55 +173,64 @@ Views.packages = {
                 departure_id: this.filters.departure || undefined
             });
             
-            const packages = data.packages || [];
-            this.allPackages = packages;
-            
-            if (packages.length === 0) {
-                container.innerHTML = `<div class="empty-state">${Icons.get('package', {size:48})}<p class="empty-state-title">Aucun colis trouve</p></div>`;
-                return;
+            if (!silent || ViewCache.hasChanged(cacheKey, data)) {
+                ViewCache.set(cacheKey, data);
+                this._renderPackagesData(data);
             }
-            
-            container.innerHTML = `
-                <div class="table-wrapper">
-                    <table class="table">
-                        <thead><tr>
-                            <th><input type="checkbox" id="select-all"></th>
-                            <th>Tracking</th><th>Client</th><th>Description</th><th>Transport</th>
-                            <th>Depart</th><th>Montant</th><th>Paiement</th><th>Statut</th><th>Date</th><th>Actions</th>
-                        </tr></thead>
-                        <tbody>${packages.map(p => this.renderRow(p)).join('')}</tbody>
-                    </table>
-                </div>
-                <div class="table-footer">
-                    <div id="packages-pagination"></div>
-                </div>
-            `;
-            
-            // Init pagination
-            this.pagination = new Pagination({
-                container: '#packages-pagination',
-                totalItems: data.total || packages.length,
-                pageSize: this.pageSize,
-                currentPage: this.currentPage,
-                onChange: (page) => {
-                    this.currentPage = page;
-                    this.loadPackages();
-                }
-            });
-            
-            this.attachTableEvents();
             
         } catch (error) {
             console.error('Load packages error:', error);
-            container.innerHTML = `
-                <div class="error-state">
-                    ${Icons.get('alert-circle', {size:48})}
-                    <h3>Erreur de chargement</h3>
-                    <p>${error.message}</p>
-                    <button class="btn btn-primary" onclick="Views.packages.loadPackages()">Reessayer</button>
-                </div>
-            `;
+            if (!ViewCache.get(cacheKey)) {
+                container.innerHTML = `
+                    <div class="error-state">
+                        ${Icons.get('alert-circle', {size:48})}
+                        <h3>Erreur de chargement</h3>
+                        <p>${error.message}</p>
+                        <button class="btn btn-primary" onclick="Views.packages.loadPackages()">Reessayer</button>
+                    </div>
+                `;
+            }
         }
+    },
+    
+    _renderPackagesData(data) {
+        const container = document.getElementById('packages-list');
+        const packages = data.packages || [];
+        this.allPackages = packages;
+        
+        if (packages.length === 0) {
+            container.innerHTML = `<div class="empty-state">${Icons.get('package', {size:48})}<p class="empty-state-title">Aucun colis trouve</p></div>`;
+            return;
+        }
+        
+        container.innerHTML = `
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead><tr>
+                        <th><input type="checkbox" id="select-all"></th>
+                        <th>Tracking</th><th>Client</th><th>Description</th><th>Transport</th>
+                        <th>Depart</th><th>Montant</th><th>Paiement</th><th>Statut</th><th>Date</th><th>Actions</th>
+                    </tr></thead>
+                    <tbody>${packages.map(p => this.renderRow(p)).join('')}</tbody>
+                </table>
+            </div>
+            <div class="table-footer">
+                <div id="packages-pagination"></div>
+            </div>
+        `;
+        
+        this.pagination = new Pagination({
+            container: '#packages-pagination',
+            totalItems: data.total || packages.length,
+            pageSize: this.pageSize,
+            currentPage: this.currentPage,
+            onChange: (page) => {
+                this.currentPage = page;
+                this.loadPackages();
+            }
+        });
+        
+        this.attachTableEvents();
     },
 
     renderRow(p) {
@@ -1003,6 +1021,7 @@ Views.packages = {
             
             this.playSound('success');
             Toast.success(`Colis reçu: ${pkg.client?.name || 'Client'}`);
+            ViewCache.onMutate('packages');
             
             // Auto-print label if checkbox is checked
             const printLabel = document.getElementById('receive-print-label')?.checked;
@@ -1144,6 +1163,7 @@ Views.packages = {
 
             this.playSound('success');
             Toast.success('Colis enregistre');
+            ViewCache.onMutate('packages');
 
             // Reset et refocus
             setTimeout(() => {
