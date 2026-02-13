@@ -80,7 +80,7 @@ class Package(db.Model):
     unit_price = db.Column(db.Numeric(18, 2, asdecimal=False))  # Prix par kg, m³ ou pièce
     
     # Valeur déclarée
-    declared_value = db.Column(db.Numeric(18, 2, asdecimal=False))
+    declared_value = db.Column(db.Numeric(18, 2))
     currency = db.Column(db.String(3), default='USD')
     
     # Adresses
