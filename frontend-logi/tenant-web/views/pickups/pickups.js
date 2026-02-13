@@ -18,10 +18,10 @@ Views.pickups = {
         main.innerHTML = `
             <div class="pickups-page">
                 <div class="page-header">
-                    <h1 class="page-title">🎯 Retrait de Colis</h1>
+                    <h1 class="page-title">🎯 ${I18n.t('pickups.title')}</h1>
                     <div class="header-actions">
                         <button class="btn btn-outline" id="btn-history">
-                            ${Icons.get('clock', {size:16})} Historique
+                            ${Icons.get('clock', {size:16})} ${I18n.t('pickups.history')}
                         </button>
                     </div>
                 </div>
@@ -32,28 +32,28 @@ Views.pickups = {
                         <div class="stat-icon bg-warning">${Icons.get('package', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="stat-awaiting">-</span>
-                            <span class="stat-label">En attente de retrait</span>
+                            <span class="stat-label">${I18n.t('pickups.awaiting')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-danger">${Icons.get('dollar-sign', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="stat-payment">-</span>
-                            <span class="stat-label">Paiement en attente</span>
+                            <span class="stat-label">${I18n.t('pickups.payment_pending')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-success">${Icons.get('check-circle', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="stat-today">-</span>
-                            <span class="stat-label">Retraits aujourd'hui</span>
+                            <span class="stat-label">${I18n.t('pickups.today_pickups')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-primary">${Icons.get('calendar', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="stat-month">-</span>
-                            <span class="stat-label">Ce mois</span>
+                            <span class="stat-label">${I18n.t('pickups.this_month')}</span>
                         </div>
                     </div>
                 </div>
@@ -61,20 +61,20 @@ Views.pickups = {
                 <!-- RECHERCHE -->
                 <div class="card mb-md">
                     <div class="card-header">
-                        <h3 class="card-title">Recherche rapide</h3>
+                        <h3 class="card-title">${I18n.t('pickups.quick_search')}</h3>
                     </div>
                     <div class="card-body">
                         <div class="search-row">
                             <div class="search-group">
-                                <label class="form-label">Scanner le code</label>
+                                <label class="form-label">${I18n.t('pickups.scan_code')}</label>
                                 <input type="text" id="scanInput" class="form-input" 
-                                    placeholder="Scanner ou coller le tracking..." autofocus />
+                                    placeholder="${I18n.t('pickups.scan_placeholder')}" autofocus />
                             </div>
                             <div class="search-group">
-                                <label class="form-label">Ou rechercher par nom/téléphone</label>
+                                <label class="form-label">${I18n.t('pickups.search_by_name')}</label>
                                 <div class="input-with-btn">
                                     <input type="text" id="searchInput" class="form-input" 
-                                        placeholder="Nom du client ou téléphone..." />
+                                        placeholder="${I18n.t('pickups.search_placeholder')}" />
                                     <button id="searchBtn" class="btn btn-primary">
                                         ${Icons.get('search', {size:18})}
                                     </button>
@@ -88,7 +88,7 @@ Views.pickups = {
                 <!-- TABLE DES COLIS DISPONIBLES -->
                 <div class="card mb-md">
                     <div class="card-header">
-                        <h3 class="card-title">Colis disponibles pour retrait</h3>
+                        <h3 class="card-title">${I18n.t('pickups.available_packages')}</h3>
                     </div>
                     <div class="card-body">
                         <div id="packagesTable"></div>
@@ -98,73 +98,73 @@ Views.pickups = {
                 <!-- FORMULAIRE DE RETRAIT (toujours visible) -->
                 <div class="card" id="pickupForm">
                     <div class="card-header">
-                        <h3 class="card-title">Formulaire de retrait</h3>
-                        <span class="badge badge-secondary" id="formStatus">Aucun colis sélectionné</span>
+                        <h3 class="card-title">${I18n.t('pickups.pickup_form')}</h3>
+                        <span class="badge badge-secondary" id="formStatus">${I18n.t('pickups.no_package_selected')}</span>
                     </div>
                     <div class="card-body">
                         <div class="pickup-form-grid">
                             <!-- Colonne gauche: Infos colis -->
                             <div class="form-section">
-                                <h4 class="section-title">Informations du colis</h4>
+                                <h4 class="section-title">${I18n.t('pickups.package_info')}</h4>
                                 <div class="form-group">
-                                    <label class="form-label">Tracking</label>
+                                    <label class="form-label">${I18n.t('pickups.tracking')}</label>
                                     <input type="text" id="pkg-tracking" class="form-input" readonly disabled />
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label class="form-label">Client</label>
+                                        <label class="form-label">${I18n.t('pickups.client')}</label>
                                         <input type="text" id="pkg-client" class="form-input" readonly disabled />
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">Téléphone</label>
+                                        <label class="form-label">${I18n.t('pickups.phone')}</label>
                                         <input type="text" id="pkg-phone" class="form-input" readonly disabled />
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Description</label>
+                                    <label class="form-label">${I18n.t('pickups.description')}</label>
                                     <input type="text" id="pkg-description" class="form-input" readonly disabled />
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label class="form-label">Statut</label>
+                                        <label class="form-label">${I18n.t('pickups.status')}</label>
                                         <input type="text" id="pkg-status" class="form-input" readonly disabled />
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">Date arrivée</label>
+                                        <label class="form-label">${I18n.t('pickups.arrived_date')}</label>
                                         <input type="text" id="pkg-arrived" class="form-input" readonly disabled />
                                     </div>
                                 </div>
                                 
                                 <!-- Paiement -->
-                                <h4 class="section-title mt-md">Paiement</h4>
+                                <h4 class="section-title mt-md">${I18n.t('pickups.payment')}</h4>
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label class="form-label">Montant total</label>
+                                        <label class="form-label">${I18n.t('pickups.total_amount')}</label>
                                         <input type="text" id="pkg-total" class="form-input" readonly disabled />
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">Déjà payé</label>
+                                        <label class="form-label">${I18n.t('pickups.already_paid')}</label>
                                         <input type="text" id="pkg-paid" class="form-input" readonly disabled />
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Reste à payer</label>
+                                    <label class="form-label">${I18n.t('pickups.remaining_to_pay')}</label>
                                     <input type="text" id="pkg-remaining" class="form-input font-bold" readonly disabled />
                                 </div>
                             </div>
 
                             <!-- Colonne droite: Retrait -->
                             <div class="form-section">
-                                <h4 class="section-title">Qui retire le colis ?</h4>
+                                <h4 class="section-title">${I18n.t('pickups.who_picks_up')}</h4>
                                 <div class="form-group">
                                     <div class="radio-group-vertical">
                                         <label class="radio-label">
                                             <input type="radio" name="pickupBy" value="client" checked disabled />
-                                            <span>Client lui-même</span>
+                                            <span>${I18n.t('pickups.client_self')}</span>
                                         </label>
                                         <label class="radio-label">
                                             <input type="radio" name="pickupBy" value="proxy" disabled />
-                                            <span>Mandataire (tierce personne)</span>
+                                            <span>${I18n.t('pickups.proxy')}</span>
                                         </label>
                                     </div>
                                 </div>
@@ -173,27 +173,27 @@ Views.pickups = {
                                 <div id="proxyFields" class="proxy-fields" style="display: none;">
                                     <div class="form-row">
                                         <div class="form-group">
-                                            <label class="form-label">Nom du mandataire *</label>
+                                            <label class="form-label">${I18n.t('pickups.proxy_name')} *</label>
                                             <input type="text" id="proxyName" class="form-input" disabled />
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-label">Téléphone *</label>
+                                            <label class="form-label">${I18n.t('pickups.proxy_phone')} *</label>
                                             <input type="tel" id="proxyPhone" class="form-input" disabled />
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group">
-                                            <label class="form-label">Type de pièce *</label>
+                                            <label class="form-label">${I18n.t('pickups.id_type')} *</label>
                                             <select id="proxyIdType" class="form-input" disabled>
-                                                <option value="">Sélectionner...</option>
-                                                <option value="cni">CNI</option>
-                                                <option value="passport">Passeport</option>
-                                                <option value="permis">Permis de conduire</option>
-                                                <option value="autre">Autre</option>
+                                                <option value="">${I18n.t('pickups.select')}</option>
+                                                <option value="cni">${I18n.t('pickups.cni')}</option>
+                                                <option value="passport">${I18n.t('pickups.passport')}</option>
+                                                <option value="permis">${I18n.t('pickups.driving_license')}</option>
+                                                <option value="autre">${I18n.t('pickups.other')}</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-label">Numéro de pièce *</label>
+                                            <label class="form-label">${I18n.t('pickups.id_number')} *</label>
                                             <input type="text" id="proxyIdNumber" class="form-input" disabled />
                                         </div>
                                     </div>
@@ -201,47 +201,47 @@ Views.pickups = {
                                 
                                 <!-- Paiement au retrait -->
                                 <div id="paymentFields" class="payment-fields mt-md" style="display: none;">
-                                    <h4 class="section-title">Encaissement</h4>
+                                    <h4 class="section-title">${I18n.t('pickups.collection')}</h4>
                                     <div class="payment-amount-box">
-                                        <span>Montant à encaisser:</span>
+                                        <span>${I18n.t('pickups.amount_to_collect')}:</span>
                                         <strong id="paymentAmount">0 XAF</strong>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group">
-                                            <label class="form-label">Méthode *</label>
+                                            <label class="form-label">${I18n.t('pickups.method')}</label>
                                             <select id="paymentMethod" class="form-input" disabled>
-                                                <option value="">Sélectionner...</option>
-                                                <option value="cash">Espèces</option>
-                                                <option value="mobile_money">Mobile Money</option>
-                                                <option value="bank_transfer">Virement</option>
-                                                <option value="card">Carte</option>
+                                                <option value="">${I18n.t('pickups.select')}</option>
+                                                <option value="cash">${I18n.t('pickups.cash')}</option>
+                                                <option value="mobile_money">${I18n.t('pickups.mobile_money')}</option>
+                                                <option value="bank_transfer">${I18n.t('pickups.bank_transfer')}</option>
+                                                <option value="card">${I18n.t('pickups.card')}</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-label">Référence</label>
+                                            <label class="form-label">${I18n.t('pickups.reference')}</label>
                                             <input type="text" id="paymentReference" class="form-input" 
-                                                placeholder="N° transaction..." disabled />
+                                                placeholder="${I18n.t('pickups.ref_placeholder')}" disabled />
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Signature -->
-                                <h4 class="section-title mt-md">Signature</h4>
+                                <h4 class="section-title mt-md">${I18n.t('pickups.signature')}</h4>
                                 <div class="signature-container">
                                     <canvas id="signatureCanvas" width="400" height="150"></canvas>
                                 </div>
                                 <div class="signature-actions">
                                     <button id="clearSignature" class="btn btn-sm btn-outline" disabled>
-                                        ${Icons.get('x', {size:14})} Effacer
+                                        ${Icons.get('x', {size:14})} ${I18n.t('pickups.clear')}
                                     </button>
                                 </div>
                                 
                                 <!-- Photo -->
-                                <h4 class="section-title mt-md">Photo de preuve</h4>
+                                <h4 class="section-title mt-md">${I18n.t('pickups.proof_photo')}</h4>
                                 <div class="photo-upload-row">
                                     <input type="file" id="photoInput" accept="image/*" style="display: none;" />
                                     <button id="takePhoto" class="btn btn-outline" disabled>
-                                        ${Icons.get('camera', {size:16})} Ajouter photo
+                                        ${Icons.get('camera', {size:16})} ${I18n.t('pickups.add_photo')}
                                     </button>
                                     <div id="photoPreview" class="photo-preview-small" style="display: none;">
                                         <img id="photoImg" src="" alt="Preview" />
@@ -251,18 +251,18 @@ Views.pickups = {
                                 
                                 <!-- Notes -->
                                 <div class="form-group mt-md">
-                                    <label class="form-label">Notes</label>
+                                    <label class="form-label">${I18n.t('pickups.notes')}</label>
                                     <textarea id="pickupNotes" class="form-input" rows="2" 
-                                        placeholder="Remarques..." disabled></textarea>
+                                        placeholder="${I18n.t('pickups.notes_placeholder')}" disabled></textarea>
                                 </div>
                                 
                                 <!-- Actions -->
                                 <div class="form-actions mt-md">
                                     <button id="cancelPickup" class="btn btn-outline" disabled>
-                                        Annuler
+                                        ${I18n.t('pickups.cancel')}
                                     </button>
                                     <button id="confirmPickup" class="btn btn-primary btn-lg" disabled>
-                                        ${Icons.get('check', {size:18})} Confirmer le retrait
+                                        ${Icons.get('check', {size:18})} ${I18n.t('pickups.confirm_pickup')}
                                     </button>
                                 </div>
                             </div>
@@ -298,20 +298,20 @@ Views.pickups = {
                 container: '#packagesTable',
                 pageSize: 10,
                 data: response.packages,
-                emptyMessage: 'Aucun colis en attente de retrait',
+                emptyMessage: I18n.t('pickups.no_packages_awaiting'),
                 columns: [
-                    { key: 'tracking_number', label: 'Tracking' },
-                    { key: 'client_name', label: 'Client' },
-                    { key: 'client_phone', label: 'Téléphone' },
-                    { key: 'description', label: 'Description' },
+                    { key: 'tracking_number', label: I18n.t('pickups.tracking') },
+                    { key: 'client_name', label: I18n.t('pickups.client') },
+                    { key: 'client_phone', label: I18n.t('pickups.phone') },
+                    { key: 'description', label: I18n.t('pickups.description') },
                     { 
                         key: 'status', 
-                        label: 'Statut',
+                        label: I18n.t('pickups.status'),
                         render: (val) => this.getStatusBadge(val)
                     },
                     { 
                         key: 'remaining', 
-                        label: 'Reste à payer',
+                        label: I18n.t('pickups.remaining_pay'),
                         render: (val, row) => {
                             const cls = val > 0 ? 'text-danger font-bold' : 'text-success';
                             return `<span class="${cls}">${this.formatAmount(val)} ${row.currency}</span>`;
@@ -323,7 +323,7 @@ Views.pickups = {
         } catch (e) {
             console.error('Erreur chargement colis:', e);
             document.getElementById('packagesTable').innerHTML = 
-                '<p class="text-danger">Erreur de chargement</p>';
+                `<p class="text-danger">${I18n.t('pickups.load_error')}</p>`;
         }
     },
     
@@ -446,7 +446,7 @@ Views.pickups = {
             const response = await API.post('/pickups/search', { query });
             this.selectPackageFromSearch(response.package, response.payment);
         } catch (error) {
-            errorDiv.textContent = error.message || 'Colis non trouvé';
+            errorDiv.textContent = error.message || I18n.t('pickups.not_found');
             errorDiv.style.display = 'block';
         } finally {
             Loader.button(btn, false);
@@ -467,7 +467,7 @@ Views.pickups = {
         document.getElementById('pkg-phone').value = pkg.client?.phone || '';
         document.getElementById('pkg-description').value = pkg.description || '';
         document.getElementById('pkg-status').value = this.getStatusLabel(pkg.status);
-        document.getElementById('pkg-arrived').value = pkg.updated_at ? new Date(pkg.updated_at).toLocaleDateString('fr-FR') : '';
+        document.getElementById('pkg-arrived').value = pkg.updated_at ? new Date(pkg.updated_at).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : '';
         
         // Paiement
         const currency = payment.currency || 'XAF';
@@ -525,12 +525,12 @@ Views.pickups = {
         if (!file) return;
         
         if (!file.type.startsWith('image/')) {
-            Toast.error('Veuillez sélectionner une image');
+            Toast.error(I18n.t('pickups.select_image'));
             return;
         }
         
         if (file.size > 5 * 1024 * 1024) {
-            Toast.error('Image trop volumineuse (max 5MB)');
+            Toast.error(I18n.t('pickups.image_too_large'));
             return;
         }
         
@@ -573,7 +573,7 @@ Views.pickups = {
         this.clearSignature();
         this.enableForm(false);
         
-        document.getElementById('formStatus').textContent = 'Aucun colis sélectionné';
+        document.getElementById('formStatus').textContent = I18n.t('pickups.no_package_selected');
         document.getElementById('formStatus').className = 'badge badge-secondary';
         
         // Vider les inputs de recherche
@@ -584,7 +584,7 @@ Views.pickups = {
 
     async confirmPickup(btn = null) {
         if (!this.currentPackage) {
-            Toast.error('Aucun colis sélectionné');
+            Toast.error(I18n.t('pickups.no_package_error'));
             return;
         }
         
@@ -598,7 +598,7 @@ Views.pickups = {
             const proxyIdNumber = document.getElementById('proxyIdNumber').value.trim();
             
             if (!proxyName || !proxyPhone || !proxyIdType || !proxyIdNumber) {
-                Toast.error('Veuillez remplir tous les champs du mandataire');
+                Toast.error(I18n.t('pickups.proxy_fields_required'));
                 return;
             }
         }
@@ -608,22 +608,22 @@ Views.pickups = {
         if (paymentFields.style.display !== 'none') {
             const paymentMethod = document.getElementById('paymentMethod').value;
             if (!paymentMethod) {
-                Toast.error('Veuillez sélectionner une méthode de paiement');
+                Toast.error(I18n.t('pickups.select_payment_method'));
                 return;
             }
         }
         
         // Valider signature
         if (this.isCanvasBlank()) {
-            Toast.error('Veuillez faire signer le retireur');
+            Toast.error(I18n.t('pickups.sign_required'));
             return;
         }
         
-        if (!confirm('Confirmer le retrait de ce colis ?')) return;
+        if (!confirm(I18n.t('pickups.confirm_pickup_msg'))) return;
         
         try {
             if (!btn) btn = document.getElementById('confirmPickup');
-            Loader.button(btn, true, { text: 'Validation...' });
+            Loader.button(btn, true, { text: I18n.t('pickups.validating') });
             const data = {
                 package_id: this.currentPackage.id,
                 pickup_by: pickupBy,
@@ -658,12 +658,12 @@ Views.pickups = {
             
             const result = await API.post('/pickups/process', data);
             
-            Toast.success('Retrait effectué avec succès!');
+            Toast.success(I18n.t('pickups.pickup_success'));
             
             // Proposer d'imprimer le reçu
             const pickupData = {
                 pickup_number: result.pickup?.id ? `RET-${result.pickup.id.substring(0, 8).toUpperCase()}` : `RET-${Date.now()}`,
-                date: new Date().toLocaleString('fr-FR'),
+                date: new Date().toLocaleString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US'),
                 client: {
                     name: pickupBy === 'proxy' ? 
                         `${data.proxy_name} (pour ${this.currentPackage.client?.full_name || 'Client'})` : 
@@ -683,8 +683,8 @@ Views.pickups = {
             
             // Demander si on veut imprimer avec choix du format
             if (await Modal.confirm({
-                title: 'Retrait confirmé',
-                message: 'Voulez-vous imprimer le reçu de retrait ?'
+                title: I18n.t('pickups.pickup_confirmed'),
+                message: I18n.t('pickups.print_receipt_msg')
             })) {
                 InvoiceService.print({
                     type: 'pickup',
@@ -702,7 +702,7 @@ Views.pickups = {
             document.getElementById('scanInput').focus();
             
         } catch (error) {
-            Toast.error(error.message || 'Erreur lors du retrait');
+            Toast.error(error.message || I18n.t('pickups.pickup_error'));
         } finally {
             Loader.button(btn, false);
         }
@@ -729,28 +729,28 @@ Views.pickups = {
             <div class="history-container">
                 <div class="history-search mb-md">
                     <input type="text" id="historySearchInput" class="form-input" 
-                        placeholder="Rechercher par tracking, nom ou téléphone..." />
+                        placeholder="${I18n.t('pickups.history_search_placeholder')}" />
                 </div>
                 <div id="historyList" class="history-list"></div>
                 <div id="historyLoader" class="text-center py-md" style="display: none;">
-                    <span class="text-muted">Chargement...</span>
+                    <span class="text-muted">${I18n.t('pickups.history_loading')}</span>
                 </div>
                 <div id="historyLoadMore" class="text-center py-md" style="display: none;">
                     <button id="btnLoadMore" class="btn btn-outline">
-                        Charger plus de résultats
+                        ${I18n.t('pickups.load_more')}
                     </button>
                 </div>
                 <div id="historyEmpty" class="text-center py-md text-muted" style="display: none;">
-                    Aucun retrait trouvé
+                    ${I18n.t('pickups.no_pickups_found')}
                 </div>
             </div>
         `;
         
         Modal.open({
-            title: 'Historique des retraits',
+            title: I18n.t('pickups.history_title'),
             size: 'lg',
             content: content,
-            footer: `<button class="btn btn-secondary" onclick="Modal.close()">Fermer</button>`
+            footer: `<button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('pickups.close')}</button>`
         });
         
         // Charger les premiers résultats
@@ -817,7 +817,7 @@ Views.pickups = {
             
         } catch (e) {
             loader.style.display = 'none';
-            Toast.error('Erreur de chargement');
+            Toast.error(I18n.t('pickups.load_error'));
         }
     },
     
@@ -828,7 +828,7 @@ Views.pickups = {
                     <div class="history-main">
                         <strong>${p.package?.tracking_number || 'N/A'}</strong>
                         <span class="badge ${p.pickup_by === 'proxy' ? 'badge-warning' : 'badge-success'}">
-                            ${p.pickup_by === 'proxy' ? 'Mandataire' : 'Client'}
+                            ${p.pickup_by === 'proxy' ? I18n.t('pickups.proxy_label') : I18n.t('pickups.client_label')}
                         </span>
                     </div>
                     <div class="history-actions">
@@ -841,7 +841,7 @@ Views.pickups = {
                             </button>
                         </div>
                         <span class="text-sm text-muted">
-                            ${new Date(p.picked_up_at).toLocaleString('fr-FR')}
+                            ${new Date(p.picked_up_at).toLocaleString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')}
                         </span>
                     </div>
                 </div>
@@ -856,7 +856,7 @@ Views.pickups = {
                 ${p.pickup_by === 'proxy' ? `
                     <div class="history-row text-sm">
                         <span class="text-muted">
-                            Mandataire: ${p.proxy_name} (${p.proxy_phone})
+                            ${I18n.t('pickups.proxy_for')} ${p.proxy_name} (${p.proxy_phone})
                         </span>
                     </div>
                 ` : ''}
@@ -870,13 +870,13 @@ Views.pickups = {
     printPickupReceipt(pickupId, forceMenu = false) {
         const pickup = this.historyData.find(p => p.id === pickupId);
         if (!pickup) {
-            Toast.error('Retrait non trouvé');
+            Toast.error(I18n.t('pickups.pickup_not_found'));
             return;
         }
         
         const printData = {
             pickup_number: `RET-${pickup.id.substring(0, 8).toUpperCase()}`,
-            date: new Date(pickup.picked_up_at).toLocaleString('fr-FR'),
+            date: new Date(pickup.picked_up_at).toLocaleString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US'),
             client: {
                 name: pickup.pickup_by === 'proxy' ? 
                     `${pickup.proxy_name} (pour ${pickup.client?.full_name})` : 
@@ -905,20 +905,20 @@ Views.pickups = {
     
     getPaymentMethodLabel(method) {
         const labels = {
-            'cash': 'Espèces',
-            'mobile_money': 'Mobile Money',
-            'bank': 'Virement bancaire',
-            'card': 'Carte bancaire',
-            'prepaid': 'Prépayé'
+            'cash': I18n.t('pickups.cash'),
+            'mobile_money': I18n.t('pickups.mobile_money'),
+            'bank': I18n.t('pickups.bank_transfer'),
+            'card': I18n.t('pickups.card'),
+            'prepaid': I18n.t('pickups.prepaid')
         };
         return labels[method] || method || 'N/A';
     },
     
     getStatusBadge(status) {
         const map = {
-            'arrived_port': { label: 'Arrivé', class: 'badge-info' },
-            'customs': { label: 'Douane', class: 'badge-warning' },
-            'out_for_delivery': { label: 'Prêt', class: 'badge-success' }
+            'arrived_port': { label: I18n.t('pickups.status_arrived'), class: 'badge-info' },
+            'customs': { label: I18n.t('pickups.status_customs'), class: 'badge-warning' },
+            'out_for_delivery': { label: I18n.t('pickups.status_ready'), class: 'badge-success' }
         };
         const s = map[status] || { label: status, class: 'badge-secondary' };
         return `<span class="badge ${s.class}">${s.label}</span>`;
@@ -926,18 +926,18 @@ Views.pickups = {
     
     getStatusLabel(status) {
         const map = {
-            'pending': 'En attente',
-            'received': 'Reçu',
-            'in_transit': 'En transit',
-            'arrived_port': 'Arrivé au port',
-            'customs': 'En douane',
-            'out_for_delivery': 'Prêt pour retrait',
-            'delivered': 'Livré'
+            'pending': I18n.t('pickups.status_pending'),
+            'received': I18n.t('pickups.status_received'),
+            'in_transit': I18n.t('pickups.status_in_transit'),
+            'arrived_port': I18n.t('pickups.status_arrived_port'),
+            'customs': I18n.t('pickups.status_customs_full'),
+            'out_for_delivery': I18n.t('pickups.status_out_delivery'),
+            'delivered': I18n.t('pickups.status_delivered')
         };
         return map[status] || status;
     },
     
     formatAmount(amount) {
-        return new Intl.NumberFormat('fr-FR').format(amount || 0);
+        return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount || 0);
     }
 };

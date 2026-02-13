@@ -17,7 +17,7 @@ Views.tarifs = {
             this.destinations = cached.destinations || {};
             this.routes = cached.shipping_rates || {};
         } else {
-            main.innerHTML = `<div class="tarifs-page">${Loader.page('Chargement des tarifs...')}</div>`;
+            main.innerHTML = `<div class="tarifs-page">${Loader.page(I18n.t('loading'))}</div>`;
             await this.loadData();
         }
         
@@ -30,15 +30,15 @@ Views.tarifs = {
                 <div class="tarifs-nav">
                     <button class="tarifs-nav-btn active" data-tab="origins">
                         ${Icons.get('send', {size: 18})}
-                        <span>Origines</span>
+                        <span>${I18n.t('tarifs.tab_origins')}</span>
                     </button>
                     <button class="tarifs-nav-btn" data-tab="destinations">
                         ${Icons.get('map-pin', {size: 18})}
-                        <span>Destinations</span>
+                        <span>${I18n.t('tarifs.tab_destinations')}</span>
                     </button>
                     <button class="tarifs-nav-btn" data-tab="routes">
                         ${Icons.get('dollar-sign', {size: 18})}
-                        <span>Tarifs par route</span>
+                        <span>${I18n.t('tarifs.tab_routes')}</span>
                     </button>
                 </div>
                 
@@ -69,7 +69,7 @@ Views.tarifs = {
                 this.origins = {};
                 this.destinations = {};
                 this.routes = {};
-                Toast.error('Erreur de chargement des tarifs');
+                Toast.error(I18n.t('error_loading'));
             }
         }
     },
@@ -116,9 +116,9 @@ Views.tarifs = {
         const emptyState = `
             <div class="empty-state">
                 <div class="empty-state-icon">${Icons.get('send', {size: 48})}</div>
-                <h3>Aucune origine configuree</h3>
-                <p>Ajoutez les pays depuis lesquels vous expediez vos colis</p>
-                <button class="btn btn-primary" id="btn-add-origin-empty">${Icons.get('plus', {size: 16})} Ajouter une origine</button>
+                <h3>${I18n.t('tarifs.no_origins')}</h3>
+                <p>${I18n.t('tarifs.no_origins_desc')}</p>
+                <button class="btn btn-primary" id="btn-add-origin-empty">${Icons.get('plus', {size: 16})} ${I18n.t('tarifs.add_origin')}</button>
             </div>
         `;
         
@@ -126,10 +126,10 @@ Views.tarifs = {
             <div class="config-section">
                 <div class="config-section-header">
                     <div>
-                        <h2 class="config-section-title">Pays de depart</h2>
-                        <p class="config-section-desc">Configurez les pays et villes depuis lesquels vous expediez</p>
+                        <h2 class="config-section-title">${I18n.t('tarifs.origin_countries')}</h2>
+                        <p class="config-section-desc">${I18n.t('tarifs.origin_countries_desc')}</p>
                     </div>
-                    ${list ? `<button class="btn btn-primary" id="btn-add-origin">${Icons.get('plus', {size: 16})} Ajouter</button>` : ''}
+                    ${list ? `<button class="btn btn-primary" id="btn-add-origin">${Icons.get('plus', {size: 16})} ${I18n.t('payroll.add')}</button>` : ''}
                 </div>
                 <div class="config-cards-grid">${list || emptyState}</div>
             </div>
@@ -149,21 +149,21 @@ Views.tarifs = {
         
         const content = `
             <div class="form-group">
-                <label class="form-label">Code pays</label>
+                <label class="form-label">${I18n.t('tarifs.country_code')}</label>
                 <input type="text" id="origin-key" class="form-input" value="${editKey || ''}" ${isEdit ? 'disabled' : ''} placeholder="India">
             </div>
             <div class="form-group">
-                <label class="form-label">Nom affiche</label>
-                <input type="text" id="origin-label" class="form-input" value="${origin.label}" placeholder="Inde">
+                <label class="form-label">${I18n.t('tarifs.display_name')}</label>
+                <input type="text" id="origin-label" class="form-input" value="${origin.label}">
             </div>
             <div class="form-group">
-                <label class="form-label">Villes</label>
+                <label class="form-label">${I18n.t('tarifs.cities')}</label>
                 <div id="cities-container">${origin.cities.map(c => this.renderCityInput(c)).join('')}</div>
-                <button type="button" class="btn btn-ghost btn-sm mt-sm" id="btn-add-city">${Icons.get('plus', {size: 14})} Ajouter ville</button>
+                <button type="button" class="btn btn-ghost btn-sm mt-sm" id="btn-add-city">${Icons.get('plus', {size: 14})} ${I18n.t('tarifs.add_city')}</button>
             </div>
         `;
         
-        const result = await Modal.form({ title: isEdit ? 'Modifier origine' : 'Nouvelle origine', content, confirmText: 'Enregistrer', size: 'md',
+        const result = await Modal.form({ title: isEdit ? I18n.t('tarifs.edit_origin') : I18n.t('tarifs.new_origin'), content, confirmText: I18n.t('save'), size: 'md',
             onOpen: () => {
                 document.getElementById('btn-add-city')?.addEventListener('click', () => {
                     document.getElementById('cities-container').insertAdjacentHTML('beforeend', this.renderCityInput({id:'',name:''}));
@@ -184,13 +184,13 @@ Views.tarifs = {
                 if (id && name) cities.push({ id, name });
             });
             
-            if (!key || !label || cities.length === 0) { Toast.error('Remplissez tous les champs'); return; }
+            if (!key || !label || cities.length === 0) { Toast.error(I18n.t('tarifs.fill_all')); return; }
             
             Modal.close();
             this.origins[key] = { label, cities };
             this.saveData();
             this.renderTab('origins');
-            Toast.success('Origine enregistree');
+            Toast.success(I18n.t('tarifs.origin_saved'));
         }
     },
     
@@ -203,12 +203,12 @@ Views.tarifs = {
     },
     
     async deleteOrigin(key) {
-        if (await Modal.confirm({ title: 'Supprimer ?', message: `Supprimer "${this.origins[key]?.label}" et ses tarifs ?`, danger: true })) {
+        if (await Modal.confirm({ title: I18n.t('delete') + ' ?', message: I18n.t('tarifs.confirm_delete_origin').replace('{name}', this.origins[key]?.label), danger: true })) {
             delete this.origins[key];
             Object.keys(this.routes).filter(r => r.startsWith(`${key}_`)).forEach(r => delete this.routes[r]);
             this.saveData();
             this.renderTab('origins');
-            Toast.success('Supprime');
+            Toast.success(I18n.t('tarifs.deleted'));
         }
     },
 
@@ -235,9 +235,9 @@ Views.tarifs = {
         const emptyState = `
             <div class="empty-state">
                 <div class="empty-state-icon">${Icons.get('map-pin', {size: 48})}</div>
-                <h3>Aucune destination configuree</h3>
-                <p>Ajoutez les pays vers lesquels vous livrez vos colis</p>
-                <button class="btn btn-primary" id="btn-add-dest-empty">${Icons.get('plus', {size: 16})} Ajouter une destination</button>
+                <h3>${I18n.t('tarifs.no_destinations')}</h3>
+                <p>${I18n.t('tarifs.no_destinations_desc')}</p>
+                <button class="btn btn-primary" id="btn-add-dest-empty">${Icons.get('plus', {size: 16})} ${I18n.t('tarifs.add_destination')}</button>
             </div>
         `;
         
@@ -245,10 +245,10 @@ Views.tarifs = {
             <div class="config-section">
                 <div class="config-section-header">
                     <div>
-                        <h2 class="config-section-title">Pays de destination</h2>
-                        <p class="config-section-desc">Configurez les pays et points de retrait</p>
+                        <h2 class="config-section-title">${I18n.t('tarifs.dest_countries')}</h2>
+                        <p class="config-section-desc">${I18n.t('tarifs.dest_countries_desc')}</p>
                     </div>
-                    ${list ? `<button class="btn btn-primary" id="btn-add-dest">${Icons.get('plus', {size: 16})} Ajouter</button>` : ''}
+                    ${list ? `<button class="btn btn-primary" id="btn-add-dest">${Icons.get('plus', {size: 16})} ${I18n.t('payroll.add')}</button>` : ''}
                 </div>
                 <div class="config-cards-grid">${list || emptyState}</div>
             </div>
@@ -268,21 +268,21 @@ Views.tarifs = {
         
         const content = `
             <div class="form-group">
-                <label class="form-label">Code pays</label>
+                <label class="form-label">${I18n.t('tarifs.country_code')}</label>
                 <input type="text" id="dest-key" class="form-input" value="${editKey || ''}" ${isEdit ? 'disabled' : ''} placeholder="Kenya">
             </div>
             <div class="form-group">
-                <label class="form-label">Nom affiche</label>
-                <input type="text" id="dest-label" class="form-input" value="${dest.label}" placeholder="Kenya">
+                <label class="form-label">${I18n.t('tarifs.display_name')}</label>
+                <input type="text" id="dest-label" class="form-input" value="${dest.label}">
             </div>
             <div class="form-group">
-                <label class="form-label">Points de retrait</label>
+                <label class="form-label">${I18n.t('tarifs.pickup_points')}</label>
                 <div id="warehouses-container">${dest.warehouses.map(w => this.renderWarehouseInput(w)).join('')}</div>
-                <button type="button" class="btn btn-ghost btn-sm mt-sm" id="btn-add-wh">${Icons.get('plus', {size: 14})} Ajouter</button>
+                <button type="button" class="btn btn-ghost btn-sm mt-sm" id="btn-add-wh">${Icons.get('plus', {size: 14})} ${I18n.t('payroll.add')}</button>
             </div>
         `;
         
-        const result = await Modal.form({ title: isEdit ? 'Modifier destination' : 'Nouvelle destination', content, confirmText: 'Enregistrer', size: 'md',
+        const result = await Modal.form({ title: isEdit ? I18n.t('tarifs.edit_dest') : I18n.t('tarifs.new_dest'), content, confirmText: I18n.t('save'), size: 'md',
             onOpen: () => {
                 document.getElementById('btn-add-wh')?.addEventListener('click', () => {
                     document.getElementById('warehouses-container').insertAdjacentHTML('beforeend', this.renderWarehouseInput({id:'',name:''}));
@@ -303,13 +303,13 @@ Views.tarifs = {
                 if (id && name) warehouses.push({ id, name });
             });
             
-            if (!key || !label || warehouses.length === 0) { Toast.error('Remplissez tous les champs'); return; }
+            if (!key || !label || warehouses.length === 0) { Toast.error(I18n.t('tarifs.fill_all')); return; }
             
             Modal.close();
             this.destinations[key] = { label, warehouses };
             this.saveData();
             this.renderTab('destinations');
-            Toast.success('Destination enregistree');
+            Toast.success(I18n.t('tarifs.dest_saved'));
         }
     },
     
@@ -322,12 +322,12 @@ Views.tarifs = {
     },
     
     async deleteDest(key) {
-        if (await Modal.confirm({ title: 'Supprimer ?', message: `Supprimer "${this.destinations[key]?.label}" et ses tarifs ?`, danger: true })) {
+        if (await Modal.confirm({ title: I18n.t('delete') + ' ?', message: I18n.t('tarifs.confirm_delete_dest').replace('{name}', this.destinations[key]?.label), danger: true })) {
             delete this.destinations[key];
             Object.keys(this.routes).filter(r => r.endsWith(`_${key}`)).forEach(r => delete this.routes[r]);
             this.saveData();
             this.renderTab('destinations');
-            Toast.success('Supprime');
+            Toast.success(I18n.t('tarifs.deleted'));
         }
     },
 
@@ -339,23 +339,23 @@ Views.tarifs = {
         // Si pas d'origines ou destinations, afficher un message
         if (!hasOrigins || !hasDestinations) {
             const missingItems = [];
-            if (!hasOrigins) missingItems.push('origines');
-            if (!hasDestinations) missingItems.push('destinations');
+            if (!hasOrigins) missingItems.push(I18n.t('tarifs.tab_origins').toLowerCase());
+            if (!hasDestinations) missingItems.push(I18n.t('tarifs.tab_destinations').toLowerCase());
             
             return `
                 <div class="config-section">
                     <div class="config-section-header">
                         <div>
-                            <h2 class="config-section-title">Tarifs par route</h2>
-                            <p class="config-section-desc">Definissez les tarifs pour chaque combinaison origine → destination</p>
+                            <h2 class="config-section-title">${I18n.t('tarifs.tab_routes')}</h2>
+                            <p class="config-section-desc">${I18n.t('tarifs.rates_desc')}</p>
                         </div>
                     </div>
                     <div class="empty-state">
                         <div class="empty-state-icon">${Icons.get('alert-circle', {size: 48})}</div>
-                        <h3>Configuration incomplete</h3>
-                        <p>Vous devez d'abord configurer vos ${missingItems.join(' et ')} avant de definir les tarifs</p>
+                        <h3>${I18n.t('tarifs.incomplete')}</h3>
+                        <p>${I18n.t('tarifs.configure_first').replace('{items}', missingItems.join(' & '))}</p>
                         <button class="btn btn-primary" onclick="Views.tarifs.renderTab('${!hasOrigins ? 'origins' : 'destinations'}'); document.querySelector('[data-tab=${!hasOrigins ? 'origins' : 'destinations'}]')?.click();">
-                            ${Icons.get('settings', {size: 16})} Configurer les ${!hasOrigins ? 'origines' : 'destinations'}
+                            ${Icons.get('settings', {size: 16})} ${I18n.t('tarifs.configure').replace('{items}', !hasOrigins ? I18n.t('tarifs.tab_origins').toLowerCase() : I18n.t('tarifs.tab_destinations').toLowerCase())}
                         </button>
                     </div>
                 </div>
@@ -382,9 +382,9 @@ Views.tarifs = {
                     </div>
                     <div class="route-card-body">
                         <div class="route-rates-preview">
-                            ${rates.sea ? '<span class="rate-tag">Maritime</span>' : ''}
-                            ${rates.air_normal ? '<span class="rate-tag">Avion Normal</span>' : ''}
-                            ${rates.air_express ? '<span class="rate-tag">Avion Express</span>' : ''}
+                            ${rates.sea ? `<span class="rate-tag">${I18n.t('tarifs.sea')}</span>` : ''}
+                            ${rates.air_normal ? `<span class="rate-tag">${I18n.t('tarifs.air_normal')}</span>` : ''}
+                            ${rates.air_express ? `<span class="rate-tag">${I18n.t('tarifs.air_express')}</span>` : ''}
                         </div>
                     </div>
                 </div>
@@ -394,9 +394,9 @@ Views.tarifs = {
         const emptyState = `
             <div class="empty-state">
                 <div class="empty-state-icon">${Icons.get('dollar-sign', {size: 48})}</div>
-                <h3>Aucun tarif configure</h3>
-                <p>Definissez les tarifs pour vos routes d'expedition</p>
-                <button class="btn btn-primary" id="btn-add-route-empty">${Icons.get('plus', {size: 16})} Creer une route</button>
+                <h3>${I18n.t('tarifs.no_rates')}</h3>
+                <p>${I18n.t('tarifs.no_rates_desc')}</p>
+                <button class="btn btn-primary" id="btn-add-route-empty">${Icons.get('plus', {size: 16})} ${I18n.t('tarifs.create_route')}</button>
             </div>
         `;
         
@@ -404,20 +404,20 @@ Views.tarifs = {
             <div class="config-section">
                 <div class="config-section-header">
                     <div>
-                        <h2 class="config-section-title">Tarifs par route</h2>
-                        <p class="config-section-desc">Definissez les tarifs pour chaque combinaison origine → destination</p>
+                        <h2 class="config-section-title">${I18n.t('tarifs.tab_routes')}</h2>
+                        <p class="config-section-desc">${I18n.t('tarifs.rates_desc')}</p>
                     </div>
-                    ${routesList ? `<button class="btn btn-primary" id="btn-add-route">${Icons.get('plus', {size: 16})} Nouvelle route</button>` : ''}
+                    ${routesList ? `<button class="btn btn-primary" id="btn-add-route">${Icons.get('plus', {size: 16})} ${I18n.t('tarifs.new_route')}</button>` : ''}
                 </div>
                 ${routesList ? `
                     <div class="routes-filter mb-md">
                         <div class="form-group">
-                            <label class="form-label">Origine</label>
-                            <select id="filter-origin" class="form-input"><option value="">Toutes</option>${originOpts}</select>
+                            <label class="form-label">${I18n.t('tarifs.origin')}</label>
+                            <select id="filter-origin" class="form-input"><option value="">${I18n.t('tarifs.all')}</option>${originOpts}</select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Destination</label>
-                            <select id="filter-dest" class="form-input"><option value="">Toutes</option>${destOpts}</select>
+                            <label class="form-label">${I18n.t('tarifs.destination')}</label>
+                            <select id="filter-dest" class="form-input"><option value="">${I18n.t('tarifs.all')}</option>${destOpts}</select>
                         </div>
                     </div>
                 ` : ''}
@@ -459,28 +459,28 @@ Views.tarifs = {
         const content = `
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Origine</label>
-                    <select id="route-origin" class="form-input" ${isEdit ? 'disabled' : ''}><option value="">Selectionnez</option>${originOpts}</select>
+                    <label class="form-label">${I18n.t('tarifs.origin')}</label>
+                    <select id="route-origin" class="form-input" ${isEdit ? 'disabled' : ''}><option value="">${I18n.t('tarifs.select')}</option>${originOpts}</select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Destination</label>
-                    <select id="route-dest" class="form-input" ${isEdit ? 'disabled' : ''}><option value="">Selectionnez</option>${destOpts}</select>
+                    <label class="form-label">${I18n.t('tarifs.destination')}</label>
+                    <select id="route-dest" class="form-input" ${isEdit ? 'disabled' : ''}><option value="">${I18n.t('tarifs.select')}</option>${destOpts}</select>
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">Devise</label>
+                <label class="form-label">${I18n.t('tarifs.currency')}</label>
                 <select id="route-currency" class="form-input" style="max-width:120px;">
                     ${CONFIG.CURRENCIES.map(c => `<option value="${c}" ${(rates.sea?.currency || rates.air_normal?.currency || 'USD') === c ? 'selected' : ''}>${c}</option>`).join('')}
                 </select>
             </div>
             <div class="route-rates-form">
-                ${this.renderTransportSection('sea', 'Maritime (Bateau)', rates.sea)}
-                ${this.renderTransportSection('air_normal', 'Avion Normal', rates.air_normal)}
-                ${this.renderTransportSection('air_express', 'Avion Express', rates.air_express)}
+                ${this.renderTransportSection('sea', I18n.t('tarifs.sea'), rates.sea)}
+                ${this.renderTransportSection('air_normal', I18n.t('tarifs.air_normal'), rates.air_normal)}
+                ${this.renderTransportSection('air_express', I18n.t('tarifs.air_express'), rates.air_express)}
             </div>
         `;
         
-        const result = await Modal.form({ title: isEdit ? 'Modifier tarifs' : 'Nouvelle route', content, confirmText: 'Enregistrer', size: 'lg',
+        const result = await Modal.form({ title: isEdit ? I18n.t('tarifs.edit_rates') : I18n.t('tarifs.new_route'), content, confirmText: I18n.t('save'), size: 'lg',
             onOpen: () => {
                 ['sea', 'air_normal', 'air_express'].forEach(t => {
                     const cb = document.getElementById(`enable-${t}`);
@@ -503,10 +503,10 @@ Views.tarifs = {
             const routeDest = isEdit ? dest : document.getElementById('route-dest').value;
             const currency = document.getElementById('route-currency').value;
             
-            if (!routeOrigin || !routeDest) { Toast.error('Selectionnez origine et destination'); return; }
+            if (!routeOrigin || !routeDest) { Toast.error(I18n.t('tarifs.select_origin_dest')); return; }
             
             const routeKey = `${routeOrigin}_${routeDest}`;
-            if (!isEdit && this.routes[routeKey]) { Toast.error('Route existe deja'); return; }
+            if (!isEdit && this.routes[routeKey]) { Toast.error(I18n.t('tarifs.route_exists')); return; }
             
             const newRates = {};
             ['sea', 'air_normal', 'air_express'].forEach(transport => {
@@ -525,13 +525,13 @@ Views.tarifs = {
                 }
             });
             
-            if (Object.keys(newRates).length === 0) { Toast.error('Ajoutez au moins un tarif'); return; }
+            if (Object.keys(newRates).length === 0) { Toast.error(I18n.t('tarifs.add_rate')); return; }
             
             Modal.close();
             this.routes[routeKey] = newRates;
             this.saveData();
             this.renderTab('routes');
-            Toast.success('Tarifs enregistres');
+            Toast.success(I18n.t('tarifs.rates_saved'));
         }
     },
     
@@ -572,7 +572,7 @@ Views.tarifs = {
                 </div>
                 <div class="rates-section-body" id="${transport}-rates" style="${hasRates ? '' : 'display:none'}">
                     <div class="rate-items-list" id="${transport}-items">${itemsHtml}</div>
-                    <button type="button" class="btn btn-ghost btn-sm btn-add-rate-item" data-transport="${transport}">${Icons.get('plus', {size: 14})} Ajouter conditionnement</button>
+                    <button type="button" class="btn btn-ghost btn-sm btn-add-rate-item" data-transport="${transport}">${Icons.get('plus', {size: 14})} ${I18n.t('tarifs.add_packaging')}</button>
                 </div>
             </div>
         `;
@@ -612,11 +612,11 @@ Views.tarifs = {
     
     async deleteRoute(routeKey) {
         const [o, d] = routeKey.split('_');
-        if (await Modal.confirm({ title: 'Supprimer ?', message: `Supprimer tarifs ${this.origins[o]?.label} → ${this.destinations[d]?.label} ?`, danger: true })) {
+        if (await Modal.confirm({ title: I18n.t('delete') + ' ?', message: I18n.t('tarifs.confirm_delete_route').replace('{from}', this.origins[o]?.label).replace('{to}', this.destinations[d]?.label), danger: true })) {
             delete this.routes[routeKey];
             this.saveData();
             this.renderTab('routes');
-            Toast.success('Supprime');
+            Toast.success(I18n.t('tarifs.deleted'));
         }
     },
 

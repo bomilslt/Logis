@@ -52,8 +52,8 @@ Views.staff = {
                 document.getElementById('staff-table').innerHTML = `
                     <div class="empty-state">
                         ${Icons.get('alert-circle', {size:32})}
-                        <p>Erreur de chargement: ${error.message}</p>
-                        <button class="btn btn-outline" onclick="Views.staff.loadData()">Reessayer</button>
+                        <p>${I18n.t('error_loading')}: ${error.message}</p>
+                        <button class="btn btn-outline" onclick="Views.staff.loadData()">${I18n.t('retry')}</button>
                     </div>
                 `;
             }
@@ -67,7 +67,7 @@ Views.staff = {
             container.innerHTML = `
                 <div class="empty-state">
                     ${Icons.get('users', {size:32})}
-                    <p>Aucun employe</p>
+                    <p>${I18n.t('staff.no_staff')}</p>
                 </div>
             `;
             return;
@@ -77,14 +77,14 @@ Views.staff = {
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Nom</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Entrepots</th>
-                        <th>Modules</th>
-                        <th>Derniere connexion</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
+                        <th>${I18n.t('staff.name')}</th>
+                        <th>${I18n.t('staff.email')}</th>
+                        <th>${I18n.t('staff.role')}</th>
+                        <th>${I18n.t('staff.warehouses')}</th>
+                        <th>${I18n.t('staff.modules')}</th>
+                        <th>${I18n.t('staff.last_login')}</th>
+                        <th>${I18n.t('staff.status')}</th>
+                        <th>${I18n.t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -94,33 +94,33 @@ Views.staff = {
                             <td>${s.email}</td>
                             <td>
                                 <span class="status-badge ${s.role === 'admin' ? 'status-in-transit' : 'status-received'}">
-                                    ${s.role === 'admin' ? 'Admin' : 'Employe'}
+                                    ${s.role === 'admin' ? I18n.t('staff.admin') : I18n.t('staff.employee')}
                                 </span>
                             </td>
                             <td class="warehouses-cell">
-                                ${s.role === 'admin' ? '<span class="text-muted">Tous</span>' : this.renderWarehousesBadges(s)}
+                                ${s.role === 'admin' ? `<span class="text-muted">${I18n.t('staff.all')}</span>` : this.renderWarehousesBadges(s)}
                             </td>
                             <td class="modules-cell">
-                                ${s.role === 'admin' ? '<span class="text-muted">Tous</span>' : this.renderModulesBadges(s)}
+                                ${s.role === 'admin' ? `<span class="text-muted">${I18n.t('staff.all')}</span>` : this.renderModulesBadges(s)}
                             </td>
-                            <td>${s.last_login ? new Date(s.last_login).toLocaleDateString('fr-FR') : 'Jamais'}</td>
+                            <td>${s.last_login ? new Date(s.last_login).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : I18n.t('staff.never')}</td>
                             <td>
                                 <span class="status-badge ${s.is_active ? 'status-delivered' : 'status-pending'}">
-                                    ${s.is_active ? 'Actif' : 'Inactif'}
+                                    ${s.is_active ? I18n.t('staff.active') : I18n.t('staff.inactive')}
                                 </span>
                             </td>
                             <td>
                                 <div class="table-actions">
-                                    <button class="btn btn-sm btn-ghost" onclick="Views.staff.editStaff('${s.id}')" title="Modifier">
+                                    <button class="btn btn-sm btn-ghost" onclick="Views.staff.editStaff('${s.id}')" title="${I18n.t('edit')}">
                                         ${Icons.get('edit', {size:14})}
                                     </button>
-                                    <button class="btn btn-sm btn-ghost" onclick="Views.staff.manageAccess('${s.id}', this)" title="Permissions">
+                                    <button class="btn btn-sm btn-ghost" onclick="Views.staff.manageAccess('${s.id}', this)" title="${I18n.t('staff.permissions')}">
                                         ${Icons.get('settings', {size:14})}
                                     </button>
-                                    <button class="btn btn-sm btn-ghost" onclick="Views.staff.toggleActive('${s.id}', this)" title="${s.is_active ? 'Desactiver' : 'Activer'}">
+                                    <button class="btn btn-sm btn-ghost" onclick="Views.staff.toggleActive('${s.id}', this)" title="${s.is_active ? I18n.t('staff.inactive') : I18n.t('staff.active')}">
                                         ${Icons.get(s.is_active ? 'user-x' : 'user-check', {size:14})}
                                     </button>
-                                    <button class="btn btn-sm btn-ghost" onclick="Views.staff.resetPassword('${s.id}', this)" title="Reset mot de passe">
+                                    <button class="btn btn-sm btn-ghost" onclick="Views.staff.resetPassword('${s.id}', this)" title="${I18n.t('staff.reset_password')}">
                                         ${Icons.get('key', {size:14})}
                                     </button>
                                 </div>
@@ -139,67 +139,67 @@ Views.staff = {
         if (isEdit) {
             staff = this.staffList.find(s => s.id === staffId);
             if (!staff) {
-                Toast.error('Employe non trouve');
+                Toast.error(I18n.t('staff.not_found'));
                 return;
             }
         }
         
         Modal.open({
-            title: isEdit ? 'Modifier l\'employe' : 'Nouvel employe',
+            title: isEdit ? I18n.t('staff.edit_staff') : I18n.t('staff.new_staff'),
             content: `
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Prenom *</label>
+                        <label class="form-label">${I18n.t('staff.first_name')} *</label>
                         <input type="text" id="staff-fname" class="form-input" value="${staff?.first_name || ''}">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Nom *</label>
+                        <label class="form-label">${I18n.t('staff.last_name')} *</label>
                         <input type="text" id="staff-lname" class="form-input" value="${staff?.last_name || ''}">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Email *</label>
+                    <label class="form-label">${I18n.t('staff.email')} *</label>
                     <input type="email" id="staff-email" class="form-input" value="${staff?.email || ''}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Telephone</label>
+                    <label class="form-label">${I18n.t('staff.phone')}</label>
                     <input type="tel" id="staff-phone" class="form-input" value="${staff?.phone || ''}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Role</label>
+                    <label class="form-label">${I18n.t('staff.role')}</label>
                     <div id="staff-role-container"></div>
                 </div>
                 <div class="form-group" id="staff-warehouse-group">
-                    <label class="form-label">Entrepots *</label>
+                    <label class="form-label">${I18n.t('staff.warehouses_label')} *</label>
                     <div id="staff-warehouse-container" class="warehouse-checkboxes"></div>
-                    <small class="form-hint">Selectionnez un ou plusieurs entrepots pour l'employe</small>
+                    <small class="form-hint">${I18n.t('staff.warehouses_hint')}</small>
                 </div>
                 <div class="form-group" id="staff-modules-group">
-                    <label class="form-label">Modules d'acces</label>
+                    <label class="form-label">${I18n.t('staff.modules_label')}</label>
                     <div id="staff-modules-container" class="module-checkboxes"></div>
-                    <small class="form-hint">Definit les sections visibles dans l'interface pour cet employe</small>
+                    <small class="form-hint">${I18n.t('staff.modules_hint')}</small>
                 </div>
                 ${!isEdit ? `
                     <div class="form-group">
-                        <label class="form-label">Mot de passe</label>
-                        <input type="password" id="staff-password" class="form-input" placeholder="Laisser vide pour generer automatiquement">
-                        <small class="form-hint">Min. 8 caracteres. Si vide, un mot de passe temporaire sera genere.</small>
+                        <label class="form-label">${I18n.t('staff.password')}</label>
+                        <input type="password" id="staff-password" class="form-input" placeholder="${I18n.t('staff.password_placeholder')}">
+                        <small class="form-hint">${I18n.t('staff.password_hint')}</small>
                     </div>
                 ` : ''}
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-staff">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-staff">${I18n.t('save')}</button>
             `
         });
         
         // Init role SearchSelect
         this.roleSelect = new SearchSelect({
             container: '#staff-role-container',
-            placeholder: 'Selectionner un role',
+            placeholder: I18n.t('staff.select_role'),
             items: [
-                { id: 'staff', name: 'Employe' },
-                { id: 'admin', name: 'Administrateur' }
+                { id: 'staff', name: I18n.t('staff.employee') },
+                { id: 'admin', name: I18n.t('staff.admin') }
             ],
             onSelect: (item) => {
                 const isAdmin = item?.id === 'admin';
@@ -249,11 +249,11 @@ Views.staff = {
             `).join('');
             
             if (warehouses.length === 0) {
-                container.innerHTML = '<p class="text-muted text-sm">Aucun entrepot configure</p>';
+                container.innerHTML = `<p class="text-muted text-sm">${I18n.t('staff.no_warehouse')}</p>`;
             }
         } catch (error) {
             console.error('Load warehouses error:', error);
-            document.getElementById('staff-warehouse-container').innerHTML = '<p class="text-error text-sm">Erreur chargement entrepots</p>';
+            document.getElementById('staff-warehouse-container').innerHTML = `<p class="text-error text-sm">${I18n.t('staff.error_warehouses')}</p>`;
         }
     },
     
@@ -300,20 +300,20 @@ Views.staff = {
         const names = staff.warehouse_names || [];
         
         if (ids.length === 0) {
-            return '<span class="text-muted">Aucun</span>';
+            return `<span class="text-muted">${I18n.t('staff.none')}</span>`;
         }
         
         if (names.length > 0) {
             return names.map(name => `<span class="warehouse-badge">${name}</span>`).join(' ');
         }
         
-        return `<span class="warehouse-badge">${ids.length} entrepot${ids.length > 1 ? 's' : ''}</span>`;
+        return `<span class="warehouse-badge">${I18n.t('staff.warehouse_count').replace('{n}', ids.length)}</span>`;
     },
     
     renderModulesBadges(staff) {
         const modules = staff.access_modules || [];
         if (modules.length === 0) {
-            return '<span class="text-muted">Aucun</span>';
+            return `<span class="text-muted">${I18n.t('staff.none')}</span>`;
         }
         
         const moduleDefs = window.ViewFilter ? ViewFilter.getModuleDefinitions() : {};
@@ -334,21 +334,21 @@ Views.staff = {
         const password = document.getElementById('staff-password')?.value;
         
         if (!firstName || !lastName) {
-            Toast.error('Entrez le nom complet');
+            Toast.error(I18n.t('staff.enter_full_name'));
             return;
         }
         if (!email) {
-            Toast.error('Entrez l\'email');
+            Toast.error(I18n.t('staff.enter_email'));
             return;
         }
         if (role === 'staff' && warehouseIds.length === 0) {
-            Toast.error('Selectionnez au moins un entrepot pour l\'employe');
+            Toast.error(I18n.t('staff.select_warehouse'));
             return;
         }
         
         try {
             if (!btn) btn = document.getElementById('btn-save-staff');
-            Loader.button(btn, true, { text: staffId ? 'Enregistrement...' : 'Creation...' });
+            Loader.button(btn, true, { text: '...' });
             let result;
             if (staffId) {
                 result = await API.staff.update(staffId, { 
@@ -360,7 +360,7 @@ Views.staff = {
                     warehouse_ids: role === 'staff' ? warehouseIds : [],
                     access_modules: role === 'staff' ? accessModules : []
                 });
-                Toast.success('Employe modifie');
+                Toast.success(I18n.t('staff.staff_updated'));
             } else {
                 const data = { 
                     first_name: firstName, 
@@ -375,16 +375,16 @@ Views.staff = {
                 result = await API.staff.create(data);
                 
                 if (result.temporary_password) {
-                    Toast.success(`Employe cree. Mot de passe temporaire: ${result.temporary_password}`);
+                    Toast.success(I18n.t('staff.staff_created_password').replace('{p}', result.temporary_password));
                     // Afficher le mot de passe dans une modal
                     setTimeout(() => {
                         Modal.alert({
-                            title: 'Mot de passe temporaire',
-                            message: `Le mot de passe temporaire pour ${firstName} ${lastName} est:\n\n<strong>${result.temporary_password}</strong>\n\nCommuniquez-le a l'employe.`
+                            title: I18n.t('staff.temp_password'),
+                            message: I18n.t('staff.temp_password_msg').replace('{name}', `${firstName} ${lastName}`).replace('{p}', result.temporary_password)
                         });
                     }, 500);
                 } else {
-                    Toast.success('Employe cree');
+                    Toast.success(I18n.t('staff.staff_created'));
                 }
             }
             Modal.close();
@@ -466,22 +466,22 @@ Views.staff = {
             ];
             
             Modal.open({
-                title: `Permissions - ${staff.full_name || staff.first_name}`,
+                title: I18n.t('staff.permissions_title').replace('{name}', staff.full_name || staff.first_name),
                 content: `
                     <div class="permissions-info">
-                        <p class="text-sm text-muted mb-md">Définir les permissions pour cet employé</p>
+                        <p class="text-sm text-muted mb-md">${I18n.t('staff.define_permissions')}</p>
                         <div class="permission-summary mb-md">
                             <div class="permission-item">
-                                <strong>Rôle:</strong> ${permissionsData.roles.map(r => r.display_name).join(', ')}
+                                <strong>${I18n.t('staff.role_label')}:</strong> ${permissionsData.roles.map(r => r.display_name).join(', ')}
                             </div>
                             <div class="permission-item">
-                                <strong>Permissions du rôle:</strong> ${permissionsData.role_permissions.length} permissions
+                                <strong>${I18n.t('staff.role_permissions')}:</strong> ${I18n.t('staff.permissions_count').replace('{n}', permissionsData.role_permissions.length)}
                             </div>
                             <div class="permission-item">
-                                <strong>Permissions individuelles:</strong> ${currentPermissions.length} permissions
+                                <strong>${I18n.t('staff.individual_permissions')}:</strong> ${I18n.t('staff.permissions_count').replace('{n}', currentPermissions.length)}
                             </div>
                             <div class="permission-item">
-                                <strong>Total effectif:</strong> ${permissionsData.effective_permissions.length} permissions
+                                <strong>${I18n.t('staff.total_effective')}:</strong> ${I18n.t('staff.permissions_count').replace('{n}', permissionsData.effective_permissions.length)}
                             </div>
                         </div>
                     </div>
@@ -490,14 +490,14 @@ Views.staff = {
                             <label class="access-item">
                                 <input type="checkbox" value="${p.id}" ${currentPermissions.includes(p.id) ? 'checked' : ''}>
                                 <span>${p.label}</span>
-                                ${permissionsData.role_permissions.includes(p.id) ? '<small class="text-muted">(via rôle)</small>' : ''}
+                                ${permissionsData.role_permissions.includes(p.id) ? `<small class="text-muted">${I18n.t('staff.via_role')}</small>` : ''}
                             </label>
                         `).join('')}
                     </div>
                 `,
                 footer: `
-                    <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                    <button class="btn btn-primary" id="btn-save-permissions">Enregistrer</button>
+                    <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                    <button class="btn btn-primary" id="btn-save-permissions">${I18n.t('save')}</button>
                 `
             });
             
@@ -509,9 +509,9 @@ Views.staff = {
                 });
                 
                 try {
-                    Loader.button(saveBtn, true, { text: 'Enregistrement...' });
+                    Loader.button(saveBtn, true, { text: '...' });
                     await API.staff.updatePermissions(id, permissions);
-                    Toast.success('Permissions mises à jour');
+                    Toast.success(I18n.t('staff.permissions_updated'));
                     Modal.close();
                     await this.loadData();
                 } catch (error) {
@@ -522,7 +522,7 @@ Views.staff = {
             });
         } catch (error) {
             console.error('Load permissions error:', error);
-            Toast.error(`Erreur de chargement des permissions: ${error.message}`);
+            Toast.error(`${I18n.t('staff.error_permissions')}: ${error.message}`);
         } finally {
             Loader.button(btn, false);
         }
@@ -533,8 +533,8 @@ Views.staff = {
         if (!staff) return;
 
         const confirmed = await Modal.confirm({
-            title: staff.is_active ? 'Desactiver ?' : 'Activer ?',
-            message: `Voulez-vous vraiment ${staff.is_active ? 'desactiver' : 'activer'} cet employe ?`,
+            title: staff.is_active ? I18n.t('staff.inactive') + ' ?' : I18n.t('staff.active') + ' ?',
+            message: staff.is_active ? I18n.t('staff.confirm_deactivate') : I18n.t('staff.confirm_activate'),
             danger: staff.is_active
         });
 
@@ -543,7 +543,7 @@ Views.staff = {
         try {
             Loader.button(btn, true, { text: '' });
             await API.staff.toggleActive(id);
-            Toast.success(staff.is_active ? 'Employe desactive' : 'Employe active');
+            Toast.success(staff.is_active ? I18n.t('staff.staff_deactivated') : I18n.t('staff.staff_activated'));
             ViewCache.onMutate('staff');
             await this.loadData();
         } catch (error) {
@@ -555,8 +555,8 @@ Views.staff = {
 
     async resetPassword(id, btn = null) {
         const confirmed = await Modal.confirm({
-            title: 'Reinitialiser le mot de passe ?',
-            message: 'Un nouveau mot de passe temporaire sera genere.',
+            title: I18n.t('staff.reset_password_title'),
+            message: I18n.t('staff.reset_password_msg'),
             danger: true
         });
 
@@ -565,13 +565,13 @@ Views.staff = {
         try {
             Loader.button(btn, true, { text: '' });
             const result = await API.staff.resetPassword(id);
-            Toast.success('Mot de passe reinitialise');
+            Toast.success(I18n.t('staff.password_reset'));
 
             if (result?.temporary_password) {
                 setTimeout(() => {
                     Modal.open({
-                        title: 'Mot de passe temporaire',
-                        content: `<p>Mot de passe temporaire:</p><p><strong>${result.temporary_password}</strong></p>`,
+                        title: I18n.t('staff.temp_password'),
+                        content: `<p>${I18n.t('staff.temp_password')}:</p><p><strong>${result.temporary_password}</strong></p>`,
                         footer: `<button class="btn btn-primary" onclick="Modal.close()">OK</button>`
                     });
                 }, 200);

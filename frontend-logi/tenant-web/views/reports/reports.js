@@ -20,10 +20,10 @@ Views.reports = {
                     <h1 class="page-title">${I18n.t('reports.title')}</h1>
                     <div class="header-actions">
                         <button class="btn btn-outline" id="btn-export-pdf">
-                            ${Icons.get('download', {size:16})} Export PDF
+                            ${Icons.get('download', {size:16})} ${I18n.t('reports.export_pdf')}
                         </button>
                         <button class="btn btn-outline" id="btn-export-excel">
-                            ${Icons.get('download', {size:16})} Export Excel
+                            ${Icons.get('download', {size:16})} ${I18n.t('reports.export_excel')}
                         </button>
                     </div>
                 </div>
@@ -31,13 +31,13 @@ Views.reports = {
                 <!-- Onglets principaux -->
                 <div class="reports-main-tabs mb-md">
                     <button class="main-tab ${this.currentTab === 'statistics' ? 'active' : ''}" data-main-tab="statistics">
-                        ${Icons.get('trending-up', {size:16})} Statistiques
+                        ${Icons.get('trending-up', {size:16})} ${I18n.t('reports.tab_statistics')}
                     </button>
                     <button class="main-tab ${this.currentTab === 'departures' ? 'active' : ''}" data-main-tab="departures">
-                        ${Icons.get('truck', {size:16})} Departs
+                        ${Icons.get('truck', {size:16})} ${I18n.t('reports.tab_departures')}
                     </button>
                     <button class="main-tab ${this.currentTab === 'accounting' ? 'active' : ''}" data-main-tab="accounting">
-                        ${Icons.get('dollar-sign', {size:16})} Comptabilite
+                        ${Icons.get('dollar-sign', {size:16})} ${I18n.t('reports.tab_accounting')}
                     </button>
                 </div>
                 
@@ -46,10 +46,10 @@ Views.reports = {
                     <div class="card-body">
                         <div class="period-filters">
                             <div class="period-tabs">
-                                <button class="period-tab ${this.currentPeriod === 'week' ? 'active' : ''}" data-period="week">Semaine</button>
-                                <button class="period-tab ${this.currentPeriod === 'month' ? 'active' : ''}" data-period="month">Mois</button>
-                                <button class="period-tab ${this.currentPeriod === 'quarter' ? 'active' : ''}" data-period="quarter">Trimestre</button>
-                                <button class="period-tab ${this.currentPeriod === 'year' ? 'active' : ''}" data-period="year">Annee</button>
+                                <button class="period-tab ${this.currentPeriod === 'week' ? 'active' : ''}" data-period="week">${I18n.t('reports.period_week')}</button>
+                                <button class="period-tab ${this.currentPeriod === 'month' ? 'active' : ''}" data-period="month">${I18n.t('reports.period_month')}</button>
+                                <button class="period-tab ${this.currentPeriod === 'quarter' ? 'active' : ''}" data-period="quarter">${I18n.t('reports.period_quarter')}</button>
+                                <button class="period-tab ${this.currentPeriod === 'year' ? 'active' : ''}" data-period="year">${I18n.t('reports.period_year')}</button>
                             </div>
                             <div class="period-selector">
                                 <button class="btn btn-ghost btn-sm" id="btn-prev-period">${Icons.get('chevron-left', {size:16})}</button>
@@ -90,7 +90,7 @@ Views.reports = {
                     <div class="stat-icon bg-success">${Icons.get('dollar-sign', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value" id="kpi-revenue">-</span>
-                        <span class="stat-label">Chiffre d'affaires</span>
+                        <span class="stat-label">${I18n.t('reports.revenue')}</span>
                         <span class="stat-change" id="kpi-revenue-change"></span>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ Views.reports = {
                     <div class="stat-icon bg-primary">${Icons.get('package', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value" id="kpi-packages">-</span>
-                        <span class="stat-label">Colis traites</span>
+                        <span class="stat-label">${I18n.t('reports.packages_processed')}</span>
                         <span class="stat-change" id="kpi-packages-change"></span>
                     </div>
                 </div>
@@ -106,7 +106,7 @@ Views.reports = {
                     <div class="stat-icon bg-info">${Icons.get('users', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value" id="kpi-clients">-</span>
-                        <span class="stat-label">Nouveaux clients</span>
+                        <span class="stat-label">${I18n.t('reports.new_clients')}</span>
                         <span class="stat-change" id="kpi-clients-change"></span>
                     </div>
                 </div>
@@ -114,7 +114,7 @@ Views.reports = {
                     <div class="stat-icon bg-success">${Icons.get('check-circle', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value" id="kpi-delivery-rate">-</span>
-                        <span class="stat-label">Taux livraison</span>
+                        <span class="stat-label">${I18n.t('reports.delivery_rate')}</span>
                         <span class="stat-change" id="kpi-delivery-change"></span>
                     </div>
                 </div>
@@ -122,7 +122,7 @@ Views.reports = {
                     <div class="stat-icon bg-warning">${Icons.get('alert-circle', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value" id="kpi-unpaid">-</span>
-                        <span class="stat-label">Impayes</span>
+                        <span class="stat-label">${I18n.t('reports.unpaid')}</span>
                         <span class="stat-change" id="kpi-unpaid-change"></span>
                     </div>
                 </div>
@@ -132,7 +132,7 @@ Views.reports = {
             <div class="charts-grid mb-md">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Evolution du chiffre d'affaires</h3>
+                        <h3 class="card-title">${I18n.t('reports.revenue_evolution')}</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="chart-revenue" height="300"></canvas>
@@ -140,7 +140,7 @@ Views.reports = {
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Volume de colis</h3>
+                        <h3 class="card-title">${I18n.t('reports.package_volume')}</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="chart-packages" height="300"></canvas>
@@ -152,7 +152,7 @@ Views.reports = {
             <div class="charts-grid charts-grid-3 mb-md">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Par mode de transport</h3>
+                        <h3 class="card-title">${I18n.t('reports.by_transport')}</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="chart-transport" height="250"></canvas>
@@ -160,7 +160,7 @@ Views.reports = {
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Par methode de paiement</h3>
+                        <h3 class="card-title">${I18n.t('reports.by_payment_method')}</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="chart-payment-methods" height="250"></canvas>
@@ -168,7 +168,7 @@ Views.reports = {
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Statut des colis</h3>
+                        <h3 class="card-title">${I18n.t('reports.package_status')}</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="chart-status" height="250"></canvas>
@@ -181,7 +181,7 @@ Views.reports = {
                 <!-- Clients inconnus -->
                 <div class="card mb-md">
                     <div class="card-header">
-                        <h3 class="card-title">Clients inconnus</h3>
+                        <h3 class="card-title">${I18n.t('reports.unknown_clients')}</h3>
                     </div>
                     <div class="card-body" id="unknown-clients-summary"></div>
                 </div>
@@ -189,7 +189,7 @@ Views.reports = {
                 <!-- Top clients -->
                 <div class="card mb-md">
                     <div class="card-header">
-                        <h3 class="card-title">Top 10 clients</h3>
+                        <h3 class="card-title">${I18n.t('reports.top_clients')}</h3>
                     </div>
                     <div class="card-body" id="top-clients-table"></div>
                 </div>
@@ -198,13 +198,13 @@ Views.reports = {
                 <div class="charts-grid mb-md">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Revenus par destination</h3>
+                            <h3 class="card-title">${I18n.t('reports.revenue_by_dest')}</h3>
                         </div>
                         <div class="card-body" id="revenue-by-destination"></div>
                     </div>
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Performance par entrepot</h3>
+                            <h3 class="card-title">${I18n.t('reports.warehouse_perf')}</h3>
                         </div>
                         <div class="card-body" id="warehouse-performance"></div>
                     </div>
@@ -213,7 +213,7 @@ Views.reports = {
                 <!-- Analyse des delais -->
                 <div class="card mb-md">
                     <div class="card-header">
-                        <h3 class="card-title">Analyse des delais de livraison</h3>
+                        <h3 class="card-title">${I18n.t('reports.delivery_analysis')}</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="chart-delivery-times" height="200"></canvas>
@@ -223,7 +223,7 @@ Views.reports = {
                 <!-- Comparaison mensuelle -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Comparaison mensuelle</h3>
+                        <h3 class="card-title">${I18n.t('reports.monthly_comparison')}</h3>
                     </div>
                     <div class="card-body" id="monthly-comparison"></div>
                 </div>
@@ -242,28 +242,28 @@ Views.reports = {
                     <div class="stat-icon bg-success">${Icons.get('dollar-sign', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value" id="dep-total-revenue">-</span>
-                        <span class="stat-label">Total Revenus</span>
+                        <span class="stat-label">${I18n.t('reports.total_revenue')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon bg-danger">${Icons.get('dollar-sign', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value" id="dep-total-expenses">-</span>
-                        <span class="stat-label">Total Depenses</span>
+                        <span class="stat-label">${I18n.t('reports.total_expenses')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon bg-primary">${Icons.get('trending-up', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value" id="dep-total-gain">-</span>
-                        <span class="stat-label">Gain Net</span>
+                        <span class="stat-label">${I18n.t('reports.net_gain')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon bg-info">${Icons.get('trending-up', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value" id="dep-avg-margin">-</span>
-                        <span class="stat-label">Marge Moyenne</span>
+                        <span class="stat-label">${I18n.t('reports.avg_margin')}</span>
                     </div>
                 </div>
             </div>
@@ -271,7 +271,7 @@ Views.reports = {
             <!-- Liste des departs -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Departs de la periode</h3>
+                    <h3 class="card-title">${I18n.t('reports.period_departures')}</h3>
                 </div>
                 <div class="card-body">
                     <div id="departures-list">${Loader.inline()}</div>
@@ -289,7 +289,7 @@ Views.reports = {
             const allDepartures = (data.departures || []).map(d => ({
                 ...d,
                 date: d.departure_date,
-                title: d.notes || d.reference || `Départ ${d.transport_mode}`,
+                title: d.notes || d.reference || `${I18n.t('reports.departure')} ${d.transport_mode}`,
                 destination: CONFIG.DESTINATIONS[d.dest_country]?.label || d.dest_country,
                 expenses: d.expenses || [],
                 total_revenue: d.total_revenue || 0  // Revenu calculé côté backend
@@ -339,7 +339,7 @@ Views.reports = {
                 depList.innerHTML = `
                     <div class="empty-state">
                         ${Icons.get('alert-circle', {size:32})}
-                        <p>Erreur de chargement: ${error.message}</p>
+                        <p>${I18n.t('reports.load_error').replace('{msg}', error.message)}</p>
                     </div>
                 `;
             }
@@ -392,16 +392,16 @@ Views.reports = {
             container.innerHTML = `
                 <div class="empty-state">
                     ${Icons.get('calendar', {size:48})}
-                    <p>Aucun depart effectue sur cette periode</p>
+                    <p>${I18n.t('reports.no_departures')}</p>
                 </div>
             `;
             return;
         }
         
         const transportLabels = {
-            air_express: 'Aerien Express',
-            air_normal: 'Aerien Normal',
-            sea: 'Maritime'
+            air_express: I18n.t('reports.air_express'),
+            air_normal: I18n.t('reports.air_normal'),
+            sea: I18n.t('reports.sea')
         };
         
         container.innerHTML = `
@@ -409,15 +409,15 @@ Views.reports = {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Depart</th>
-                            <th>Transport</th>
-                            <th>Colis</th>
-                            <th>Revenus</th>
-                            <th>Depenses</th>
-                            <th>Gain</th>
-                            <th>Marge</th>
-                            <th>Actions</th>
+                            <th>${I18n.t('reports.date')}</th>
+                            <th>${I18n.t('reports.departure')}</th>
+                            <th>${I18n.t('reports.transport')}</th>
+                            <th>${I18n.t('reports.packages')}</th>
+                            <th>${I18n.t('reports.revenues')}</th>
+                            <th>${I18n.t('reports.expenses')}</th>
+                            <th>${I18n.t('reports.gain')}</th>
+                            <th>${I18n.t('reports.margin')}</th>
+                            <th>${I18n.t('reports.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -426,12 +426,12 @@ Views.reports = {
                             const revenue = d.total_revenue || 0;
                             const gain = revenue - totalExp;
                             const margin = revenue > 0 ? (gain / revenue * 100).toFixed(1) : 0;
-                            const departTitle = d.title || d.notes || d.reference || `Départ ${d.transport_mode}`;
+                            const departTitle = d.title || d.notes || d.reference || `${I18n.t('reports.departure')} ${d.transport_mode}`;
                             const destination = d.destination || CONFIG.DESTINATIONS[d.dest_country]?.label || d.dest_country || '-';
                             
                             return `
                                 <tr>
-                                    <td>${d.date ? new Date(d.date).toLocaleDateString('fr-FR') : '-'}</td>
+                                    <td>${d.date ? new Date(d.date).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : '-'}</td>
                                     <td>
                                         <div class="font-medium">${departTitle}</div>
                                         <div class="text-sm text-muted">${destination}</div>
@@ -444,7 +444,7 @@ Views.reports = {
                                     <td>${revenue > 0 ? `<span class="status-badge ${margin >= 30 ? 'status-delivered' : margin >= 15 ? 'status-transit' : 'status-customs'}">${margin}%</span>` : '-'}</td>
                                     <td>
                                         <div class="table-actions">
-                                            <button class="btn btn-sm btn-outline" onclick="Views.reports.showExpensesModal('${d.id}')" title="Gerer les depenses">
+                                            <button class="btn btn-sm btn-outline" onclick="Views.reports.showExpensesModal('${d.id}')" title="${I18n.t('reports.manage_expenses')}">
                                                 ${Icons.get('dollar-sign', {size:14})}
                                                 ${(d.expenses || []).length > 0 ? `<span class="badge-count">${d.expenses.length}</span>` : ''}
                                             </button>
@@ -525,7 +525,7 @@ Views.reports = {
             container.innerHTML = `
                 <div class="empty-state">
                     ${Icons.get('alert-circle', {size:48})}
-                    <p>Erreur de chargement des donnees comptables</p>
+                    <p>${I18n.t('reports.accounting_error')}</p>
                     <p class="text-muted text-sm">${data.error}</p>
                 </div>
             `;
@@ -548,28 +548,28 @@ Views.reports = {
                     <div class="stat-icon bg-success">${Icons.get('download', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value">${this.formatMoney(totals.income.total)}</span>
-                        <span class="stat-label">Total Entrees</span>
+                        <span class="stat-label">${I18n.t('reports.total_income')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon bg-danger">${Icons.get('send', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value">${this.formatMoney(totals.expenses.total)}</span>
-                        <span class="stat-label">Total Sorties</span>
+                        <span class="stat-label">${I18n.t('reports.total_outgoing')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon ${totals.netProfit >= 0 ? 'bg-primary' : 'bg-danger'}">${Icons.get('dollar-sign', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value ${totals.netProfit >= 0 ? 'text-success' : 'text-error'}">${totals.netProfit >= 0 ? '+' : ''}${this.formatMoney(totals.netProfit)}</span>
-                        <span class="stat-label">Resultat Net</span>
+                        <span class="stat-label">${I18n.t('reports.net_result')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon bg-info">${Icons.get('trending-up', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value">${totals.margin}%</span>
-                        <span class="stat-label">Marge Nette</span>
+                        <span class="stat-label">${I18n.t('reports.net_margin')}</span>
                     </div>
                 </div>
             </div>
@@ -577,8 +577,8 @@ Views.reports = {
             ${!hasData ? `
                 <div class="empty-state mb-md">
                     ${Icons.get('file-text', {size:48})}
-                    <p>Aucune donnee comptable sur cette periode</p>
-                    <p class="text-muted text-sm">Les paiements et depenses apparaitront ici une fois enregistres</p>
+                    <p>${I18n.t('reports.no_accounting')}</p>
+                    <p class="text-muted text-sm">${I18n.t('reports.no_accounting_hint')}</p>
                 </div>
             ` : ''}
             
@@ -587,12 +587,12 @@ Views.reports = {
                 <!-- Entrees -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title text-success">${Icons.get('arrow-down', {size:18})} Entrees (Recettes)</h3>
+                        <h3 class="card-title text-success">${Icons.get('arrow-down', {size:18})} ${I18n.t('reports.income_receipts')}</h3>
                     </div>
                     <div class="card-body">
                         <div class="accounting-list">
                             <div class="accounting-item clickable" onclick="Views.reports.toggleDetail('income-payments')">
-                                <span class="item-label">${Icons.get('chevron-right', {size:14})} Paiements clients (${income.payments.length})</span>
+                                <span class="item-label">${Icons.get('chevron-right', {size:14})} ${I18n.t('reports.client_payments')} (${income.payments.length})</span>
                                 <span class="item-value text-success">+${this.formatMoney(totals.income.payments)}</span>
                             </div>
                             <div class="accounting-detail hidden" id="income-payments">
@@ -600,7 +600,7 @@ Views.reports = {
                             </div>
                             
                             <div class="accounting-item clickable" onclick="Views.reports.toggleDetail('income-other')">
-                                <span class="item-label">${Icons.get('chevron-right', {size:14})} Autres revenus (${income.other.length})</span>
+                                <span class="item-label">${Icons.get('chevron-right', {size:14})} ${I18n.t('reports.other_revenue')} (${income.other.length})</span>
                                 <span class="item-value text-success">+${this.formatMoney(totals.income.other)}</span>
                             </div>
                             <div class="accounting-detail hidden" id="income-other">
@@ -608,7 +608,7 @@ Views.reports = {
                             </div>
                             
                             <div class="accounting-item total">
-                                <span class="item-label">Total Entrees</span>
+                                <span class="item-label">${I18n.t('reports.total_income')}</span>
                                 <span class="item-value text-success font-semibold">+${this.formatMoney(totals.income.total)}</span>
                             </div>
                         </div>
@@ -618,12 +618,12 @@ Views.reports = {
                 <!-- Sorties -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title text-error">${Icons.get('arrow-up', {size:18})} Sorties (Charges)</h3>
+                        <h3 class="card-title text-error">${Icons.get('arrow-up', {size:18})} ${I18n.t('reports.outgoing_charges')}</h3>
                     </div>
                     <div class="card-body">
                         <div class="accounting-list">
                             <div class="accounting-item clickable" onclick="Views.reports.toggleDetail('exp-departures')">
-                                <span class="item-label">${Icons.get('chevron-right', {size:14})} Depenses departs (${expenses.departures.length})</span>
+                                <span class="item-label">${Icons.get('chevron-right', {size:14})} ${I18n.t('reports.departure_expenses')} (${expenses.departures.length})</span>
                                 <span class="item-value text-error">-${this.formatMoney(totals.expenses.departures)}</span>
                             </div>
                             <div class="accounting-detail hidden" id="exp-departures">
@@ -631,7 +631,7 @@ Views.reports = {
                             </div>
                             
                             <div class="accounting-item clickable" onclick="Views.reports.toggleDetail('exp-salaries')">
-                                <span class="item-label">${Icons.get('chevron-right', {size:14})} Salaires (${expenses.salaries.length})</span>
+                                <span class="item-label">${Icons.get('chevron-right', {size:14})} ${I18n.t('reports.salaries')} (${expenses.salaries.length})</span>
                                 <span class="item-value text-error">-${this.formatMoney(totals.expenses.salaries)}</span>
                             </div>
                             <div class="accounting-detail hidden" id="exp-salaries">
@@ -639,7 +639,7 @@ Views.reports = {
                             </div>
                             
                             <div class="accounting-item clickable" onclick="Views.reports.toggleDetail('exp-charges')">
-                                <span class="item-label">${Icons.get('chevron-right', {size:14})} Charges diverses (${expenses.charges.length})</span>
+                                <span class="item-label">${Icons.get('chevron-right', {size:14})} ${I18n.t('reports.misc_charges')} (${expenses.charges.length})</span>
                                 <span class="item-value text-error">-${this.formatMoney(totals.expenses.charges)}</span>
                             </div>
                             <div class="accounting-detail hidden" id="exp-charges">
@@ -647,7 +647,7 @@ Views.reports = {
                             </div>
                             
                             <div class="accounting-item total">
-                                <span class="item-label">Total Sorties</span>
+                                <span class="item-label">${I18n.t('reports.total_outgoing')}</span>
                                 <span class="item-value text-error font-semibold">-${this.formatMoney(totals.expenses.total)}</span>
                             </div>
                         </div>
@@ -659,7 +659,7 @@ Views.reports = {
             <div class="charts-grid">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Repartition des sorties</h3>
+                        <h3 class="card-title">${I18n.t('reports.expenses_breakdown')}</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="chart-expenses-breakdown" height="250"></canvas>
@@ -667,7 +667,7 @@ Views.reports = {
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Charges par categorie</h3>
+                        <h3 class="card-title">${I18n.t('reports.charges_by_category')}</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="chart-charges-category" height="250"></canvas>
@@ -683,7 +683,7 @@ Views.reports = {
     
     renderDetailRows(items, type, limit) {
         if (items.length === 0) {
-            return '<div class="detail-row text-muted">Aucun</div>';
+            return `<div class="detail-row text-muted">${I18n.t('reports.none')}</div>`;
         }
         
         const isIncome = type === 'payment' || type === 'other-income';
@@ -700,7 +700,7 @@ Views.reports = {
             const label = this.getDetailLabel(item, type);
             return `
                 <div class="detail-row">
-                    <span>${new Date(item.date).toLocaleDateString('fr-FR')} - ${label}</span>
+                    <span>${new Date(item.date).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')} - ${label}</span>
                     <span class="${colorClass}">${sign}${this.formatMoney(item.amount)}</span>
                 </div>
             `;
@@ -713,7 +713,7 @@ Views.reports = {
                 const label = this.getDetailLabel(item, type);
                 return `
                     <div class="detail-row">
-                        <span>${new Date(item.date).toLocaleDateString('fr-FR')} - ${label}</span>
+                        <span>${new Date(item.date).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')} - ${label}</span>
                         <span class="${colorClass}">${sign}${this.formatMoney(item.amount)}</span>
                     </div>
                 `;
@@ -723,7 +723,7 @@ Views.reports = {
             html += `
                 <button class="btn-show-more" onclick="Views.reports.showMoreDetails('${type}', this)">
                     ${Icons.get('chevron-down', {size:14})}
-                    <span>Afficher ${hiddenItems.length} de plus</span>
+                    <span>${I18n.t('reports.show_more').replace('{count}', hiddenItems.length)}</span>
                 </button>
             `;
         }
@@ -768,7 +768,7 @@ Views.reports = {
         this.charts.expensesBreakdown = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Departs', 'Salaires', 'Charges diverses'],
+                labels: [I18n.t('reports.departures_label'), I18n.t('reports.salaries'), I18n.t('reports.misc_charges')],
                 datasets: [{
                     data: [expensesTotals.departures, expensesTotals.salaries, expensesTotals.charges],
                     backgroundColor: ['#3b82f6', '#f59e0b', '#8b5cf6']
@@ -784,9 +784,9 @@ Views.reports = {
         if (!ctx) return;
         
         const categoryLabels = {
-            loyer: 'Loyer', utilities: 'Utilities', fournitures: 'Fournitures',
-            transport: 'Transport', communication: 'Communication', 
-            maintenance: 'Maintenance', taxes: 'Taxes', other: 'Autres'
+            loyer: I18n.t('reports.cat_rent'), utilities: I18n.t('reports.cat_utilities'), fournitures: I18n.t('reports.cat_supplies'),
+            transport: I18n.t('reports.cat_transport'), communication: I18n.t('reports.cat_communication'), 
+            maintenance: I18n.t('reports.cat_maintenance'), taxes: I18n.t('reports.cat_taxes'), other: I18n.t('reports.cat_others')
         };
         
         const categoryColors = {
@@ -817,33 +817,33 @@ Views.reports = {
         const gain = departure.total_revenue - totalExpenses;
         
         const categoryOptions = [
-            { id: 'freight', name: 'Fret' },
-            { id: 'customs', name: 'Douane' },
-            { id: 'transport', name: 'Transport' },
-            { id: 'handling', name: 'Manutention' },
-            { id: 'storage', name: 'Stockage' },
-            { id: 'insurance', name: 'Assurance' },
-            { id: 'other', name: 'Divers' }
+            { id: 'freight', name: I18n.t('reports.cat_freight') },
+            { id: 'customs', name: I18n.t('reports.cat_customs') },
+            { id: 'transport', name: I18n.t('reports.cat_transport') },
+            { id: 'handling', name: I18n.t('reports.cat_handling') },
+            { id: 'storage', name: I18n.t('reports.cat_storage') },
+            { id: 'insurance', name: I18n.t('reports.cat_insurance') },
+            { id: 'other', name: I18n.t('reports.cat_other') }
         ];
         
         const getCategoryLabel = (cat) => categoryOptions.find(c => c.id === cat)?.name || cat;
         
         Modal.open({
-            title: `Depenses - ${departure.title}`,
+            title: I18n.t('reports.expense_title').replace('{name}', departure.title),
             size: 'lg',
             content: `
                 <!-- Resume -->
                 <div class="expense-summary mb-md">
                     <div class="expense-summary-item">
-                        <span class="label">Revenus</span>
+                        <span class="label">${I18n.t('reports.revenues_label')}</span>
                         <span class="value text-success">${this.formatMoney(departure.total_revenue)}</span>
                     </div>
                     <div class="expense-summary-item">
-                        <span class="label">Depenses</span>
+                        <span class="label">${I18n.t('reports.expenses_label')}</span>
                         <span class="value text-error" id="modal-total-expenses">${this.formatMoney(totalExpenses)}</span>
                     </div>
                     <div class="expense-summary-item">
-                        <span class="label">Gain</span>
+                        <span class="label">${I18n.t('reports.gain_label')}</span>
                         <span class="value ${gain >= 0 ? 'text-success' : 'text-error'}" id="modal-gain">${this.formatMoney(gain)}</span>
                     </div>
                 </div>
@@ -851,7 +851,7 @@ Views.reports = {
                 <!-- Liste des depenses -->
                 <div class="expenses-list mb-md" id="expenses-list">
                     ${departure.expenses.length === 0 ? 
-                        '<p class="text-muted text-center py-md">Aucune depense enregistree</p>' :
+                        `<p class="text-muted text-center py-md">${I18n.t('reports.no_expenses')}</p>` :
                         departure.expenses.map(e => `
                             <div class="expense-item" data-id="${e.id}">
                                 <div class="expense-info">
@@ -869,33 +869,33 @@ Views.reports = {
                 
                 <!-- Formulaire ajout -->
                 <div class="expense-form">
-                    <h4 class="mb-sm">Ajouter une depense</h4>
+                    <h4 class="mb-sm">${I18n.t('reports.add_expense')}</h4>
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Categorie</label>
+                            <label class="form-label">${I18n.t('reports.category')}</label>
                             <div id="expense-category-select"></div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Description</label>
-                            <input type="text" class="form-input" id="expense-description" placeholder="Ex: Fret aerien lot janvier">
+                            <label class="form-label">${I18n.t('reports.description')}</label>
+                            <input type="text" class="form-input" id="expense-description" placeholder="">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Montant (XAF)</label>
+                            <label class="form-label">${I18n.t('reports.amount_xaf')}</label>
                             <input type="number" class="form-input" id="expense-amount" placeholder="0">
                         </div>
                     </div>
                     <button class="btn btn-primary" id="btn-add-expense">
-                        ${Icons.get('plus', {size:14})} Ajouter
+                        ${Icons.get('plus', {size:14})} ${I18n.t('payroll.add')}
                     </button>
                 </div>
             `,
-            footer: `<button class="btn btn-secondary" onclick="Modal.close()">Fermer</button>`
+            footer: `<button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('settings.close')}</button>`
         });
         
         // Init SearchSelect pour la categorie
         this.expenseCategorySelect = new SearchSelect({
             container: '#expense-category-select',
-            placeholder: 'Categorie...',
+            placeholder: I18n.t('reports.category'),
             items: categoryOptions,
             onSelect: () => {}
         });
@@ -913,11 +913,11 @@ Views.reports = {
         const amount = parseInt(document.getElementById('expense-amount').value) || 0;
         
         if (!description) {
-            Toast.error('Veuillez saisir une description');
+            Toast.error(I18n.t('reports.enter_description'));
             return;
         }
         if (amount <= 0) {
-            Toast.error('Veuillez saisir un montant valide');
+            Toast.error(I18n.t('reports.enter_valid_amount'));
             return;
         }
         
@@ -940,17 +940,17 @@ Views.reports = {
                 this.showExpensesModal(departureId);
             }
             
-            Toast.success('Dépense ajoutée');
+            Toast.success(I18n.t('reports.expense_added'));
         } catch (error) {
             console.error('Add expense error:', error);
-            Toast.error('Erreur lors de l\'ajout: ' + error.message);
+            Toast.error(I18n.t('reports.expense_add_error').replace('{msg}', error.message));
         }
     },
     
     async deleteExpense(departureId, expenseId) {
         const confirmed = await Modal.confirm({
-            title: 'Supprimer la dépense',
-            message: 'Voulez-vous vraiment supprimer cette dépense ?',
+            title: I18n.t('reports.delete_expense'),
+            message: I18n.t('reports.delete_expense_msg'),
             danger: true
         });
         
@@ -969,10 +969,10 @@ Views.reports = {
                 this.showExpensesModal(departureId);
             }
             
-            Toast.success('Dépense supprimée');
+            Toast.success(I18n.t('reports.expense_deleted'));
         } catch (error) {
             console.error('Delete expense error:', error);
-            Toast.error('Erreur lors de la suppression: ' + error.message);
+            Toast.error(I18n.t('reports.expense_delete_error').replace('{msg}', error.message));
         }
     },
     
@@ -1020,7 +1020,7 @@ Views.reports = {
     },
     
     updatePeriodLabel() {
-        const months = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
+        const months = I18n.locale === 'fr' ? ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'] : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         let label = '';
         
         switch (this.currentPeriod) {
@@ -1050,28 +1050,44 @@ Views.reports = {
         document.getElementById('period-label').textContent = label;
     },
 
+    _getCacheKey() {
+        return `reports:${this.currentTab}:${this.currentPeriod}:${this.currentYear}:${this.currentMonth}`;
+    },
+
+    _applyStatsData(data) {
+        this._rawData = data;
+        this.updateKPIs(data.kpis);
+        this.renderRevenueChart(data.revenueByDay);
+        this.renderPackagesChart(data.packagesByDay);
+        this.renderTransportChart(data.byTransport);
+        this.renderPaymentMethodsChart(data.byPaymentMethod);
+        this.renderStatusChart(data.byStatus);
+        this.renderDeliveryTimesChart(data.deliveryTimes);
+        this.renderTopClients(data.topClients);
+        this.renderUnknownClients(data.unknownClients);
+        this.renderRevenueByDestination(data.byDestination);
+        this.renderWarehousePerformance(data.warehousePerformance);
+        this.renderMonthlyComparison(data.monthlyComparison);
+    },
+
     async loadData() {
+        const cacheKey = this._getCacheKey();
+        const cached = ViewCache.get(cacheKey);
+        if (cached) {
+            this._applyStatsData(cached);
+        }
+
         try {
             const data = await this.loadDataFromAPI();
-            
-            // Stocker les données brutes pour l'export
-            this._rawData = data;
-            
-            this.updateKPIs(data.kpis);
-            this.renderRevenueChart(data.revenueByDay);
-            this.renderPackagesChart(data.packagesByDay);
-            this.renderTransportChart(data.byTransport);
-            this.renderPaymentMethodsChart(data.byPaymentMethod);
-            this.renderStatusChart(data.byStatus);
-            this.renderDeliveryTimesChart(data.deliveryTimes);
-            this.renderTopClients(data.topClients);
-            this.renderUnknownClients(data.unknownClients);
-            this.renderRevenueByDestination(data.byDestination);
-            this.renderWarehousePerformance(data.warehousePerformance);
-            this.renderMonthlyComparison(data.monthlyComparison);
+            if (!cached || ViewCache.hasChanged(cacheKey, data)) {
+                ViewCache.set(cacheKey, data);
+                this._applyStatsData(data);
+            }
         } catch (error) {
             console.error('[Reports] Erreur chargement:', error);
-            Toast.error('Erreur de chargement des rapports');
+            if (!cached) {
+                Toast.error(I18n.t('reports.load_reports_error'));
+            }
         }
     },
     
@@ -1090,7 +1106,7 @@ Views.reports = {
         const daily = stats.daily || [];
         const labels = daily.map(d => {
             const date = new Date(d.date);
-            return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+            return date.toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US', { day: '2-digit', month: 'short' });
         });
         const revenueByDay = daily.map(d => d.revenue || 0);
         const packagesByDay = daily.map(d => d.packages || 0);
@@ -1099,7 +1115,7 @@ Views.reports = {
         const byMethod = stats.revenue?.by_method || {};
         const methodLabels = Object.keys(byMethod).length > 0 
             ? Object.keys(byMethod).map(m => this.getMethodLabel(m))
-            : ['Aucune donnee'];
+            : [I18n.t('reports.no_data')];
         const methodData = Object.keys(byMethod).length > 0 
             ? Object.values(byMethod)
             : [0];
@@ -1111,9 +1127,9 @@ Views.reports = {
         const transportRevenue = [];
         
         const transportNames = {
-            air_express: 'Aerien Express',
-            air_normal: 'Aerien Normal',
-            sea: 'Maritime'
+            air_express: I18n.t('reports.air_express'),
+            air_normal: I18n.t('reports.air_normal'),
+            sea: I18n.t('reports.sea')
         };
         
         for (const [mode, data] of Object.entries(byTransport)) {
@@ -1128,12 +1144,12 @@ Views.reports = {
         const statusCounts = [];
         
         const statusNames = {
-            pending: 'En attente',
-            received: 'Recu',
-            transit: 'En transit',
-            customs: 'Douane',
-            arrived: 'Arrive',
-            delivered: 'Livre'
+            pending: I18n.t('reports.pending'),
+            received: I18n.t('reports.received_status'),
+            transit: I18n.t('reports.transit'),
+            customs: I18n.t('reports.customs'),
+            arrived: I18n.t('reports.arrived'),
+            delivered: I18n.t('reports.delivered')
         };
         
         for (const [status, count] of Object.entries(byStatus)) {
@@ -1191,7 +1207,7 @@ Views.reports = {
             revenueByDay: { labels, data: revenueByDay },
             packagesByDay: { labels, data: packagesByDay },
             byTransport: {
-                labels: transportLabels.length > 0 ? transportLabels : ['Aucune donnee'],
+                labels: transportLabels.length > 0 ? transportLabels : [I18n.t('reports.no_data')],
                 data: transportCounts.length > 0 ? transportCounts : [0],
                 revenue: transportRevenue.length > 0 ? transportRevenue : [0]
             },
@@ -1200,7 +1216,7 @@ Views.reports = {
                 data: methodData
             },
             byStatus: {
-                labels: statusLabels.length > 0 ? statusLabels : ['Aucune donnee'],
+                labels: statusLabels.length > 0 ? statusLabels : [I18n.t('reports.no_data')],
                 data: statusCounts.length > 0 ? statusCounts : [0]
             },
             deliveryTimes: {
@@ -1230,25 +1246,25 @@ Views.reports = {
                 <div class="stat-card">
                     <div class="stat-info">
                         <span class="stat-value">${data.packages}</span>
-                        <span class="stat-label">Colis</span>
+                        <span class="stat-label">${I18n.t('reports.packages')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-info">
                         <span class="stat-value">${this.formatMoney(data.revenue)}</span>
-                        <span class="stat-label">Montant total</span>
+                        <span class="stat-label">${I18n.t('reports.total_amount')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-info">
                         <span class="stat-value">${this.formatMoney(data.unpaid)}</span>
-                        <span class="stat-label">Impayes</span>
+                        <span class="stat-label">${I18n.t('reports.unpaid')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-info">
                         <span class="stat-value">${data.newClients}</span>
-                        <span class="stat-label">Nouveaux clients inconnus</span>
+                        <span class="stat-label">${I18n.t('reports.new_unknown_clients')}</span>
                     </div>
                 </div>
             </div>
@@ -1257,11 +1273,11 @@ Views.reports = {
     
     getMethodLabel(method) {
         const labels = {
-            cash: 'Especes',
-            mobile_money: 'Mobile Money',
-            bank_transfer: 'Virement',
-            card: 'Carte',
-            other: 'Autre'
+            cash: I18n.t('reports.cash'),
+            mobile_money: I18n.t('reports.mobile_money'),
+            bank_transfer: I18n.t('reports.bank_transfer'),
+            card: I18n.t('reports.card'),
+            other: I18n.t('reports.other')
         };
         return labels[method] || method;
     },
@@ -1303,7 +1319,7 @@ Views.reports = {
             data: {
                 labels: data.labels,
                 datasets: [{
-                    label: 'Revenus (XAF)',
+                    label: I18n.t('reports.revenue_xaf'),
                     data: data.data,
                     borderColor: '#059669',
                     backgroundColor: 'rgba(5, 150, 105, 0.1)',
@@ -1323,7 +1339,7 @@ Views.reports = {
             data: {
                 labels: data.labels,
                 datasets: [{
-                    label: 'Colis',
+                    label: I18n.t('reports.packages'),
                     data: data.data,
                     backgroundColor: '#3b82f6'
                 }]
@@ -1388,8 +1404,8 @@ Views.reports = {
             data: {
                 labels: data.labels,
                 datasets: [
-                    { label: 'Aerien', data: data.air, backgroundColor: '#f59e0b' },
-                    { label: 'Maritime', data: data.sea, backgroundColor: '#06b6d4' }
+                    { label: I18n.t('reports.air'), data: data.air, backgroundColor: '#f59e0b' },
+                    { label: I18n.t('reports.sea'), data: data.sea, backgroundColor: '#06b6d4' }
                 ]
             },
             options: { ...this.getBarChartOptions(), plugins: { legend: { display: true } } }
@@ -1404,11 +1420,11 @@ Views.reports = {
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Client</th>
-                            <th>Colis</th>
-                            <th>CA Total</th>
-                            <th>Paye</th>
-                            <th>Solde</th>
+                            <th>${I18n.t('reports.client')}</th>
+                            <th>${I18n.t('reports.packages')}</th>
+                            <th>${I18n.t('reports.total_ca')}</th>
+                            <th>${I18n.t('reports.paid')}</th>
+                            <th>${I18n.t('reports.balance')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1440,7 +1456,7 @@ Views.reports = {
                         <div class="destination-item">
                             <div class="destination-header">
                                 <span class="destination-name">${d.city}</span>
-                                <span class="destination-value">${this.formatMoney(d.revenue)} (${d.packages} colis)</span>
+                                <span class="destination-value">${this.formatMoney(d.revenue)} (${d.packages} ${I18n.t('reports.packages').toLowerCase()})</span>
                             </div>
                             <div class="progress-bar">
                                 <div class="progress-fill" style="width: ${percent}%"></div>
@@ -1459,11 +1475,11 @@ Views.reports = {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Entrepot</th>
-                            <th>Recus</th>
-                            <th>Expedies</th>
-                            <th>Taux</th>
-                            <th>Delai moyen</th>
+                            <th>${I18n.t('reports.warehouse')}</th>
+                            <th>${I18n.t('reports.received')}</th>
+                            <th>${I18n.t('reports.shipped')}</th>
+                            <th>${I18n.t('reports.rate')}</th>
+                            <th>${I18n.t('reports.avg_delay')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1475,7 +1491,7 @@ Views.reports = {
                                     <td>${w.received}</td>
                                     <td>${w.shipped}</td>
                                     <td><span class="status-badge ${rate >= 90 ? 'status-delivered' : 'status-pending'}">${rate}%</span></td>
-                                    <td>${w.avgDays} jours</td>
+                                    <td>${w.avgDays} ${I18n.t('reports.days')}</td>
                                 </tr>
                             `;
                         }).join('')}
@@ -1496,7 +1512,7 @@ Views.reports = {
             container.innerHTML = `
                 <div class="empty-state">
                     ${Icons.get('calendar', {size:32})}
-                    <p>Aucune donnée sur les 12 derniers mois</p>
+                    <p>${I18n.t('reports.no_monthly_data')}</p>
                 </div>
             `;
             return;
@@ -1507,12 +1523,12 @@ Views.reports = {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Mois</th>
-                            <th>CA</th>
-                            <th>Colis</th>
-                            <th>Clients</th>
-                            <th>CA/Colis</th>
-                            <th>Tendance</th>
+                            <th>${I18n.t('reports.month_label')}</th>
+                            <th>${I18n.t('reports.ca')}</th>
+                            <th>${I18n.t('reports.packages')}</th>
+                            <th>${I18n.t('reports.clients_label')}</th>
+                            <th>${I18n.t('reports.ca_per_pkg')}</th>
+                            <th>${I18n.t('reports.trend')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1528,7 +1544,7 @@ Views.reports = {
                                 trendDisplay = `<span class="${parseFloat(trend) >= 0 ? 'text-success' : 'text-error'}">${parseFloat(trend) >= 0 ? '+' : ''}${trend}%</span>`;
                             } else if (prevRevenue === 0 && m.revenue > 0) {
                                 // Passage de 0 à quelque chose = nouveau
-                                trendDisplay = `<span class="text-success">Nouveau</span>`;
+                                trendDisplay = `<span class="text-success">${I18n.t('reports.new_label')}</span>`;
                             } else if (i === 0) {
                                 // Premier mois, pas de comparaison
                                 trendDisplay = '-';
@@ -1712,15 +1728,15 @@ Views.reports = {
         const kpis = this._rawData?.kpis || {};
         ExportService.toCSV({
             columns: [
-                { header: 'Indicateur', key: 'indicateur' },
-                { header: 'Valeur', key: 'valeur', format: 'number' }
+                { header: I18n.t('reports.indicator'), key: 'indicateur' },
+                { header: I18n.t('reports.value'), key: 'valeur', format: 'number' }
             ],
             data: [
-                { indicateur: 'Chiffre d\'affaires', valeur: kpis.revenue || 0 },
-                { indicateur: 'Colis traités', valeur: kpis.packages || 0 },
-                { indicateur: 'Nouveaux clients', valeur: kpis.newClients || 0 },
-                { indicateur: 'Taux de livraison (%)', valeur: kpis.deliveryRate || 0 },
-                { indicateur: 'Impayés', valeur: kpis.unpaid || 0 }
+                { indicateur: I18n.t('reports.revenue'), valeur: kpis.revenue || 0 },
+                { indicateur: I18n.t('reports.packages_processed'), valeur: kpis.packages || 0 },
+                { indicateur: I18n.t('reports.new_clients'), valeur: kpis.newClients || 0 },
+                { indicateur: I18n.t('reports.delivery_rate_pct'), valeur: kpis.deliveryRate || 0 },
+                { indicateur: I18n.t('reports.unpaid'), valeur: kpis.unpaid || 0 }
             ],
             filename
         });
@@ -1729,14 +1745,14 @@ Views.reports = {
     _exportDeparturesCSV(filename) {
         ExportService.toCSV({
             columns: [
-                { header: 'Date', key: 'date', format: 'date' },
-                { header: 'Référence', key: 'reference' },
-                { header: 'Origine', key: 'origin' },
-                { header: 'Destination', key: 'destination' },
-                { header: 'Transport', key: 'transport' },
-                { header: 'Colis', key: 'packages', format: 'number' },
-                { header: 'Revenus', key: 'revenue', format: 'number' },
-                { header: 'Dépenses', key: 'expenses', format: 'number' }
+                { header: I18n.t('reports.date'), key: 'date', format: 'date' },
+                { header: I18n.t('reports.reference'), key: 'reference' },
+                { header: I18n.t('reports.origin'), key: 'origin' },
+                { header: I18n.t('reports.destination'), key: 'destination' },
+                { header: I18n.t('reports.transport'), key: 'transport' },
+                { header: I18n.t('reports.packages'), key: 'packages', format: 'number' },
+                { header: I18n.t('reports.revenues'), key: 'revenue', format: 'number' },
+                { header: I18n.t('reports.expenses'), key: 'expenses', format: 'number' }
             ],
             data: this.departuresData.map(d => ({
                 date: d.departure_date,
@@ -1769,32 +1785,31 @@ Views.reports = {
         
         ExportService.toCSV({
             columns: [
-                { header: 'Catégorie', key: 'category' },
-                { header: 'Montant', key: 'amount', format: 'number' }
+                { header: I18n.t('reports.category'), key: 'category' },
+                { header: I18n.t('payments.amount'), key: 'amount', format: 'number' }
             ],
             data: [
-                { category: '--- RECETTES ---', amount: '' },
-                { category: 'Paiements clients', amount: totals.income?.payments || 0 },
-                { category: 'Autres revenus', amount: totals.income?.other || 0 },
-                { category: 'Total Recettes', amount: incomeTotal },
+                { category: I18n.t('reports.csv_receipts'), amount: '' },
+                { category: I18n.t('reports.csv_client_payments'), amount: totals.income?.payments || 0 },
+                { category: I18n.t('reports.csv_other_revenue'), amount: totals.income?.other || 0 },
+                { category: I18n.t('reports.csv_total_receipts'), amount: incomeTotal },
                 { category: '', amount: '' },
-                { category: '--- DEPENSES ---', amount: '' },
-                { category: 'Dépenses départs', amount: -expDepartures },
-                { category: 'Salaires', amount: -expSalaries },
-                { category: 'Charges diverses', amount: -expCharges },
-                { category: 'Total Dépenses', amount: -expTotal },
+                { category: I18n.t('reports.csv_expenses'), amount: '' },
+                { category: I18n.t('reports.csv_departure_exp'), amount: -expDepartures },
+                { category: I18n.t('reports.csv_salaries'), amount: -expSalaries },
+                { category: I18n.t('reports.csv_misc_charges'), amount: -expCharges },
+                { category: I18n.t('reports.csv_total_expenses'), amount: -expTotal },
                 { category: '', amount: '' },
-                { category: '--- RESULTAT ---', amount: '' },
-                { category: 'Résultat net', amount: netProfit },
-                { category: 'Marge (%)', amount: totals.margin || 0 }
+                { category: I18n.t('reports.csv_result'), amount: '' },
+                { category: I18n.t('reports.csv_net_result'), amount: netProfit },
+                { category: I18n.t('reports.csv_margin'), amount: totals.margin || 0 }
             ],
             filename
         });
     },
     
     _getPeriodLabel() {
-        const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
-                           'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+        const monthNames = I18n.locale === 'fr' ? ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'] : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         return `${monthNames[this.currentMonth]} ${this.currentYear}`;
     },
     
@@ -1807,7 +1822,7 @@ Views.reports = {
     formatMoney(amount) {
         if (amount >= 1000000) return (amount / 1000000).toFixed(1) + 'M XAF';
         if (amount >= 1000) return (amount / 1000).toFixed(0) + 'K XAF';
-        return new Intl.NumberFormat('fr-FR').format(amount) + ' XAF';
+        return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount) + ' XAF';
     },
     
     formatCompact(value) {

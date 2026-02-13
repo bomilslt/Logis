@@ -39,19 +39,19 @@ Views.packages = {
                                     placeholder="${I18n.t('packages.search_placeholder')}" value="${this.filters.search}">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Statut</label>
+                                <label class="form-label">${I18n.t('packages.status')}</label>
                                 <div id="filter-status-container"></div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Depart</label>
+                                <label class="form-label">${I18n.t('packages.departure')}</label>
                                 <div id="filter-departure-container"></div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Du</label>
+                                <label class="form-label">${I18n.t('packages.date_from')}</label>
                                 <div id="filter-from-container"></div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Au</label>
+                                <label class="form-label">${I18n.t('packages.date_to')}</label>
                                 <div id="filter-to-container"></div>
                             </div>
                         </div>
@@ -61,19 +61,19 @@ Views.packages = {
                 <!-- Actions en masse -->
                 <div class="bulk-actions card mb-md ${this.selectedIds.size ? '' : 'hidden'}" id="bulk-actions">
                     <div class="card-body">
-                        <span class="bulk-count"><strong id="selected-count">0</strong> colis selectionne(s)</span>
+                        <span class="bulk-count"><strong id="selected-count">0</strong> ${I18n.t('packages.selected')}</span>
                         <div class="bulk-buttons">
                             <button class="btn btn-sm btn-outline" id="btn-bulk-departure">
-                                ${Icons.get('send', {size:14})} Assigner depart
+                                ${Icons.get('send', {size:14})} ${I18n.t('packages.assign_departure')}
                             </button>
                             <button class="btn btn-sm btn-outline" id="btn-bulk-status">
-                                ${Icons.get('refresh', {size:14})} Changer statut
+                                ${Icons.get('refresh', {size:14})} ${I18n.t('packages.change_status')}
                             </button>
                             <button class="btn btn-sm btn-outline" id="btn-bulk-print">
-                                ${Icons.get('printer', {size:14})} Etiquettes
+                                ${Icons.get('printer', {size:14})} ${I18n.t('packages.labels')}
                             </button>
                             <button class="btn btn-sm btn-ghost" id="btn-clear-selection">
-                                Annuler
+                                ${I18n.t('cancel')}
                             </button>
                         </div>
                     </div>
@@ -82,7 +82,7 @@ Views.packages = {
                 <!-- Liste -->
                 <div class="card">
                     <div class="card-body" id="packages-list">
-                        ${Loader.page('Chargement...')}
+                        ${Loader.page(I18n.t('loading'))}
                     </div>
                 </div>
             </div>
@@ -102,10 +102,10 @@ Views.packages = {
     
     async initFilters() {
         // Status SearchSelect
-        const statusItems = [{ id: '', name: 'Tous' }, ...Object.entries(CONFIG.PACKAGE_STATUSES).map(([k, v]) => ({ id: k, name: v.label }))];
+        const statusItems = [{ id: '', name: I18n.t('all') }, ...Object.entries(CONFIG.PACKAGE_STATUSES).map(([k, v]) => ({ id: k, name: v.label }))];
         this.statusSelect = new SearchSelect({
             container: '#filter-status-container',
-            placeholder: 'Tous les statuts',
+            placeholder: I18n.t('packages.all_statuses'),
             items: statusItems,
             onSelect: (item) => { this.filters.status = item?.id || ''; this.currentPage = 1; this.loadPackages(); }
         });
@@ -124,8 +124,8 @@ Views.packages = {
         const filterableDepartures = this.departures.filter(d => d.status === 'scheduled' || d.status === 'departed');
         
         const departureItems = [
-            { id: '', name: 'Tous les departs' },
-            { id: 'none', name: 'Non assigne' },
+            { id: '', name: I18n.t('packages.all_departures') },
+            { id: 'none', name: I18n.t('packages.not_assigned') },
             ...filterableDepartures.map(d => {
                 const dateStr = new Date(d.departure_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
                 const destLabel = CONFIG.DESTINATIONS[d.dest_country]?.label || d.dest_country;
@@ -134,7 +134,7 @@ Views.packages = {
         ];
         this.departureSelect = new SearchSelect({
             container: '#filter-departure-container',
-            placeholder: 'Tous les departs',
+            placeholder: I18n.t('packages.all_departures'),
             items: departureItems,
             onSelect: (item) => { this.filters.departure = item?.id || ''; this.currentPage = 1; this.loadPackages(); }
         });
@@ -143,14 +143,14 @@ Views.packages = {
         // Date pickers
         this.dateFromPicker = new DatePicker({
             container: document.getElementById('filter-from-container'),
-            placeholder: 'Date debut',
+            placeholder: I18n.t('packages.date_start'),
             value: this.filters.dateFrom,
             onChange: (date, value) => { this.filters.dateFrom = value || ''; this.currentPage = 1; this.loadPackages(); }
         });
         
         this.dateToPicker = new DatePicker({
             container: document.getElementById('filter-to-container'),
-            placeholder: 'Date fin',
+            placeholder: I18n.t('packages.date_end'),
             value: this.filters.dateTo,
             onChange: (date, value) => { this.filters.dateTo = value || ''; this.currentPage = 1; this.loadPackages(); }
         });
@@ -158,7 +158,7 @@ Views.packages = {
     
     async loadPackages(silent = false) {
         const container = document.getElementById('packages-list');
-        if (!silent) container.innerHTML = Loader.page('Chargement...');
+        if (!silent) container.innerHTML = Loader.page(I18n.t('loading'));
         
         const cacheKey = 'packages:list:' + this.currentPage + ':' + this.filters.status;
         
@@ -184,9 +184,9 @@ Views.packages = {
                 container.innerHTML = `
                     <div class="error-state">
                         ${Icons.get('alert-circle', {size:48})}
-                        <h3>Erreur de chargement</h3>
+                        <h3>${I18n.t('error_loading')}</h3>
                         <p>${error.message}</p>
-                        <button class="btn btn-primary" onclick="Views.packages.loadPackages()">Reessayer</button>
+                        <button class="btn btn-primary" onclick="Views.packages.loadPackages()">${I18n.t('retry')}</button>
                     </div>
                 `;
             }
@@ -199,7 +199,7 @@ Views.packages = {
         this.allPackages = packages;
         
         if (packages.length === 0) {
-            container.innerHTML = `<div class="empty-state">${Icons.get('package', {size:48})}<p class="empty-state-title">Aucun colis trouve</p></div>`;
+            container.innerHTML = `<div class="empty-state">${Icons.get('package', {size:48})}<p class="empty-state-title">${I18n.t('packages.no_packages')}</p></div>`;
             return;
         }
         
@@ -208,8 +208,8 @@ Views.packages = {
                 <table class="table">
                     <thead><tr>
                         <th><input type="checkbox" id="select-all"></th>
-                        <th>Tracking</th><th>Client</th><th>Description</th><th>Transport</th>
-                        <th>Depart</th><th>Montant</th><th>Paiement</th><th>Statut</th><th>Date</th><th>Actions</th>
+                        <th>${I18n.t('packages.tracking')}</th><th>${I18n.t('packages.client')}</th><th>${I18n.t('packages.description')}</th><th>${I18n.t('packages.transport_mode')}</th>
+                        <th>${I18n.t('packages.departure')}</th><th>${I18n.t('packages.amount')}</th><th>${I18n.t('packages.payment')}</th><th>${I18n.t('packages.status')}</th><th>${I18n.t('packages.date')}</th><th>${I18n.t('actions')}</th>
                     </tr></thead>
                     <tbody>${packages.map(p => this.renderRow(p)).join('')}</tbody>
                 </table>
@@ -243,10 +243,10 @@ Views.packages = {
         const transport = p.transport_mode || p.transport;
         const amount = p.amount || 0;
         const paidAmount = p.paid_amount || p.paid || 0;
-        const createdAt = p.created_at ? new Date(p.created_at).toLocaleDateString('fr-FR') : '-';
+        const createdAt = p.created_at ? new Date(p.created_at).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : '-';
         
         const paymentStatus = amount === 0 ? 'no_charge' : (paidAmount >= amount ? 'paid' : (paidAmount > 0 ? 'partial' : 'unpaid'));
-        const paymentLabels = { paid: 'Paye', partial: 'Partiel', unpaid: 'Non paye', no_charge: '-' };
+        const paymentLabels = { paid: I18n.t('packages.paid'), partial: I18n.t('packages.partial'), unpaid: I18n.t('packages.unpaid'), no_charge: '-' };
         const paymentClasses = { paid: 'status-delivered', partial: 'status-arrived_port', unpaid: 'status-pending', no_charge: '' };
         
         // Obtenir le depart assigne directement depuis le colis
@@ -264,15 +264,15 @@ Views.packages = {
                 <td>
                     <span class="status-badge ${paymentClasses[paymentStatus]}">${paymentLabels[paymentStatus]}</span>
                     ${paymentStatus === 'partial' ? `<div class="text-xs text-muted" style="margin-top:2px;">${this.formatMoney(paidAmount)} / ${this.formatMoney(amount)}</div>` : ''}
-                    ${paymentStatus === 'unpaid' && amount > 0 ? `<div class="text-xs text-error" style="margin-top:2px;">Du: ${this.formatMoney(amount)}</div>` : ''}
+                    ${paymentStatus === 'unpaid' && amount > 0 ? `<div class="text-xs text-error" style="margin-top:2px;">${I18n.t('packages.due')}: ${this.formatMoney(amount)}</div>` : ''}
                 </td>
                 <td><span class="status-badge status-${p.status}">${CONFIG.PACKAGE_STATUSES[p.status]?.label || p.status}</span></td>
                 <td>${createdAt}</td>
                 <td>
                     <div class="table-actions">
-                        <button class="btn btn-sm btn-ghost" onclick="Views.packages.quickStatus('${p.id}', '${p.status}')" title="Changer le statut">${Icons.get('refresh', {size:14})}</button>
-                        <button class="btn btn-sm btn-ghost" onclick="Views.packages.printLabel('${p.id}')" title="Imprimer l'étiquette">${Icons.get('printer', {size:14})}</button>
-                        <button class="btn btn-sm btn-ghost" onclick="Router.navigate('/packages/${p.id}')" title="Voir les détails">${Icons.get('eye', {size:14})}</button>
+                        <button class="btn btn-sm btn-ghost" onclick="Views.packages.quickStatus('${p.id}', '${p.status}')" title="${I18n.t('packages.change_status_title')}">${Icons.get('refresh', {size:14})}</button>
+                        <button class="btn btn-sm btn-ghost" onclick="Views.packages.printLabel('${p.id}')" title="${I18n.t('packages.print_label_title')}">${Icons.get('printer', {size:14})}</button>
+                        <button class="btn btn-sm btn-ghost" onclick="Router.navigate('/packages/${p.id}')" title="${I18n.t('packages.view_details')}">${Icons.get('eye', {size:14})}</button>
                     </div>
                 </td>
             </tr>
@@ -342,10 +342,10 @@ Views.packages = {
     
     showExportMenu() {
         Modal.open({
-            title: 'Exporter les colis',
+            title: I18n.t('packages.export_list'),
             content: `
                 <div class="export-menu">
-                    <p class="text-muted">Choisissez le format d'export</p>
+                    <p class="text-muted">${I18n.t('packages.export_choose')}</p>
                     <div class="export-options">
                         <button class="btn btn-outline btn-block" id="export-excel">
                             ${Icons.get('file-spreadsheet', {size:16})} Excel
@@ -374,7 +374,7 @@ Views.packages = {
             const data = await this.getExportData();
             try {
                 ExportService.exportToExcel(data, 'Colis_' + new Date().toISOString().split('T')[0]);
-                Toast.show('Export Excel démarré', 'success');
+                Toast.show(I18n.t('packages.export_started') + ' Excel', 'success');
             } catch (frontendError) {
                 console.warn('Frontend export failed, falling back to backend:', frontendError);
                 await this.fallbackToBackendExport('excel');
@@ -390,7 +390,7 @@ Views.packages = {
             const data = await this.getExportData();
             try {
                 ExportService.exportToPDF(data, 'Colis_' + new Date().toISOString().split('T')[0]);
-                Toast.show('Export PDF démarré', 'success');
+                Toast.show(I18n.t('packages.export_started') + ' PDF', 'success');
             } catch (frontendError) {
                 console.warn('Frontend export failed, falling back to backend:', frontendError);
                 await this.fallbackToBackendExport('pdf');
@@ -446,18 +446,18 @@ Views.packages = {
         this.receivedCount = 0;
         
         Modal.open({
-            title: 'Reception colis - Mode Scanner',
+            title: I18n.t('packages.scanner_title'),
             closable: false,
             content: `
                 <div class="scanner-mode">
                     <div class="scanner-header">
                         <div class="scanner-icon">${Icons.get('package', {size:48})}</div>
-                        <p class="text-muted">Scannez ou saisissez le code du colis</p>
+                        <p class="text-muted">${I18n.t('packages.scanner_scan_text')}</p>
                     </div>
                     
                     <div class="scanner-input-wrapper">
                         <input type="text" id="scan-input" class="form-input scan-input" 
-                            placeholder="Code tracking..." autofocus autocomplete="off">
+                            placeholder="${I18n.t('packages.scanner_placeholder')}" autofocus autocomplete="off">
                         <button class="btn btn-primary scan-btn" id="btn-scan-search">
                             ${Icons.get('search', {size:18})}
                         </button>
@@ -468,15 +468,15 @@ Views.packages = {
                     <div class="scanner-stats">
                         <div class="scanner-stat">
                             <span class="scanner-stat-value" id="scan-count">0</span>
-                            <span class="scanner-stat-label">Colis recus</span>
+                            <span class="scanner-stat-label">${I18n.t('packages.scanner_received')}</span>
                         </div>
                     </div>
                     
                     <!-- Zone formulaire manuel (cachee par defaut) -->
                     <div class="manual-form hidden" id="manual-form">
                         <div class="manual-form-header">
-                            <span class="text-error">${Icons.get('alert-circle', {size:16})} Colis non trouve</span>
-                            <p class="text-sm text-muted">Remplissez les informations manuellement</p>
+                            <span class="text-error">${Icons.get('alert-circle', {size:16})} ${I18n.t('packages.scanner_not_found')}</span>
+                            <p class="text-sm text-muted">${I18n.t('packages.scanner_fill_manual')}</p>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Tracking</label>
@@ -484,61 +484,61 @@ Views.packages = {
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Nom du client *</label>
-                                <input type="text" id="manual-client-name" class="form-input" placeholder="Nom complet">
+                                <label class="form-label">${I18n.t('packages.client_name')} *</label>
+                                <input type="text" id="manual-client-name" class="form-input">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Telephone *</label>
+                                <label class="form-label">${I18n.t('packages.phone')} *</label>
                                 <input type="tel" id="manual-client-phone" class="form-input" placeholder="+237 6XX XXX XXX">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Description</label>
-                            <input type="text" id="manual-desc" class="form-input" placeholder="Description du contenu">
+                            <label class="form-label">${I18n.t('packages.description')}</label>
+                            <input type="text" id="manual-desc" class="form-input">
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Origine</label>
+                                <label class="form-label">${I18n.t('packages.origin')}</label>
                                 <div id="manual-origin-container"></div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Destination</label>
+                                <label class="form-label">${I18n.t('packages.destination')}</label>
                                 <div id="manual-dest-container"></div>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Transport</label>
+                                <label class="form-label">${I18n.t('packages.transport_mode')}</label>
                                 <div id="manual-transport-container"></div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Type</label>
+                                <label class="form-label">${I18n.t('estimator.package_type')}</label>
                                 <div id="manual-type-container"></div>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Poids (kg)</label>
+                                <label class="form-label">${I18n.t('packages.weight_kg')}</label>
                                 <input type="number" id="manual-weight" class="form-input" step="0.1">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Volume (m³)</label>
+                                <label class="form-label">${I18n.t('packages.volume_cbm')}</label>
                                 <input type="number" id="manual-cbm" class="form-input" step="0.001">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Quantite</label>
+                                <label class="form-label">${I18n.t('packages.quantity')}</label>
                                 <input type="number" id="manual-qty" class="form-input" value="1">
                             </div>
                         </div>
                         <div class="form-actions">
-                            <button class="btn btn-secondary" id="btn-cancel-manual">Annuler</button>
-                            <button class="btn btn-primary" id="btn-save-manual">Enregistrer</button>
+                            <button class="btn btn-secondary" id="btn-cancel-manual">${I18n.t('cancel')}</button>
+                            <button class="btn btn-primary" id="btn-save-manual">${I18n.t('save')}</button>
                         </div>
                     </div>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" id="btn-close-scanner">Fermer</button>
+                <button class="btn btn-secondary" id="btn-close-scanner">${I18n.t('close')}</button>
             `
         });
         
@@ -652,28 +652,28 @@ Views.packages = {
 
         this.manualOriginSelect = new SearchSelect({
             container: '#manual-origin-container',
-            placeholder: 'Origine',
+            placeholder: I18n.t('packages.origin'),
             items: originItems,
             onSelect: () => updateTransportItems()
         });
 
         this.manualDestSelect = new SearchSelect({
             container: '#manual-dest-container',
-            placeholder: 'Destination',
+            placeholder: I18n.t('packages.destination'),
             items: destItems,
             onSelect: () => updateTransportItems()
         });
 
         this.manualTransportSelect = new SearchSelect({
             container: '#manual-transport-container',
-            placeholder: 'Mode de transport',
+            placeholder: I18n.t('packages.transport_mode'),
             items: [],
             onSelect: (item) => { if (item) updateTypeItems(item.id); }
         });
 
         this.manualTypeSelect = new SearchSelect({
             container: '#manual-type-container',
-            placeholder: 'Type de colis',
+            placeholder: I18n.t('estimator.package_type'),
             items: [],
             onSelect: () => {}
         });
@@ -686,7 +686,7 @@ Views.packages = {
         const countSpan = document.getElementById('scan-count');
         
         // Afficher recherche en cours
-        statusDiv.innerHTML = `<div class="scan-searching">${Loader.inline('sm')} Recherche...</div>`;
+        statusDiv.innerHTML = `<div class="scan-searching">${Loader.inline('sm')} ${I18n.t('packages.scanner_searching')}</div>`;
         
         try {
             // Recherche via API
@@ -700,7 +700,7 @@ Views.packages = {
                     statusDiv.innerHTML = `
                         <div class="scan-warning">
                             ${Icons.get('info', {size:20})}
-                            <span>Ce colis a déjà été reçu (statut: ${CONFIG.PACKAGE_STATUSES[pkg.status]?.label || pkg.status})</span>
+                            <span>${I18n.t('packages.scanner_already_received')} (${CONFIG.PACKAGE_STATUSES[pkg.status]?.label || pkg.status})</span>
                         </div>
                     `;
                     this.playSound('warning');
@@ -805,7 +805,7 @@ Views.packages = {
         const rateDisplay = configuredRate 
             ? `<span class="rate-value">${configuredRate.toLocaleString()} XAF/${billingUnit}</span>
                <span class="rate-source text-muted text-sm">(${rateSource})</span>`
-            : `<span class="rate-warning text-warning">${Icons.get('alert-triangle', {size:14})} Tarif non configuré pour cette route</span>`;
+            : `<span class="rate-warning text-warning">${Icons.get('alert-triangle', {size:14})} ${I18n.t('packages.rate_not_configured')}</span>`;
         
         statusDiv.innerHTML = `
             <div class="receive-form-container">
@@ -832,13 +832,13 @@ Views.packages = {
                     <div class="receive-comparison">
                         <div class="comparison-header">
                             <span></span>
-                            <span class="comparison-label">Estimation client</span>
-                            <span class="comparison-label">Valeur réelle</span>
+                            <span class="comparison-label">${I18n.t('packages.estimate_client')}</span>
+                            <span class="comparison-label">${I18n.t('packages.actual_value')}</span>
                         </div>
                         
                         ${showWeight ? `
                         <div class="comparison-row">
-                            <span class="comparison-field">Poids (kg)</span>
+                            <span class="comparison-field">${I18n.t('packages.weight_kg')}</span>
                             <span class="comparison-estimated">${pkg.weight || '-'}</span>
                             <input type="number" id="receive-weight" class="form-input comparison-input" 
                                 step="0.1" min="0" value="${pkg.weight || ''}" placeholder="Poids réel">
@@ -847,7 +847,7 @@ Views.packages = {
                         
                         ${showCbm ? `
                         <div class="comparison-row">
-                            <span class="comparison-field">Volume (m³)</span>
+                            <span class="comparison-field">${I18n.t('packages.volume_cbm')}</span>
                             <span class="comparison-estimated">${pkg.cbm || '-'}</span>
                             <input type="number" id="receive-cbm" class="form-input comparison-input" 
                                 step="0.001" min="0" value="${pkg.cbm || ''}" placeholder="Volume réel">
@@ -856,7 +856,7 @@ Views.packages = {
                         
                         ${showQuantity ? `
                         <div class="comparison-row">
-                            <span class="comparison-field">Pièces</span>
+                            <span class="comparison-field">${I18n.t('packages.pieces')}</span>
                             <span class="comparison-estimated">${pkg.quantity || '-'}</span>
                             <input type="number" id="receive-quantity" class="form-input comparison-input" 
                                 min="1" value="${pkg.quantity || 1}" placeholder="Nombre réel">
@@ -866,26 +866,26 @@ Views.packages = {
                     
                     <!-- Tarif automatique (non-éditable) -->
                     <div class="receive-rate-info">
-                        <span class="rate-label">Tarif appliqué:</span>
+                        <span class="rate-label">${I18n.t('packages.rate_applied')}:</span>
                         ${rateDisplay}
                     </div>
                     
                     <div class="receive-total" id="receive-total">
-                        <span class="total-label">Montant total:</span>
+                        <span class="total-label">${I18n.t('packages.total_amount')}:</span>
                         <span class="total-value" id="receive-total-value">-</span>
                     </div>
                     
                     <div style="margin:12px 0;display:flex;align-items:center;gap:8px">
                         <input type="checkbox" id="receive-print-label" checked>
                         <label for="receive-print-label" style="cursor:pointer;font-size:14px">
-                            ${Icons.get('printer', {size:14})} Générer et imprimer l'étiquette
+                            ${Icons.get('printer', {size:14})} ${I18n.t('packages.print_label')}
                         </label>
                     </div>
                     
                     <div class="receive-actions">
-                        <button class="btn btn-secondary" id="btn-cancel-receive">Annuler</button>
-                        <button class="btn btn-primary" id="btn-confirm-receive" ${!configuredRate ? 'disabled title="Tarif non configuré pour cette route"' : ''}>
-                            ${Icons.get('check', {size:16})} Confirmer réception
+                        <button class="btn btn-secondary" id="btn-cancel-receive">${I18n.t('cancel')}</button>
+                        <button class="btn btn-primary" id="btn-confirm-receive" ${!configuredRate ? `disabled title="${I18n.t('packages.rate_not_configured')}"` : ''}>
+                            ${Icons.get('check', {size:16})} ${I18n.t('packages.confirm_receive')}
                         </button>
                     </div>
                 </div>
@@ -963,13 +963,13 @@ Views.packages = {
         
         // Validation: au moins une valeur de mesure
         if (!weight && !cbm && !quantity) {
-            Toast.error('Veuillez saisir au moins une mesure (poids, volume ou quantité)');
+            Toast.error(I18n.t('packages.enter_measure'));
             return;
         }
         
         // Validation: tarif doit être configuré
         if (!unitPrice) {
-            Toast.error('Tarif non configuré pour cette route. Veuillez configurer les tarifs dans les paramètres.');
+            Toast.error(I18n.t('packages.rate_not_configured_settings'));
             return;
         }
         
@@ -978,7 +978,7 @@ Views.packages = {
         const countSpan = document.getElementById('scan-count');
         
         try {
-            Loader.button(btn, true, { text: 'Validation...' });
+            Loader.button(btn, true, { text: I18n.t('packages.validating') });
             // Appel API pour confirmer la réception avec les valeurs finales
             // Le tarif est envoyé mais le backend peut aussi le recalculer pour sécurité
             const result = await API.packages.receive(pkg.id, {
@@ -1014,13 +1014,13 @@ Views.packages = {
                         <strong>${pkg.tracking_number}</strong>
                         <span>${pkg.client?.name || 'Client'} - ${pkg.description}</span>
                         <span class="text-sm">${measureInfo} × ${unitPrice.toLocaleString()} XAF = ${Math.round(amount).toLocaleString()} XAF</span>
-                        ${result.notification ? '<span class="text-sm text-success">✓ Client notifié</span>' : ''}
+                        ${result.notification ? `<span class="text-sm text-success">✓ ${I18n.t('packages.scanner_client_notified')}</span>` : ''}
                     </div>
                 </div>
             `;
             
             this.playSound('success');
-            Toast.success(`Colis reçu: ${pkg.client?.name || 'Client'}`);
+            Toast.success(`${I18n.t('packages.scanner_received_toast')}: ${pkg.client?.name || 'Client'}`);
             ViewCache.onMutate('packages');
             
             // Auto-print label if checkbox is checked
@@ -1040,7 +1040,7 @@ Views.packages = {
                     cbm: cbm,
                     quantity: quantity,
                     amount: Math.round(amount),
-                    created_at: new Date().toLocaleDateString('fr-FR')
+                    created_at: new Date().toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')
                 });
             }
             
@@ -1101,7 +1101,7 @@ Views.packages = {
         statusDiv.innerHTML = `
             <div class="scan-warning">
                 ${Icons.get('alert-triangle', {size:20})}
-                <span>Colis non pre-enregistre - Saisie manuelle requise</span>
+                <span>${I18n.t('packages.scanner_not_preregistered')}</span>
             </div>
         `;
         
@@ -1124,7 +1124,7 @@ Views.packages = {
 
         try {
             if (!btn) btn = document.getElementById('btn-save-manual');
-            Loader.button(btn, true, { text: 'Enregistrement...' });
+            Loader.button(btn, true, { text: I18n.t('packages.saving') });
 
             // Appel API pour creer le colis
             await API.packages.create({ 
@@ -1156,13 +1156,13 @@ Views.packages = {
                     ${Icons.get('check-circle', {size:24})}
                     <div class="scan-success-info">
                         <strong>${tracking}</strong>
-                        <span>Nouveau client: ${clientName}</span>
+                        <span>${I18n.t('packages.scanner_new_client')}: ${clientName}</span>
                     </div>
                 </div>
             `;
 
             this.playSound('success');
-            Toast.success('Colis enregistre');
+            Toast.success(I18n.t('packages.scanner_registered'));
             ViewCache.onMutate('packages');
 
             // Reset et refocus
@@ -1225,7 +1225,7 @@ Views.packages = {
 
     exportExcel() {
         if (this.allPackages.length === 0) { 
-            Toast.error('Aucune donnee a exporter'); 
+            Toast.error(I18n.t('packages.no_data_export')); 
             return; 
         }
         
@@ -1249,7 +1249,7 @@ Views.packages = {
 
     exportPDF() {
         if (this.allPackages.length === 0) { 
-            Toast.error('Aucune donnee a exporter'); 
+            Toast.error(I18n.t('packages.no_data_export')); 
             return; 
         }
         
@@ -1272,13 +1272,13 @@ Views.packages = {
     
     printLabel(pkgId) {
         const pkg = this.allPackages.find(p => p.id === pkgId);
-        if (!pkg) { Toast.error('Colis non trouve'); return; }
+        if (!pkg) { Toast.error(I18n.t('packages.no_packages')); return; }
         this.openLabelPrintWindow([pkg]);
     },
     
     bulkPrintLabels() {
         const packages = this.allPackages.filter(p => this.selectedIds.has(p.id));
-        if (packages.length === 0) { Toast.error('Aucun colis selectionne'); return; }
+        if (packages.length === 0) { Toast.error(I18n.t('packages.no_packages')); return; }
         this.openLabelPrintWindow(packages);
     },
     
@@ -1319,7 +1319,7 @@ Views.packages = {
                     ${pkg.quantity && pkg.quantity > 1 ? `<div class="label-row"><strong>Qté:</strong> ${pkg.quantity}</div>` : ''}
                     ${pkg.amount ? `<div class="label-row"><strong>Montant:</strong> ${pkg.amount.toLocaleString()} XAF</div>` : ''}
                 </div>
-                <div class="label-footer">${pkg.created_at || new Date().toLocaleDateString('fr-FR')}</div>
+                <div class="label-footer">${pkg.created_at || new Date().toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')}</div>
             </div>`;
 
         this._openPrintWindow(labelHtml);
@@ -1344,7 +1344,7 @@ Views.packages = {
                     ${p.weight ? `<div class="label-row"><strong>Poids:</strong> ${p.weight} kg</div>` : ''}
                     ${p.amount ? `<div class="label-row"><strong>Montant:</strong> ${(p.amount||0).toLocaleString()} XAF</div>` : ''}
                 </div>
-                <div class="label-footer">${p.created_at ? new Date(p.created_at).toLocaleDateString('fr-FR') : ''}</div>
+                <div class="label-footer">${p.created_at ? new Date(p.created_at).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : ''}</div>
             </div>`;
         }).join('');
 
@@ -1379,5 +1379,5 @@ Views.packages = {
         const allTypes = [...(CONFIG.PACKAGE_TYPES?.air || []), ...(CONFIG.PACKAGE_TYPES?.sea || [])];
         return allTypes.find(t => t.value === type)?.label || type; 
     },
-    formatMoney(amount) { return new Intl.NumberFormat('fr-FR').format(amount) + ' XAF'; }
+    formatMoney(amount) { return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount) + ' XAF'; }
 };

@@ -15,12 +15,12 @@ Views.testWebhooks = {
     },
     
     statuses: [
-        { id: 'pending', label: 'En attente', dot: 'pending' },
-        { id: 'in_transit', label: 'En transit', dot: 'in_transit' },
-        { id: 'arrived_port', label: 'Arrivé', dot: 'arrived_port' },
-        { id: 'out_for_delivery', label: 'En livraison', dot: 'out_for_delivery' },
-        { id: 'delivered', label: 'Livré', dot: 'delivered' },
-        { id: 'exception', label: 'Exception', dot: 'exception' }
+        { id: 'pending', label: () => I18n.t('testWebhooks.status_pending'), dot: 'pending' },
+        { id: 'in_transit', label: () => I18n.t('testWebhooks.status_in_transit'), dot: 'in_transit' },
+        { id: 'arrived_port', label: () => I18n.t('testWebhooks.status_arrived'), dot: 'arrived_port' },
+        { id: 'out_for_delivery', label: () => I18n.t('testWebhooks.status_out_delivery'), dot: 'out_for_delivery' },
+        { id: 'delivered', label: () => I18n.t('testWebhooks.status_delivered'), dot: 'delivered' },
+        { id: 'exception', label: () => I18n.t('testWebhooks.status_exception'), dot: 'exception' }
     ],
     
     async render() {
@@ -31,16 +31,16 @@ Views.testWebhooks = {
         container.innerHTML = `
             <div class="test-webhooks">
                 <div class="page-header">
-                    <h1 class="page-title">Simulateur de Webhooks</h1>
-                    <p class="page-subtitle">Testez le flux de tracking en simulant les webhooks des transporteurs</p>
+                    <h1 class="page-title">${I18n.t('testWebhooks.title')}</h1>
+                    <p class="page-subtitle">${I18n.t('testWebhooks.subtitle')}</p>
                 </div>
                 
                 <div class="info-box">
-                    <strong>💡 Comment ça marche ?</strong>
-                    1. Sélectionnez un transporteur<br>
-                    2. Entrez le numéro de tracking d'un départ existant<br>
-                    3. Choisissez un statut et une localisation<br>
-                    4. Envoyez le webhook pour voir la mise à jour en temps réel
+                    <strong>${I18n.t('testWebhooks.how_it_works')}</strong>
+                    ${I18n.t('testWebhooks.step1')}<br>
+                    ${I18n.t('testWebhooks.step2')}<br>
+                    ${I18n.t('testWebhooks.step3')}<br>
+                    ${I18n.t('testWebhooks.step4')}
                 </div>
                 
                 <div class="test-grid">
@@ -48,7 +48,7 @@ Views.testWebhooks = {
                     <div class="simulator-card">
                         <h3>
                             <svg class="icon" viewBox="0 0 24 24"><use href="#send"></use></svg>
-                            Envoyer un webhook
+                            ${I18n.t('testWebhooks.send_webhook')}
                         </h3>
                         
                         <!-- Carrier Selector -->
@@ -62,12 +62,12 @@ Views.testWebhooks = {
                         </div>
                         
                         <!-- Status Selector -->
-                        <label class="form-label">Statut</label>
+                        <label class="form-label">${I18n.t('testWebhooks.status')}</label>
                         <div class="status-grid">
                             ${this.statuses.map(s => `
                                 <button class="status-btn ${this.status === s.id ? 'active' : ''}" data-status="${s.id}">
                                     <span class="status-dot ${s.dot}"></span>
-                                    ${s.label}
+                                    ${typeof s.label === 'function' ? s.label() : s.label}
                                 </button>
                             `).join('')}
                         </div>
@@ -75,26 +75,26 @@ Views.testWebhooks = {
                         <!-- Form -->
                         <div class="simulator-form">
                             <div class="form-group">
-                                <label class="form-label">Numéro de tracking</label>
+                                <label class="form-label">${I18n.t('testWebhooks.tracking_number')}</label>
                                 <input type="text" id="webhook-tracking" class="form-input" 
-                                       placeholder="Ex: DHL123456789" value="">
+                                       placeholder="${I18n.t('testWebhooks.tracking_placeholder')}" value="">
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Localisation</label>
+                                <label class="form-label">${I18n.t('testWebhooks.location')}</label>
                                 <input type="text" id="webhook-location" class="form-input" 
-                                       placeholder="Ex: Dubai, UAE" value="Dubai, UAE">
+                                       placeholder="${I18n.t('testWebhooks.location_placeholder')}" value="Dubai, UAE">
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Notes (optionnel)</label>
+                                <label class="form-label">${I18n.t('testWebhooks.notes_optional')}</label>
                                 <input type="text" id="webhook-notes" class="form-input" 
-                                       placeholder="Ex: Colis en cours de traitement">
+                                       placeholder="${I18n.t('testWebhooks.notes_placeholder')}">
                             </div>
                             
                             <button class="btn-send-webhook" id="btn-send-webhook">
                                 <svg class="icon" viewBox="0 0 24 24"><use href="#send"></use></svg>
-                                Envoyer le webhook
+                                ${I18n.t('testWebhooks.send')}
                             </button>
                         </div>
                     </div>
@@ -104,9 +104,9 @@ Views.testWebhooks = {
                         <h3>
                             <span style="display: flex; align-items: center; gap: 8px;">
                                 <svg class="icon" viewBox="0 0 24 24"><use href="#list"></use></svg>
-                                Historique des tests
+                                ${I18n.t('testWebhooks.history')}
                             </span>
-                            <button class="btn-clear-log" id="btn-clear-log">Effacer</button>
+                            <button class="btn-clear-log" id="btn-clear-log">${I18n.t('testWebhooks.clear')}</button>
                         </h3>
                         
                         <div class="log-list" id="log-list">
@@ -122,7 +122,7 @@ Views.testWebhooks = {
     
     renderLogs() {
         if (this.logs.length === 0) {
-            return '<div class="log-empty">Aucun webhook envoyé</div>';
+            return `<div class="log-empty">${I18n.t('testWebhooks.no_webhooks')}</div>`;
         }
         
         return this.logs.map(log => `
@@ -139,7 +139,7 @@ Views.testWebhooks = {
                 </div>
                 <div class="log-item-result">
                     ${log.success 
-                        ? `✅ ${log.result.updated_packages || 0} colis mis à jour, ${log.result.notified_clients || 0} clients notifiés`
+                        ? `✅ ${log.result.updated_packages || 0} ${I18n.t('testWebhooks.packages_updated')}, ${log.result.notified_clients || 0} ${I18n.t('testWebhooks.clients_notified')}`
                         : `❌ ${log.error}`
                     }
                 </div>
@@ -182,20 +182,20 @@ Views.testWebhooks = {
         const notes = document.getElementById('webhook-notes')?.value?.trim();
         
         if (!tracking) {
-            Toast.error('Veuillez entrer un numéro de tracking');
+            Toast.error(I18n.t('testWebhooks.enter_tracking'));
             return;
         }
         
         const btn = document.getElementById('btn-send-webhook');
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span> Envoi...';
+        btn.innerHTML = `<span class="spinner"></span> ${I18n.t('testWebhooks.sending')}`;
         
         const log = {
             carrier: this.carrier,
             tracking,
             status: this.status,
             location: location || 'Unknown',
-            time: new Date().toLocaleTimeString('fr-FR'),
+            time: new Date().toLocaleTimeString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US'),
             success: false,
             result: null,
             error: null
@@ -214,10 +214,10 @@ Views.testWebhooks = {
             log.success = true;
             log.result = result;
             
-            Toast.success(`Webhook envoyé! ${result.updated_packages || 0} colis mis à jour`);
+            Toast.success(`${I18n.t('testWebhooks.webhook_sent')} ${result.updated_packages || 0} ${I18n.t('testWebhooks.packages_updated')}`);
             
         } catch (error) {
-            log.error = error.message || 'Erreur inconnue';
+            log.error = error.message || I18n.t('testWebhooks.unknown_error');
             Toast.error(log.error);
         }
         
@@ -230,7 +230,7 @@ Views.testWebhooks = {
         btn.disabled = false;
         btn.innerHTML = `
             <svg class="icon" viewBox="0 0 24 24"><use href="#send"></use></svg>
-            Envoyer le webhook
+            ${I18n.t('testWebhooks.send')}
         `;
     },
     

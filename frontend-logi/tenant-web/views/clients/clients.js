@@ -32,21 +32,21 @@ Views.clients = {
                         <div class="stat-icon bg-primary">${Icons.get('users', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="stat-total">-</span>
-                            <span class="stat-label">Total clients</span>
+                            <span class="stat-label">${I18n.t('clients.total_clients')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-success">${Icons.get('user-check', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="stat-active">-</span>
-                            <span class="stat-label">Clients actifs</span>
+                            <span class="stat-label">${I18n.t('clients.active_clients')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-info">${Icons.get('user-plus', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="stat-new">-</span>
-                            <span class="stat-label">Nouveaux ce mois</span>
+                            <span class="stat-label">${I18n.t('clients.new_this_month')}</span>
                         </div>
                     </div>
                 </div>
@@ -56,12 +56,12 @@ Views.clients = {
                     <div class="card-body">
                         <div class="filters-grid">
                             <div class="form-group">
-                                <label class="form-label">Recherche</label>
+                                <label class="form-label">${I18n.t('search')}</label>
                                 <input type="text" id="filter-search" class="form-input" 
-                                    placeholder="Nom, email, telephone..." value="${this.filters.search}">
+                                    placeholder="${I18n.t('clients.search_placeholder')}" value="${this.filters.search}">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Statut</label>
+                                <label class="form-label">${I18n.t('packages.status')}</label>
                                 <div id="filter-status-container"></div>
                             </div>
                         </div>
@@ -71,7 +71,7 @@ Views.clients = {
                 <!-- Liste -->
                 <div class="card">
                     <div class="card-body" id="clients-list">
-                        ${Loader.page('Chargement...')}
+                        ${Loader.page(I18n.t('loading'))}
                     </div>
                 </div>
             </div>
@@ -105,11 +105,11 @@ Views.clients = {
     initFilters() {
         this.statusSelect = new SearchSelect({
             container: '#filter-status-container',
-            placeholder: 'Tous',
+            placeholder: I18n.t('all'),
             items: [
-                { id: '', name: 'Tous les statuts' },
-                { id: 'active', name: 'Actifs' },
-                { id: 'inactive', name: 'Inactifs' }
+                { id: '', name: I18n.t('clients.all_statuses') },
+                { id: 'active', name: I18n.t('clients.active') },
+                { id: 'inactive', name: I18n.t('clients.inactive') }
             ],
             onSelect: (item) => { 
                 this.filters.status = item?.id || ''; 
@@ -121,7 +121,7 @@ Views.clients = {
     
     async loadClients(silent = false) {
         const container = document.getElementById('clients-list');
-        if (!silent) container.innerHTML = Loader.page('Chargement...');
+        if (!silent) container.innerHTML = Loader.page(I18n.t('loading'));
         
         const cacheKey = 'clients:list:' + this.currentPage;
         
@@ -145,9 +145,9 @@ Views.clients = {
                 container.innerHTML = `
                     <div class="error-state">
                         ${Icons.get('alert-circle', {size:48})}
-                        <h3>Erreur de chargement</h3>
+                        <h3>${I18n.t('error_loading')}</h3>
                         <p>${error.message}</p>
-                        <button class="btn btn-primary" onclick="Views.clients.loadClients()">Reessayer</button>
+                        <button class="btn btn-primary" onclick="Views.clients.loadClients()">${I18n.t('retry')}</button>
                     </div>
                 `;
             }
@@ -160,7 +160,7 @@ Views.clients = {
             container.innerHTML = `
                 <div class="empty-state">
                     ${Icons.get('users', {size:48})}
-                    <p class="empty-state-title">Aucun client trouve</p>
+                    <p class="empty-state-title">${I18n.t('clients.no_clients')}</p>
                 </div>
             `;
             return;
@@ -176,13 +176,13 @@ Views.clients = {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Client</th>
-                            <th>Contact</th>
-                            <th>Colis</th>
-                            <th>Solde</th>
-                            <th>Inscription</th>
-                            <th>Statut</th>
-                            <th>Actions</th>
+                            <th>${I18n.t('clients.name')}</th>
+                            <th>${I18n.t('clients.contact')}</th>
+                            <th>${I18n.t('clients.packages')}</th>
+                            <th>${I18n.t('clients.balance')}</th>
+                            <th>${I18n.t('clients.registration')}</th>
+                            <th>${I18n.t('packages.status')}</th>
+                            <th>${I18n.t('actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -191,7 +191,7 @@ Views.clients = {
                 </table>
             </div>
             <div class="table-footer">
-                <span class="text-sm text-muted">${total} client(s)</span>
+                <span class="text-sm text-muted">${total} ${I18n.t('clients.title').toLowerCase()}</span>
                 <div id="clients-pagination"></div>
             </div>
         `;
@@ -214,7 +214,7 @@ Views.clients = {
         const phone = c.phone || '-';
         const packagesCount = c.packages_count || c.stats?.packages_count || 0;
         const balance = c.balance || c.stats?.balance || 0;
-        const createdAt = c.created_at ? new Date(c.created_at).toLocaleDateString('fr-FR') : '-';
+        const createdAt = c.created_at ? new Date(c.created_at).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : '-';
         const isActive = c.is_active !== false;
         
         return `
@@ -234,14 +234,14 @@ Views.clients = {
                 <td>${createdAt}</td>
                 <td>
                     <span class="status-badge ${isActive ? 'status-delivered' : 'status-pending'}">
-                        ${isActive ? 'Actif' : 'Inactif'}
+                        ${isActive ? I18n.t('clients.active') : I18n.t('clients.inactive')}
                     </span>
                 </td>
                 <td>
                     <div class="table-actions">
-                        <button class="btn btn-sm btn-ghost" onclick="Views.clients.viewClient('${c.id}')" title="Voir les détails">${Icons.get('eye', {size:14})}</button>
-                        <button class="btn btn-sm btn-ghost" onclick="Views.clients.editClient('${c.id}')" title="Modifier">${Icons.get('edit', {size:14})}</button>
-                        <button class="btn btn-sm btn-ghost" onclick="Views.clients.toggleActive('${c.id}', ${isActive}, this)" title="${isActive ? 'Désactiver' : 'Activer'}">${Icons.get(isActive ? 'user-x' : 'user-check', {size:14})}</button>
+                        <button class="btn btn-sm btn-ghost" onclick="Views.clients.viewClient('${c.id}')" title="${I18n.t('clients.view_details')}">${Icons.get('eye', {size:14})}</button>
+                        <button class="btn btn-sm btn-ghost" onclick="Views.clients.editClient('${c.id}')" title="${I18n.t('edit')}">${Icons.get('edit', {size:14})}</button>
+                        <button class="btn btn-sm btn-ghost" onclick="Views.clients.toggleActive('${c.id}', ${isActive}, this)" title="${isActive ? I18n.t('clients.deactivate') : I18n.t('clients.activate')}">${Icons.get(isActive ? 'user-x' : 'user-check', {size:14})}</button>
                     </div>
                 </td>
             </tr>
@@ -286,27 +286,27 @@ Views.clients = {
                         <div class="client-stats-grid">
                             <div class="client-stat">
                                 <span class="client-stat-value">${stats.packages_count || 0}</span>
-                                <span class="client-stat-label">Colis total</span>
+                                <span class="client-stat-label">${I18n.t('clients.total_packages')}</span>
                             </div>
                             <div class="client-stat">
                                 <span class="client-stat-value">${stats.pending_packages || 0}</span>
-                                <span class="client-stat-label">En cours</span>
+                                <span class="client-stat-label">${I18n.t('clients.in_progress')}</span>
                             </div>
                             <div class="client-stat">
                                 <span class="client-stat-value">${this.formatMoney(stats.total_spent || 0)}</span>
-                                <span class="client-stat-label">Total depense</span>
+                                <span class="client-stat-label">${I18n.t('clients.total_spent')}</span>
                             </div>
                             <div class="client-stat ${(stats.balance || 0) > 0 ? 'text-error' : ''}">
                                 <span class="client-stat-value">${this.formatMoney(stats.balance || 0)}</span>
-                                <span class="client-stat-label">Solde du</span>
+                                <span class="client-stat-label">${I18n.t('clients.balance_due')}</span>
                             </div>
                         </div>
                     </div>
                 `,
                 footer: `
-                    <button class="btn btn-secondary" onclick="Modal.close()">Fermer</button>
-                    <button class="btn btn-outline" onclick="Router.navigate('/packages?client=${clientId}'); Modal.close();">${Icons.get('package', {size:16})} Voir colis</button>
-                    <button class="btn btn-primary" onclick="Views.clients.editClient('${clientId}'); Modal.close();">${Icons.get('edit', {size:16})} Modifier</button>
+                    <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('close')}</button>
+                    <button class="btn btn-outline" onclick="Router.navigate('/packages?client=${clientId}'); Modal.close();">${Icons.get('package', {size:16})} ${I18n.t('clients.view_packages')}</button>
+                    <button class="btn btn-primary" onclick="Views.clients.editClient('${clientId}'); Modal.close();">${Icons.get('edit', {size:16})} ${I18n.t('edit')}</button>
                 `
             });
         } catch (error) {
@@ -319,34 +319,34 @@ Views.clients = {
         const client = isEdit ? this.allClients.find(c => c.id === clientId) : null;
         
         Modal.open({
-            title: isEdit ? 'Modifier le client' : 'Nouveau client',
+            title: isEdit ? I18n.t('clients.edit_client') : I18n.t('clients.new_client'),
             content: `
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Prenom *</label>
-                        <input type="text" id="client-firstname" class="form-input" value="${client?.first_name || ''}" placeholder="Prenom">
+                        <label class="form-label">${I18n.t('clients.first_name')} *</label>
+                        <input type="text" id="client-firstname" class="form-input" value="${client?.first_name || ''}">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Nom *</label>
-                        <input type="text" id="client-lastname" class="form-input" value="${client?.last_name || ''}" placeholder="Nom">
+                        <label class="form-label">${I18n.t('clients.last_name')} *</label>
+                        <input type="text" id="client-lastname" class="form-input" value="${client?.last_name || ''}">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">${I18n.t('clients.email')}</label>
                     <input type="email" id="client-email" class="form-input" value="${client?.email || ''}" placeholder="email@exemple.com">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Telephone *</label>
+                    <label class="form-label">${I18n.t('clients.phone')} *</label>
                     <input type="tel" id="client-phone" class="form-input" value="${client?.phone || ''}" placeholder="+237 6XX XXX XXX">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Adresse</label>
-                    <textarea id="client-address" class="form-input" rows="2" placeholder="Adresse complete">${client?.address || ''}</textarea>
+                    <label class="form-label">${I18n.t('clients.address')}</label>
+                    <textarea id="client-address" class="form-input" rows="2">${client?.address || ''}</textarea>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-client">${isEdit ? 'Enregistrer' : 'Creer'}</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-client">${isEdit ? I18n.t('save') : I18n.t('add')}</button>
             `
         });
         
@@ -364,20 +364,20 @@ Views.clients = {
         const phone = document.getElementById('client-phone').value.trim();
         const address = document.getElementById('client-address').value.trim();
         
-        if (!firstName || !lastName) { Toast.error('Le nom et prenom sont requis'); return; }
-        if (!phone) { Toast.error('Le telephone est requis'); return; }
+        if (!firstName || !lastName) { Toast.error(I18n.t('clients.name_required')); return; }
+        if (!phone) { Toast.error(I18n.t('clients.phone_required')); return; }
         
         const data = { first_name: firstName, last_name: lastName, email: email || undefined, phone, address: address || undefined };
         
         try {
             if (!btn) btn = document.getElementById('btn-save-client');
-            Loader.button(btn, true, { text: clientId ? 'Enregistrement...' : 'Creation...' });
+            Loader.button(btn, true, { text: clientId ? I18n.t('clients.saving') : I18n.t('clients.creating') });
             if (clientId) {
                 await API.clients.update(clientId, data);
-                Toast.success('Client modifie');
+                Toast.success(I18n.t('clients.client_updated'));
             } else {
                 await API.clients.create(data);
-                Toast.success('Client cree');
+                Toast.success(I18n.t('clients.client_created'));
             }
             Modal.close();
             this.loadClients();
@@ -390,8 +390,8 @@ Views.clients = {
     
     async toggleActive(clientId, currentlyActive, btn = null) {
         const confirmed = await Modal.confirm({
-            title: `${currentlyActive ? 'Desactiver' : 'Activer'} le client ?`,
-            message: `Voulez-vous vraiment ${currentlyActive ? 'desactiver' : 'activer'} ce client ?`,
+            title: `${currentlyActive ? I18n.t('clients.deactivate') : I18n.t('clients.activate')} ?`,
+            message: I18n.t('clients.confirm_toggle').replace('{action}', currentlyActive ? I18n.t('clients.deactivate').toLowerCase() : I18n.t('clients.activate').toLowerCase()),
             danger: currentlyActive
         });
         
@@ -399,7 +399,7 @@ Views.clients = {
             try {
                 Loader.button(btn, true, { text: '' });
                 await API.clients.toggleActive(clientId);
-                Toast.success(`Client ${currentlyActive ? 'desactive' : 'active'}`);
+                Toast.success(currentlyActive ? I18n.t('clients.client_deactivated') : I18n.t('clients.client_activated'));
                 this.loadClients();
             } catch (error) {
                 Toast.error(`Erreur: ${error.message}`);
@@ -411,7 +411,7 @@ Views.clients = {
     
     exportClients() {
         if (this.allClients.length === 0) { 
-            Toast.error('Aucune donnee a exporter'); 
+            Toast.error(I18n.t('packages.no_data_export')); 
             return; 
         }
         
@@ -423,18 +423,18 @@ Views.clients = {
 
     exportClientsPDF() {
         if (this.allClients.length === 0) { 
-            Toast.error('Aucune donnee a exporter'); 
+            Toast.error(I18n.t('packages.no_data_export')); 
             return; 
         }
         
         ExportService.exportClients(this.allClients, {
-            title: 'Liste des Clients',
+            title: I18n.t('clients.title'),
             format: 'pdf',
             filename: `clients_export_${new Date().toISOString().split('T')[0]}.pdf`
         });
     },
     
     formatMoney(amount) {
-        return new Intl.NumberFormat('fr-FR').format(amount || 0) + ' XAF';
+        return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount || 0) + ' XAF';
     }
 };

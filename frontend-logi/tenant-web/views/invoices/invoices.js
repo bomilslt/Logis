@@ -20,7 +20,7 @@ Views.invoices = {
                 </div>
                 
                 <div class="card">
-                    <div class="card-body" id="invoices-table">${Loader.page('Chargement...')}</div>
+                    <div class="card-body" id="invoices-table">${Loader.page(I18n.t('loading'))}</div>
                 </div>
             </div>
         `;
@@ -50,8 +50,8 @@ Views.invoices = {
                 document.getElementById('invoices-table').innerHTML = `
                     <div class="empty-state">
                         ${Icons.get('alert-circle', {size:32})}
-                        <p>Erreur de chargement: ${error.message}</p>
-                        <button class="btn btn-outline" onclick="Views.invoices.loadData()">Reessayer</button>
+                        <p>${I18n.t('invoices.load_error').replace('{msg}', error.message)}</p>
+                        <button class="btn btn-outline" onclick="Views.invoices.loadData()">${I18n.t('invoices.retry')}</button>
                     </div>
                 `;
             }
@@ -62,35 +62,35 @@ Views.invoices = {
         new DataTable({
             container: '#invoices-table',
             data: this.invoices,
-            emptyMessage: 'Aucune facture',
+            emptyMessage: I18n.t('invoices.no_invoices'),
             columns: [
-                { key: 'invoice_number', label: 'N° Facture' },
-                { key: 'client', label: 'Client', render: (v, row) => row.client?.full_name || row.client_name || 'N/A' },
-                { key: 'description', label: 'Description' },
-                { key: 'amount', label: 'Montant', render: (v, row) => new Intl.NumberFormat('fr-FR').format(v) + ' ' + (row.currency || 'XAF') },
-                { key: 'issue_date', label: 'Date', render: (v) => v ? new Date(v).toLocaleDateString('fr-FR') : '' },
-                { key: 'status', label: 'Statut', render: (v) => {
-                    const labels = { draft: 'Brouillon', sent: 'Envoyee', paid: 'Payee', cancelled: 'Annulee' };
+                { key: 'invoice_number', label: I18n.t('invoices.invoice_number') },
+                { key: 'client', label: I18n.t('invoices.client'), render: (v, row) => row.client?.full_name || row.client_name || 'N/A' },
+                { key: 'description', label: I18n.t('invoices.description') },
+                { key: 'amount', label: I18n.t('invoices.amount'), render: (v, row) => new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(v) + ' ' + (row.currency || 'XAF') },
+                { key: 'issue_date', label: I18n.t('invoices.date'), render: (v) => v ? new Date(v).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : '' },
+                { key: 'status', label: I18n.t('invoices.status'), render: (v) => {
+                    const labels = { draft: I18n.t('invoices.status_draft'), sent: I18n.t('invoices.status_sent'), paid: I18n.t('invoices.status_paid'), cancelled: I18n.t('invoices.status_cancelled') };
                     const classes = { draft: 'status-pending', sent: 'status-in-transit', paid: 'status-delivered', cancelled: 'status-customs' };
                     return `<span class="status-badge ${classes[v] || 'status-pending'}">${labels[v] || v}</span>`;
                 }},
-                { key: 'id', label: 'Actions', render: (v, row) => `
+                { key: 'id', label: I18n.t('invoices.actions'), render: (v, row) => `
                     <div class="table-actions">
                         ${row.status === 'draft' ? `
-                            <button class="btn btn-sm btn-ghost" onclick="Views.invoices.sendInvoice('${v}', this)" title="Envoyer">
+                            <button class="btn btn-sm btn-ghost" onclick="Views.invoices.sendInvoice('${v}', this)" title="${I18n.t('invoices.send_title')}">
                                 ${Icons.get('send', {size:14})}
                             </button>
                         ` : ''}
                         ${row.status !== 'paid' && row.status !== 'cancelled' ? `
-                            <button class="btn btn-sm btn-ghost" onclick="Views.invoices.markPaid('${v}', this)" title="Marquer payee">
+                            <button class="btn btn-sm btn-ghost" onclick="Views.invoices.markPaid('${v}', this)" title="${I18n.t('invoices.mark_paid_title')}">
                                 ${Icons.get('check', {size:14})}
                             </button>
                         ` : ''}
-                        <button class="btn btn-sm btn-ghost" onclick="Views.invoices.print('${v}')" title="Imprimer">
+                        <button class="btn btn-sm btn-ghost" onclick="Views.invoices.print('${v}')" title="${I18n.t('invoices.print_title')}">
                             ${Icons.get('printer', {size:14})}
                         </button>
                         ${row.status !== 'paid' ? `
-                            <button class="btn btn-sm btn-ghost text-error" onclick="Views.invoices.cancelInvoice('${v}', this)" title="Annuler">
+                            <button class="btn btn-sm btn-ghost text-error" onclick="Views.invoices.cancelInvoice('${v}', this)" title="${I18n.t('invoices.cancel_title')}">
                                 ${Icons.get('x', {size:14})}
                             </button>
                         ` : ''}
@@ -114,38 +114,38 @@ Views.invoices = {
         const isEdit = !!invoice;
         
         Modal.open({
-            title: isEdit ? 'Modifier la facture' : 'Nouvelle facture',
+            title: isEdit ? I18n.t('invoices.edit_invoice') : I18n.t('invoices.new_invoice'),
             content: `
                 <div class="form-group">
-                    <label class="form-label">Client *</label>
+                    <label class="form-label">${I18n.t('invoices.client')} *</label>
                     <div id="invoice-client"></div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Description *</label>
-                    <input type="text" id="invoice-desc" class="form-input" placeholder="Ex: Livraison a domicile" value="${invoice?.description || ''}">
+                    <label class="form-label">${I18n.t('invoices.description')} *</label>
+                    <input type="text" id="invoice-desc" class="form-input" placeholder="${I18n.t('invoices.desc_placeholder')}" value="${invoice?.description || ''}">
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Montant *</label>
+                        <label class="form-label">${I18n.t('invoices.amount')} *</label>
                         <input type="number" id="invoice-amount" class="form-input" placeholder="0" value="${invoice?.amount || ''}" min="0" step="0.01">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Devise</label>
+                        <label class="form-label">${I18n.t('invoices.currency')}</label>
                         <div id="invoice-currency-container"></div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Date d'echeance</label>
+                    <label class="form-label">${I18n.t('invoices.due_date')}</label>
                     <div id="invoice-due-date-container"></div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Notes</label>
+                    <label class="form-label">${I18n.t('invoices.notes')}</label>
                     <textarea id="invoice-notes" class="form-input" rows="2">${invoice?.notes || ''}</textarea>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-invoice">${isEdit ? 'Enregistrer' : 'Creer la facture'}</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-invoice">${isEdit ? I18n.t('invoices.save') : I18n.t('invoices.create_invoice')}</button>
             `
         });
         
@@ -153,7 +153,7 @@ Views.invoices = {
         const clientItems = this.clients.map(c => ({ id: c.id, name: c.full_name || `${c.first_name} ${c.last_name}` }));
         this.clientSelect = new SearchSelect({
             container: '#invoice-client',
-            placeholder: 'Selectionner un client',
+            placeholder: I18n.t('invoices.select_client'),
             items: clientItems,
             onSelect: () => {}
         });
@@ -162,7 +162,7 @@ Views.invoices = {
         // Init currency select
         this.currencySelect = new SearchSelect({
             container: '#invoice-currency-container',
-            placeholder: 'Devise',
+            placeholder: I18n.t('invoices.currency'),
             items: CONFIG.CURRENCIES.map(c => ({ id: c, name: c })),
             onSelect: () => {}
         });
@@ -171,7 +171,7 @@ Views.invoices = {
         // Init due date picker
         this.dueDatePicker = new DatePicker({
             container: document.getElementById('invoice-due-date-container'),
-            placeholder: 'Date d\'echeance',
+            placeholder: I18n.t('invoices.due_date'),
             value: invoice?.due_date || null,
             onChange: () => {}
         });
@@ -188,27 +188,27 @@ Views.invoices = {
         const notes = document.getElementById('invoice-notes').value.trim();
         
         if (!clientId) {
-            Toast.error('Selectionnez un client');
+            Toast.error(I18n.t('invoices.select_client_error'));
             return;
         }
         if (!description) {
-            Toast.error('Entrez une description');
+            Toast.error(I18n.t('invoices.enter_desc'));
             return;
         }
         if (amount <= 0) {
-            Toast.error('Entrez un montant valide');
+            Toast.error(I18n.t('invoices.enter_valid_amount'));
             return;
         }
         
         try {
             if (!btn) btn = document.getElementById('btn-save-invoice');
-            Loader.button(btn, true, { text: invoiceId ? 'Enregistrement...' : 'Creation...' });
+            Loader.button(btn, true, { text: invoiceId ? I18n.t('invoices.saving') : I18n.t('invoices.creating') });
             if (invoiceId) {
                 await API.invoices.update(invoiceId, { description, amount, currency, due_date: dueDate, notes });
-                Toast.success('Facture modifiee');
+                Toast.success(I18n.t('invoices.invoice_updated'));
             } else {
                 await API.invoices.create({ client_id: clientId, description, amount, currency, due_date: dueDate, notes });
-                Toast.success('Facture creee');
+                Toast.success(I18n.t('invoices.invoice_created'));
             }
             Modal.close();
             await this.loadData();
@@ -221,11 +221,11 @@ Views.invoices = {
     },
     
     async sendInvoice(id, btn = null) {
-        if (await Modal.confirm({ title: 'Envoyer la facture', message: 'Envoyer cette facture au client ?' })) {
+        if (await Modal.confirm({ title: I18n.t('invoices.send_invoice'), message: I18n.t('invoices.send_invoice_msg') })) {
             try {
                 Loader.button(btn, true, { text: '' });
                 await API.invoices.send(id);
-                Toast.success('Facture envoyee');
+                Toast.success(I18n.t('invoices.invoice_sent'));
                 await this.loadData();
             } catch (error) {
                 Toast.error(`Erreur: ${error.message}`);
@@ -236,11 +236,11 @@ Views.invoices = {
     },
     
     async markPaid(id, btn = null) {
-        if (await Modal.confirm({ title: 'Marquer comme payee', message: 'Confirmer que cette facture a ete payee ?' })) {
+        if (await Modal.confirm({ title: I18n.t('invoices.mark_paid'), message: I18n.t('invoices.mark_paid_msg') })) {
             try {
                 Loader.button(btn, true, { text: '' });
                 await API.invoices.markPaid(id);
-                Toast.success('Facture marquee comme payee');
+                Toast.success(I18n.t('invoices.invoice_paid'));
                 await this.loadData();
             } catch (error) {
                 Toast.error(`Erreur: ${error.message}`);
@@ -251,11 +251,11 @@ Views.invoices = {
     },
     
     async cancelInvoice(id, btn = null) {
-        if (await Modal.confirm({ title: 'Annuler la facture', message: 'Annuler cette facture ?', danger: true })) {
+        if (await Modal.confirm({ title: I18n.t('invoices.cancel_invoice'), message: I18n.t('invoices.cancel_invoice_msg'), danger: true })) {
             try {
                 Loader.button(btn, true, { text: '' });
                 await API.invoices.cancel(id);
-                Toast.success('Facture annulee');
+                Toast.success(I18n.t('invoices.invoice_cancelled'));
                 await this.loadData();
             } catch (error) {
                 Toast.error(`Erreur: ${error.message}`);
@@ -272,8 +272,8 @@ Views.invoices = {
         // Utiliser le service de facture centralisé
         InvoiceService.generateInvoice({
             invoice_number: invoice.invoice_number,
-            date: invoice.issue_date ? new Date(invoice.issue_date).toLocaleDateString('fr-FR') : new Date().toLocaleDateString('fr-FR'),
-            due_date: invoice.due_date ? new Date(invoice.due_date).toLocaleDateString('fr-FR') : null,
+            date: invoice.issue_date ? new Date(invoice.issue_date).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : new Date().toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US'),
+            due_date: invoice.due_date ? new Date(invoice.due_date).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : null,
             client: {
                 name: invoice.client?.full_name || invoice.client_name || 'Client',
                 phone: invoice.client?.phone || '',

@@ -95,9 +95,8 @@ const App = {
         // Re-render current view on language change
         I18n.onChange(() => {
             this.updateHeaderUser();
-            // Re-render the current view to apply translations
-            const hash = location.hash.slice(1) || '/dashboard';
-            Router.navigate(hash);
+            // Force re-render the current view (Router.navigate won't fire hashchange if same hash)
+            Router.handleRoute();
         });
     },
 

@@ -18,19 +18,19 @@ Views.settings = {
                 
                 <div class="settings-tabs">
                     <button class="settings-tab ${this.currentTab === 'general' ? 'active' : ''}" data-tab="general">
-                        ${Icons.get('settings', {size:16})} General
+                        ${Icons.get('settings', {size:16})} ${I18n.t('settings.tab_general')}
                     </button>
                     <button class="settings-tab ${this.currentTab === 'system' ? 'active' : ''}" data-tab="system">
-                        ${Icons.get('sliders', {size:16})} Systeme
+                        ${Icons.get('sliders', {size:16})} ${I18n.t('settings.tab_system')}
                     </button>
                     <button class="settings-tab ${this.currentTab === 'notifications' ? 'active' : ''}" data-tab="notifications">
-                        ${Icons.get('message-circle', {size:16})} SMS / WhatsApp
+                        ${Icons.get('message-circle', {size:16})} ${I18n.t('settings.tab_notifications')}
                     </button>
                     <button class="settings-tab ${this.currentTab === 'online-payments' ? 'active' : ''}" data-tab="online-payments">
-                        ${Icons.get('credit-card', {size:16})} Paiement en ligne
+                        ${Icons.get('credit-card', {size:16})} ${I18n.t('settings.tab_online_payments')}
                     </button>
                     <button class="settings-tab ${this.currentTab === 'appearance' ? 'active' : ''}" data-tab="appearance">
-                        ${Icons.get('sun', {size:16})} Apparence
+                        ${Icons.get('sun', {size:16})} ${I18n.t('settings.tab_appearance')}
                     </button>
                 </div>
                 
@@ -80,7 +80,7 @@ Views.settings = {
     // ONGLET GENERAL
     // ============================================
     async renderGeneralTab(container) {
-        container.innerHTML = Loader.page('Chargement...');
+        container.innerHTML = Loader.page(I18n.t('loading'));
         
         // Charger les paramètres depuis l'API
         let settings = {
@@ -110,58 +110,58 @@ Views.settings = {
         
         container.innerHTML = `
             <div class="card mb-md">
-                <div class="card-header"><h3 class="card-title">Entreprise</h3></div>
+                <div class="card-header"><h3 class="card-title">${I18n.t('settings.company')}</h3></div>
                 <div class="card-body">
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Nom de l'entreprise</label>
+                            <label class="form-label">${I18n.t('settings.company_name')}</label>
                             <input type="text" id="company-name" class="form-input" value="${settings.company.name}">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">${I18n.t('settings.email')}</label>
                             <input type="email" id="company-email" class="form-input" value="${settings.company.email}">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Telephone</label>
+                            <label class="form-label">${I18n.t('settings.phone')}</label>
                             <input type="tel" id="company-phone" class="form-input" value="${settings.company.phone}">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Site web</label>
+                            <label class="form-label">${I18n.t('settings.website')}</label>
                             <input type="text" id="company-website" class="form-input" value="${settings.company.website || ''}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Adresse</label>
+                        <label class="form-label">${I18n.t('settings.address')}</label>
                         <input type="text" id="company-address" class="form-input" value="${settings.company.address}">
                     </div>
                 </div>
             </div>
             
             <div class="card mb-md">
-                <div class="card-header"><h3 class="card-title">Regional</h3></div>
+                <div class="card-header"><h3 class="card-title">${I18n.t('settings.regional')}</h3></div>
                 <div class="card-body">
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Devise</label>
+                            <label class="form-label">${I18n.t('settings.currency')}</label>
                             <div id="currency-container"></div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Fuseau horaire</label>
+                            <label class="form-label">${I18n.t('settings.timezone')}</label>
                             <div id="timezone-container"></div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <button class="btn btn-primary" id="btn-save-general">Enregistrer</button>
+            <button class="btn btn-primary" id="btn-save-general">${I18n.t('save')}</button>
         `;
         
         // Init SearchSelects
         this.currencySelect = new SearchSelect({
             container: '#currency-container',
-            placeholder: 'Devise',
+            placeholder: I18n.t('settings.currency'),
             items: [
                 { id: 'XAF', name: 'XAF (Franc CFA)' },
                 { id: 'USD', name: 'USD (Dollar)' },
@@ -173,7 +173,7 @@ Views.settings = {
         
         this.timezoneSelect = new SearchSelect({
             container: '#timezone-container',
-            placeholder: 'Fuseau horaire',
+            placeholder: I18n.t('settings.timezone'),
             items: [
                 { id: 'Africa/Douala', name: 'Africa/Douala (UTC+1)' },
                 { id: 'Africa/Lagos', name: 'Africa/Lagos (UTC+1)' },
@@ -197,11 +197,11 @@ Views.settings = {
             };
             
             try {
-                Loader.button(btn, true, { text: 'Enregistrement...' });
+                Loader.button(btn, true, { text: '...' });
                 await API.settings.update(data);
-                Toast.success('Parametres enregistres');
+                Toast.success(I18n.t('settings.saved'));
             } catch (error) {
-                Toast.error(`Erreur: ${error.message}`);
+                Toast.error(error.message);
             } finally {
                 Loader.button(btn, false);
             }
@@ -212,7 +212,7 @@ Views.settings = {
     // ONGLET SYSTEME
     // ============================================
     async renderSystemTab(container) {
-        container.innerHTML = Loader.page('Chargement...');
+        container.innerHTML = Loader.page(I18n.t('loading'));
         
         // Charger les paramètres depuis l'API
         let settings = {
@@ -275,34 +275,34 @@ Views.settings = {
         
         container.innerHTML = `
             <div class="card mb-md">
-                <div class="card-header"><h3 class="card-title">Assignation automatique des colis</h3></div>
+                <div class="card-header"><h3 class="card-title">${I18n.t('settings.auto_assign')}</h3></div>
                 <div class="card-body">
                     <div class="form-group">
                         <label class="toggle-label">
                             <input type="checkbox" id="auto-assign-departure" ${settings.auto_assign.on_departure_create ? 'checked' : ''}>
-                            <span>A la creation d'un depart</span>
+                            <span>${I18n.t('settings.auto_assign_departure')}</span>
                         </label>
-                        <p class="form-hint">Quand vous programmez un nouveau depart, les colis en attente correspondant a la meme route et transport seront automatiquement assignes.</p>
+                        <p class="form-hint">${I18n.t('settings.auto_assign_departure_hint')}</p>
                     </div>
                     <div class="form-group mt-md">
                         <label class="toggle-label">
                             <input type="checkbox" id="auto-assign-package" ${settings.auto_assign.on_package_create ? 'checked' : ''}>
-                            <span>A la creation d'un colis par le client</span>
+                            <span>${I18n.t('settings.auto_assign_package')}</span>
                         </label>
-                        <p class="form-hint">Quand un client enregistre un nouveau colis, il sera automatiquement assigne au prochain depart programme correspondant a sa route et transport.</p>
+                        <p class="form-hint">${I18n.t('settings.auto_assign_package_hint')}</p>
                     </div>
                 </div>
             </div>
             
             <div class="card mb-md">
                 <div class="card-header">
-                    <h3 class="card-title">Moyens de paiement acceptes</h3>
+                    <h3 class="card-title">${I18n.t('settings.payment_methods')}</h3>
                     <button class="btn btn-sm btn-outline" id="btn-add-payment-method">
-                        ${Icons.get('plus', {size:14})} Ajouter
+                        ${Icons.get('plus', {size:14})} ${I18n.t('payroll.add')}
                     </button>
                 </div>
                 <div class="card-body">
-                    <p class="form-hint mb-md">Configurez les moyens de paiement que vous acceptez. Seuls les moyens actifs seront proposes aux utilisateurs.</p>
+                    <p class="form-hint mb-md">${I18n.t('settings.payment_methods_hint')}</p>
                     <div id="payment-methods-list">
                         ${this.renderPaymentMethodsList()}
                     </div>
@@ -312,42 +312,42 @@ Views.settings = {
             <!-- Configuration des factures -->
             <div class="card mb-md">
                 <div class="card-header">
-                    <h3 class="card-title">${Icons.get('file-text', {size:18})} Factures et recus</h3>
-                    <button class="btn btn-sm btn-outline" id="btn-preview-invoice" title="Prévisualiser la facture">
-                        ${Icons.get('eye', {size:14})} Previsualiser
+                    <h3 class="card-title">${Icons.get('file-text', {size:18})} ${I18n.t('settings.invoices_receipts')}</h3>
+                    <button class="btn btn-sm btn-outline" id="btn-preview-invoice" title="${I18n.t('settings.preview')}">
+                        ${Icons.get('eye', {size:14})} ${I18n.t('settings.preview')}
                     </button>
                 </div>
                 <div class="card-body">
-                    <p class="form-hint mb-md">Personnalisez l'apparence de vos factures et recus avec votre logo et vos informations.</p>
+                    <p class="form-hint mb-md">${I18n.t('settings.invoices_hint')}</p>
                     
                     <!-- Logo -->
                     <div class="form-group">
-                        <label class="form-label">Logo de l'entreprise</label>
+                        <label class="form-label">${I18n.t('settings.company_logo')}</label>
                         <div class="invoice-logo-section">
                             <div class="invoice-logo-preview" id="invoice-logo-preview">
                                 ${settings.invoice.logo ? 
                                     `<img src="${settings.invoice.logo}" alt="Logo">` : 
-                                    `<div class="invoice-logo-placeholder">${Icons.get('image', {size:32})}<span>Aucun logo</span></div>`
+                                    `<div class="invoice-logo-placeholder">${Icons.get('image', {size:32})}<span>${I18n.t('settings.no_logo')}</span></div>`
                                 }
                             </div>
                             <div class="invoice-logo-actions">
                                 <input type="file" id="invoice-logo-input" accept="image/png,image/jpeg,image/svg+xml" style="display:none">
-                                <button class="btn btn-sm btn-outline" id="btn-upload-logo" title="Choisir un fichier image">
-                                    ${Icons.get('upload', {size:14})} Choisir une image
+                                <button class="btn btn-sm btn-outline" id="btn-upload-logo" title="${I18n.t('settings.choose_image')}">
+                                    ${Icons.get('upload', {size:14})} ${I18n.t('settings.choose_image')}
                                 </button>
                                 ${settings.invoice.logo ? `
-                                    <button class="btn btn-sm btn-ghost text-error" id="btn-delete-logo" title="Supprimer le logo">
-                                        ${Icons.get('trash', {size:14})} Supprimer
+                                    <button class="btn btn-sm btn-ghost text-error" id="btn-delete-logo" title="${I18n.t('delete')}">
+                                        ${Icons.get('trash', {size:14})} ${I18n.t('delete')}
                                     </button>
                                 ` : ''}
-                                <p class="form-hint mt-sm">PNG, JPG ou SVG. Max 500KB. Taille recommandee: 200x80px</p>
+                                <p class="form-hint mt-sm">${I18n.t('settings.logo_hint')}</p>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Couleur principale -->
                     <div class="form-group">
-                        <label class="form-label">Couleur principale</label>
+                        <label class="form-label">${I18n.t('settings.primary_color')}</label>
                         <div class="color-picker-row">
                             <input type="color" id="invoice-color" class="color-input" value="${settings.invoice.primary_color || '#2563eb'}">
                             <input type="text" id="invoice-color-hex" class="form-input" value="${settings.invoice.primary_color || '#2563eb'}" style="width:120px">
@@ -356,16 +356,16 @@ Views.settings = {
                     
                     <!-- En-tête -->
                     <div class="form-group">
-                        <label class="form-label">En-tete de la facture</label>
-                        <textarea id="invoice-header" class="form-input" rows="3" placeholder="Ex: Merci pour votre confiance! Voici le detail de votre commande...">${settings.invoice.header || ''}</textarea>
-                        <p class="form-hint">Texte affiche sous les informations de l'entreprise</p>
+                        <label class="form-label">${I18n.t('settings.invoice_header')}</label>
+                        <textarea id="invoice-header" class="form-input" rows="3" placeholder="${I18n.t('settings.invoice_header_placeholder')}">${settings.invoice.header || ''}</textarea>
+                        <p class="form-hint">${I18n.t('settings.invoice_header_hint')}</p>
                     </div>
                     
                     <!-- Pied de page -->
                     <div class="form-group">
-                        <label class="form-label">Pied de page</label>
-                        <textarea id="invoice-footer" class="form-input" rows="3" placeholder="Ex: Conditions de paiement: Paiement a la livraison. Pour toute question, contactez-nous...">${settings.invoice.footer || ''}</textarea>
-                        <p class="form-hint">Texte affiche en bas de la facture (conditions, mentions legales, etc.)</p>
+                        <label class="form-label">${I18n.t('settings.invoice_footer')}</label>
+                        <textarea id="invoice-footer" class="form-input" rows="3" placeholder="${I18n.t('settings.invoice_footer_placeholder')}">${settings.invoice.footer || ''}</textarea>
+                        <p class="form-hint">${I18n.t('settings.invoice_footer_hint')}</p>
                     </div>
                 </div>
             </div>
@@ -373,21 +373,21 @@ Views.settings = {
             <!-- Configuration des exports PDF -->
             <div class="card mb-md">
                 <div class="card-header">
-                    <h3 class="card-title">${Icons.get('download', {size:18})} Exports PDF</h3>
+                    <h3 class="card-title">${Icons.get('download', {size:18})} ${I18n.t('settings.pdf_exports')}</h3>
                 </div>
                 <div class="card-body">
-                    <p class="form-hint mb-md">Personnalisez l'apparence des exports PDF (listes de colis, clients, rapports, etc.). Le logo et le nom de l'entreprise sont automatiquement repris des parametres de facture.</p>
+                    <p class="form-hint mb-md">${I18n.t('settings.pdf_exports_hint')}</p>
                     
                     <!-- Pied de page des exports -->
                     <div class="form-group">
-                        <label class="form-label">Pied de page des exports</label>
-                        <textarea id="export-footer" class="form-input" rows="2" placeholder="Ex: Document genere automatiquement - Express Cargo">${settings.export?.footer || ''}</textarea>
-                        <p class="form-hint">Texte affiche en bas de chaque page des exports PDF</p>
+                        <label class="form-label">${I18n.t('settings.export_footer')}</label>
+                        <textarea id="export-footer" class="form-input" rows="2" placeholder="${I18n.t('settings.export_footer_placeholder')}">${settings.export?.footer || ''}</textarea>
+                        <p class="form-hint">${I18n.t('settings.export_footer_hint')}</p>
                     </div>
                 </div>
             </div>
             
-            <button class="btn btn-primary" id="btn-save-system">Enregistrer</button>
+            <button class="btn btn-primary" id="btn-save-system">${I18n.t('save')}</button>
         `;
         
         this.attachSystemTabEvents();
@@ -395,7 +395,7 @@ Views.settings = {
     
     renderPaymentMethodsList() {
         if (this.paymentMethods.length === 0) {
-            return `<p class="text-muted">Aucun moyen de paiement configure</p>`;
+            return `<p class="text-muted">${I18n.t('settings.no_payment_methods')}</p>`;
         }
         
         const iconOptions = ['smartphone', 'dollar-sign', 'building', 'credit-card', 'wallet', 'banknote', 'coins', 'qr-code'];
@@ -414,12 +414,12 @@ Views.settings = {
                         <div class="payment-method-actions">
                             <label class="toggle-label">
                                 <input type="checkbox" ${pm.enabled ? 'checked' : ''} data-pm-toggle="${index}">
-                                <span class="text-sm">Actif</span>
+                                <span class="text-sm">${I18n.t('staff.active')}</span>
                             </label>
-                            <button class="btn btn-sm btn-ghost" onclick="Views.settings.editPaymentMethod(${index})" title="Modifier">
+                            <button class="btn btn-sm btn-ghost" onclick="Views.settings.editPaymentMethod(${index})" title="${I18n.t('edit')}">
                                 ${Icons.get('edit', {size:14})}
                             </button>
-                            <button class="btn btn-sm btn-ghost text-error" onclick="Views.settings.deletePaymentMethod(${index})" title="Supprimer">
+                            <button class="btn btn-sm btn-ghost text-error" onclick="Views.settings.deletePaymentMethod(${index})" title="${I18n.t('delete')}">
                                 ${Icons.get('trash', {size:14})}
                             </button>
                         </div>
@@ -459,11 +459,11 @@ Views.settings = {
             
             // Validation
             if (!['image/png', 'image/jpeg', 'image/svg+xml'].includes(file.type)) {
-                Toast.error('Format non supporte. Utilisez PNG, JPG ou SVG');
+                Toast.error(I18n.t('settings.format_error'));
                 return;
             }
             if (file.size > 500 * 1024) {
-                Toast.error('Image trop grande. Max 500KB');
+                Toast.error(I18n.t('settings.size_error'));
                 return;
             }
             
@@ -482,12 +482,12 @@ Views.settings = {
                     const deleteBtn = document.createElement('button');
                     deleteBtn.className = 'btn btn-sm btn-ghost text-error';
                     deleteBtn.id = 'btn-delete-logo';
-                    deleteBtn.innerHTML = `${Icons.get('trash', {size:14})} Supprimer`;
+                    deleteBtn.innerHTML = `${Icons.get('trash', {size:14})} ${I18n.t('delete')}`;
                     deleteBtn.addEventListener('click', () => this.deleteInvoiceLogo());
                     actionsDiv.insertBefore(deleteBtn, actionsDiv.querySelector('.form-hint'));
                 }
                 
-                Toast.success('Logo charge. N\'oubliez pas d\'enregistrer');
+                Toast.success(I18n.t('settings.logo_uploaded'));
             };
             reader.readAsDataURL(file);
         });
@@ -540,7 +540,7 @@ Views.settings = {
             };
             
             try {
-                Loader.button(btn, true, { text: 'Enregistrement...' });
+                Loader.button(btn, true, { text: '...' });
                 await API.settings.update(data);
                 // Invalider le cache des services
                 if (typeof InvoiceService !== 'undefined') {
@@ -549,9 +549,9 @@ Views.settings = {
                 if (typeof ExportService !== 'undefined') {
                     ExportService.clearCache();
                 }
-                Toast.success('Parametres systeme enregistres');
+                Toast.success(I18n.t('settings.system_saved'));
             } catch (error) {
-                Toast.error(`Erreur: ${error.message}`);
+                Toast.error(error.message);
             } finally {
                 Loader.button(btn, false);
             }
@@ -561,10 +561,10 @@ Views.settings = {
     deleteInvoiceLogo() {
         this.invoiceSettings.logo = '';
         document.getElementById('invoice-logo-preview').innerHTML = `
-            <div class="invoice-logo-placeholder">${Icons.get('image', {size:32})}<span>Aucun logo</span></div>
+            <div class="invoice-logo-placeholder">${Icons.get('image', {size:32})}<span>${I18n.t('settings.no_logo')}</span></div>
         `;
         document.getElementById('btn-delete-logo')?.remove();
-        Toast.success('Logo supprime. N\'oubliez pas d\'enregistrer');
+        Toast.success(I18n.t('settings.logo_deleted'));
     },
     
     previewInvoice() {
@@ -577,8 +577,8 @@ Views.settings = {
         // Données de démonstration
         const demoData = {
             invoice_number: 'FAC-2025-0001',
-            date: new Date().toLocaleDateString('fr-FR'),
-            due_date: new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString('fr-FR'),
+            date: new Date().toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US'),
+            due_date: new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US'),
             client: {
                 name: 'Jean Dupont',
                 phone: '+237 6XX XXX XXX',
@@ -615,7 +615,7 @@ Views.settings = {
         const invoiceHtml = this.generateInvoicePreviewHTML(demoData, tempSettings);
         
         Modal.open({
-            title: 'Aperçu de la facture',
+            title: I18n.t('settings.invoice_preview'),
             size: 'large',
             content: `
                 <div class="invoice-preview-container">
@@ -624,9 +624,9 @@ Views.settings = {
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Fermer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('settings.close')}</button>
                 <button class="btn btn-primary" onclick="Views.settings.printInvoicePreview()">
-                    ${Icons.get('printer', {size:16})} Imprimer
+                    ${Icons.get('printer', {size:16})} ${I18n.t('settings.print')}
                 </button>
             `
         });
@@ -636,7 +636,7 @@ Views.settings = {
         const { invoice_number, date, due_date, client, items, subtotal, tax, total, paid, balance, currency } = data;
         const { logo, header, footer, primaryColor, company } = settings;
         
-        const formatCurrency = (amount) => new Intl.NumberFormat('fr-FR').format(amount) + ' ' + currency;
+        const formatCurrency = (amount) => new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount) + ' ' + currency;
         
         return `
             <div class="invoice-document">
@@ -647,15 +647,15 @@ Views.settings = {
                         <div class="invoice-company">
                             <h2>${company.name}</h2>
                             ${company.address ? `<p>${company.address}</p>` : ''}
-                            ${company.phone ? `<p>Tél: ${company.phone}</p>` : ''}
+                            ${company.phone ? `<p>${I18n.t('settings.phone')}: ${company.phone}</p>` : ''}
                             ${company.email ? `<p>${company.email}</p>` : ''}
                         </div>
                     </div>
                     <div class="invoice-title">
-                        <h1>FACTURE</h1>
+                        <h1>${I18n.t('settings.invoice')}</h1>
                         <p class="invoice-number">${invoice_number}</p>
-                        <p class="invoice-date">Date: ${date}</p>
-                        ${due_date ? `<p class="invoice-due">Échéance: ${due_date}</p>` : ''}
+                        <p class="invoice-date">${I18n.t('settings.date')}: ${date}</p>
+                        ${due_date ? `<p class="invoice-due">${I18n.t('settings.due_date')}: ${due_date}</p>` : ''}
                     </div>
                 </div>
                 
@@ -663,7 +663,7 @@ Views.settings = {
                 
                 <!-- Client Info -->
                 <div class="invoice-client">
-                    <h3>Facturé à:</h3>
+                    <h3>${I18n.t('settings.billed_to')}</h3>
                     <p class="client-name">${client.name}</p>
                     ${client.phone ? `<p>${client.phone}</p>` : ''}
                     ${client.email ? `<p>${client.email}</p>` : ''}
@@ -673,10 +673,10 @@ Views.settings = {
                 <table class="invoice-table">
                     <thead>
                         <tr>
-                            <th>Description</th>
-                            <th>Qté</th>
-                            <th class="text-right">Prix unit.</th>
-                            <th class="text-right">Montant</th>
+                            <th>${I18n.t('payroll.description')}</th>
+                            <th>${I18n.t('settings.qty')}</th>
+                            <th class="text-right">${I18n.t('settings.unit_price')}</th>
+                            <th class="text-right">${I18n.t('payments.amount')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -694,26 +694,26 @@ Views.settings = {
                 <!-- Totals -->
                 <div class="invoice-totals">
                     <div class="invoice-total-row">
-                        <span>Sous-total</span>
+                        <span>${I18n.t('settings.subtotal')}</span>
                         <span>${formatCurrency(subtotal)}</span>
                     </div>
                     ${tax > 0 ? `
                         <div class="invoice-total-row">
-                            <span>TVA</span>
+                            <span>${I18n.t('settings.vat')}</span>
                             <span>${formatCurrency(tax)}</span>
                         </div>
                     ` : ''}
                     <div class="invoice-total-row total">
-                        <span>Total</span>
+                        <span>${I18n.t('settings.total')}</span>
                         <span>${formatCurrency(total)}</span>
                     </div>
                     ${paid > 0 ? `
                         <div class="invoice-total-row paid">
-                            <span>Déjà payé</span>
+                            <span>${I18n.t('settings.already_paid')}</span>
                             <span>- ${formatCurrency(paid)}</span>
                         </div>
                         <div class="invoice-total-row balance">
-                            <span>Reste à payer</span>
+                            <span>${I18n.t('settings.remaining')}</span>
                             <span>${formatCurrency(balance)}</span>
                         </div>
                     ` : ''}
@@ -723,14 +723,14 @@ Views.settings = {
                 ${footer ? `<div class="invoice-footer-text">${footer}</div>` : ''}
                 
                 <div class="invoice-thank-you">
-                    Merci pour votre confiance!
+                    ${I18n.t('settings.thank_you')}
                 </div>
             </div>
         `;
     },
     
     formatCurrency(amount) {
-        return new Intl.NumberFormat('fr-FR').format(amount) + ' XAF';
+        return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount) + ' XAF';
     },
     
     printInvoicePreview() {
@@ -760,38 +760,38 @@ Views.settings = {
         const pm = isNew ? { id: '', name: '', icon: 'dollar-sign', enabled: true } : this.paymentMethods[index];
         
         Modal.open({
-            title: isNew ? 'Ajouter un moyen de paiement' : 'Modifier le moyen de paiement',
+            title: isNew ? I18n.t('settings.add_pm') : I18n.t('settings.edit_pm'),
             content: `
                 <div class="form-group">
-                    <label class="form-label">Identifiant unique *</label>
+                    <label class="form-label">${I18n.t('settings.pm_id')} *</label>
                     <input type="text" id="pm-id" class="form-input" value="${pm.id}" placeholder="ex: mobile_money, cash, bank..." ${!isNew ? 'readonly' : ''}>
-                    <p class="form-hint">Identifiant technique (sans espaces ni accents)</p>
+                    <p class="form-hint">${I18n.t('settings.pm_id_hint')}</p>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Nom affiche *</label>
+                    <label class="form-label">${I18n.t('settings.pm_name')} *</label>
                     <input type="text" id="pm-name" class="form-input" value="${pm.name}" placeholder="ex: Mobile Money (OM/MOMO)">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Icone</label>
+                    <label class="form-label">${I18n.t('settings.pm_icon')}</label>
                     <div id="pm-icon-container"></div>
                 </div>
                 <div class="form-group">
                     <label class="toggle-label">
                         <input type="checkbox" id="pm-enabled" ${pm.enabled ? 'checked' : ''}>
-                        <span>Actif</span>
+                        <span>${I18n.t('staff.active')}</span>
                     </label>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-pm">${isNew ? 'Ajouter' : 'Enregistrer'}</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-pm">${isNew ? I18n.t('payroll.add') : I18n.t('save')}</button>
             `
         });
         
         // Init icon select
         const iconSelect = new SearchSelect({
             container: '#pm-icon-container',
-            placeholder: 'Choisir une icone',
+            placeholder: I18n.t('settings.choose_icon'),
             items: [
                 { id: 'smartphone', name: 'Smartphone (Mobile Money)' },
                 { id: 'dollar-sign', name: 'Dollar (Especes)' },
@@ -814,12 +814,12 @@ Views.settings = {
             const icon = iconSelect.getValue() || 'dollar-sign';
             const enabled = document.getElementById('pm-enabled').checked;
             
-            if (!id) { Toast.error('Entrez un identifiant'); return; }
-            if (!name) { Toast.error('Entrez un nom'); return; }
+            if (!id) { Toast.error(I18n.t('settings.enter_id')); return; }
+            if (!name) { Toast.error(I18n.t('settings.enter_name')); return; }
             
             // Vérifier unicité de l'ID pour les nouveaux
             if (isNew && this.paymentMethods.some(p => p.id === id)) {
-                Toast.error('Cet identifiant existe deja');
+                Toast.error(I18n.t('settings.id_exists'));
                 return;
             }
             
@@ -834,15 +834,15 @@ Views.settings = {
             this.attachSystemTabEvents();
             
             Modal.close();
-            Toast.success(isNew ? 'Moyen de paiement ajoute' : 'Moyen de paiement modifie');
+            Toast.success(isNew ? I18n.t('settings.pm_added') : I18n.t('settings.pm_updated'));
         });
     },
     
     async deletePaymentMethod(index) {
         const pm = this.paymentMethods[index];
         const confirmed = await Modal.confirm({
-            title: 'Supprimer ce moyen de paiement ?',
-            message: `Voulez-vous supprimer "${pm.name}" ?`,
+            title: I18n.t('settings.delete_pm'),
+            message: I18n.t('settings.delete_pm_msg').replace('{name}', pm.name),
             danger: true
         });
         
@@ -850,7 +850,7 @@ Views.settings = {
             this.paymentMethods.splice(index, 1);
             document.getElementById('payment-methods-list').innerHTML = this.renderPaymentMethodsList();
             this.attachSystemTabEvents();
-            Toast.success('Moyen de paiement supprime');
+            Toast.success(I18n.t('settings.pm_deleted'));
         }
     },
     
@@ -859,7 +859,7 @@ Views.settings = {
     // ============================================
     async renderNotificationsTab(container) {
         // Afficher le loader pendant le chargement
-        container.innerHTML = Loader.page('Chargement des canaux...');
+        container.innerHTML = Loader.page(I18n.t('loading'));
         
         try {
             // Appel API pour récupérer les canaux et types de notifications
@@ -892,8 +892,8 @@ Views.settings = {
             <!-- Canaux de notification -->
             <div class="card mb-md">
                 <div class="card-header">
-                    <h3 class="card-title">${Icons.get('settings', {size:18})} Configuration des canaux</h3>
-                    <p class="text-sm text-muted">Configurez vos fournisseurs SMS, WhatsApp et Email</p>
+                    <h3 class="card-title">${Icons.get('settings', {size:18})} ${I18n.t('settings.channel_config')}</h3>
+                    <p class="text-sm text-muted">${I18n.t('settings.channel_config_desc')}</p>
                 </div>
                 <div class="card-body">
                     <div class="channels-grid">
@@ -905,13 +905,13 @@ Views.settings = {
             <!-- Configuration par evenement -->
             <div class="card mb-md">
                 <div class="card-header">
-                    <h3 class="card-title">${Icons.get('bell', {size:18})} Notifications par evenement</h3>
-                    <p class="text-sm text-muted">Choisissez quels canaux utiliser pour chaque type d'evenement</p>
+                    <h3 class="card-title">${Icons.get('bell', {size:18})} ${I18n.t('settings.event_notifications')}</h3>
+                    <p class="text-sm text-muted">${I18n.t('settings.event_notifications_desc')}</p>
                 </div>
                 <div class="card-body">
                     <div class="event-channels-config">
                         <div class="event-channels-header">
-                            <div class="event-name-col">Evenement</div>
+                            <div class="event-name-col">${I18n.t('settings.event')}</div>
                             <div class="channels-cols">
                                 ${this.channels.map(ch => `
                                     <div class="channel-col ${ch.connected ? '' : 'disabled'}" title="${ch.connected ? ch.name : ch.name + ' (non configure)'}">
@@ -929,8 +929,8 @@ Views.settings = {
             <!-- Templates de messages -->
             <div class="card mb-md">
                 <div class="card-header">
-                    <h3 class="card-title">${Icons.get('file-text', {size:18})} Modeles de messages</h3>
-                    <p class="text-sm text-muted">Personnalisez les messages envoyes aux clients</p>
+                    <h3 class="card-title">${Icons.get('file-text', {size:18})} ${I18n.t('settings.message_templates')}</h3>
+                    <p class="text-sm text-muted">${I18n.t('settings.message_templates_desc')}</p>
                 </div>
                 <div class="card-body">
                     ${this.renderTemplates()}
@@ -940,22 +940,22 @@ Views.settings = {
             <!-- Test d'envoi -->
             <div class="card mb-md">
                 <div class="card-header">
-                    <h3 class="card-title">${Icons.get('send', {size:18})} Tester l'envoi</h3>
+                    <h3 class="card-title">${Icons.get('send', {size:18})} ${I18n.t('settings.test_send')}</h3>
                 </div>
                 <div class="card-body">
                     <div class="test-section">
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Canal</label>
+                                <label class="form-label">${I18n.t('settings.channel')}</label>
                                 <div id="test-channel-container"></div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label" id="test-recipient-label">Numero</label>
+                                <label class="form-label" id="test-recipient-label">${I18n.t('settings.number')}</label>
                                 <input type="text" id="test-recipient" class="form-input" placeholder="+237 6XX XXX XXX">
                             </div>
                             <div class="form-group" style="align-self:flex-end;">
                                 <button class="btn btn-outline" id="btn-send-test">
-                                    ${Icons.get('send', {size:16})} Envoyer test
+                                    ${Icons.get('send', {size:16})} ${I18n.t('settings.send_test')}
                                 </button>
                             </div>
                         </div>
@@ -964,7 +964,7 @@ Views.settings = {
             </div>
             
             <button class="btn btn-primary" id="btn-save-notifications">
-                ${Icons.get('save', {size:16})} Enregistrer les parametres
+                ${Icons.get('save', {size:16})} ${I18n.t('settings.save_settings')}
             </button>
         `;
         
@@ -982,7 +982,7 @@ Views.settings = {
                         <div class="channel-icon ${iconClass}">${Icons.get(channel.icon, {size:20})}</div>
                         <div>
                             <div class="channel-name">${channel.name}</div>
-                            <div class="channel-provider">${channel.provider || 'Non configure'}</div>
+                            <div class="channel-provider">${channel.provider || I18n.t('settings.not_configured')}</div>
                         </div>
                     </div>
                     <div class="channel-status ${channel.connected ? 'connected' : ''}">
@@ -993,22 +993,22 @@ Views.settings = {
                     <div class="channel-stats">
                         <div class="channel-stat">
                             <span class="channel-stat-value">${channel.stats.sent_month}</span>
-                            <span class="channel-stat-label">ce mois</span>
+                            <span class="channel-stat-label">${I18n.t('settings.this_month')}</span>
                         </div>
                         <div class="channel-stat">
                             <span class="channel-stat-value">${deliveryRate}%</span>
-                            <span class="channel-stat-label">livres</span>
+                            <span class="channel-stat-label">${I18n.t('settings.delivered')}</span>
                         </div>
                     </div>
                 ` : ''}
                 <div class="channel-actions">
                     <button class="btn btn-sm btn-outline" onclick="Views.settings.configureChannel('${channel.id}')">
-                        ${Icons.get('settings', {size:14})} Configurer
+                        ${Icons.get('settings', {size:14})} ${I18n.t('settings.configure')}
                     </button>
                     ${channel.connected ? `
                         <label class="toggle-label" style="margin-left:auto;">
                             <input type="checkbox" ${channel.enabled ? 'checked' : ''} data-channel="${channel.id}">
-                            <span class="text-sm">Actif</span>
+                            <span class="text-sm">${I18n.t('staff.active')}</span>
                         </label>
                     ` : ''}
                 </div>
@@ -1093,7 +1093,7 @@ Views.settings = {
         // Init test channel SearchSelect
         this.testChannelSelect = new SearchSelect({
             container: '#test-channel-container',
-            placeholder: 'Canal',
+            placeholder: I18n.t('settings.channel'),
             items: [
                 { id: 'sms', name: 'SMS' },
                 { id: 'whatsapp', name: 'WhatsApp' },
@@ -1103,11 +1103,11 @@ Views.settings = {
                 const label = document.getElementById('test-recipient-label');
                 const input = document.getElementById('test-recipient');
                 if (item?.id === 'email') {
-                    label.textContent = 'Email';
+                    label.textContent = I18n.t('settings.email');
                     input.placeholder = 'exemple@email.com';
                     input.type = 'email';
                 } else {
-                    label.textContent = 'Numero';
+                    label.textContent = I18n.t('settings.number');
                     input.placeholder = '+237 6XX XXX XXX';
                     input.type = 'tel';
                 }
@@ -1121,9 +1121,9 @@ Views.settings = {
                 const enabled = e.target.checked;
                 try {
                     await API.notificationSettings.updateChannel(channelId, { enabled });
-                    Toast.success(`Canal ${channelId.toUpperCase()} ${enabled ? 'activé' : 'désactivé'}`);
+                    Toast.success(`${channelId.toUpperCase()} ${enabled ? '✓' : '✗'}`);
                 } catch (error) {
-                    Toast.error(`Erreur: ${error.message}`);
+                    Toast.error(error.message);
                     e.target.checked = !enabled; // Revert
                 }
             });
@@ -1142,16 +1142,16 @@ Views.settings = {
             const channel = this.testChannelSelect?.getValue() || 'sms';
             const recipient = document.getElementById('test-recipient').value.trim();
             if (!recipient) { 
-                Toast.error(channel === 'email' ? 'Entrez un email' : 'Entrez un numero'); 
+                Toast.error(channel === 'email' ? I18n.t('settings.enter_email') : I18n.t('settings.enter_number')); 
                 return; 
             }
             
             try {
-                Loader.button(btn, true, { text: 'Envoi...' });
+                Loader.button(btn, true, { text: '...' });
                 const result = await API.notificationSettings.sendTest({ channel, recipient });
-                Toast.success(result.message || `Test ${channel.toUpperCase()} envoyé à ${recipient}`);
+                Toast.success(result.message || `Test ${channel.toUpperCase()} → ${recipient}`);
             } catch (error) {
-                Toast.error(`Erreur: ${error.message}`);
+                Toast.error(error.message);
             } finally {
                 Loader.button(btn, false);
             }
@@ -1171,11 +1171,11 @@ Views.settings = {
             });
             
             try {
-                Loader.button(btn, true, { text: 'Enregistrement...' });
+                Loader.button(btn, true, { text: '...' });
                 await API.notificationSettings.updateChannels({ notification_types: notificationTypes });
-                Toast.success('Configuration des notifications enregistree');
+                Toast.success(I18n.t('settings.notif_saved'));
             } catch (error) {
-                Toast.error(`Erreur: ${error.message}`);
+                Toast.error(error.message);
             } finally {
                 Loader.button(btn, false);
             }
@@ -1196,12 +1196,12 @@ Views.settings = {
         if (channelId === 'sms') {
             content = `
                 <div class="form-group">
-                    <label class="form-label">Fournisseur SMS</label>
+                    <label class="form-label">${I18n.t('settings.sms_provider')}</label>
                     <div id="sms-provider-container"></div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">API Key</label>
-                    <input type="password" id="sms-api-key" class="form-input" placeholder="Votre cle API">
+                    <input type="password" id="sms-api-key" class="form-input" placeholder="API Key">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Sender ID</label>
@@ -1223,7 +1223,7 @@ Views.settings = {
         } else if (channelId === 'email') {
             content = `
                 <div class="form-group">
-                    <label class="form-label">Fournisseur Email</label>
+                    <label class="form-label">${I18n.t('settings.email_provider')}</label>
                     <div id="email-provider-container"></div>
                 </div>
                 <div id="email-config-fields">
@@ -1233,25 +1233,25 @@ Views.settings = {
                         <input type="password" id="email-api-key" class="form-input" placeholder="Votre cle API">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Email expediteur</label>
+                        <label class="form-label">${I18n.t('settings.sender_email')}</label>
                         <input type="email" id="email-from" class="form-input" placeholder="noreply@expresscargo.com" value="${channel.config?.from_email || ''}">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Nom expediteur</label>
+                        <label class="form-label">${I18n.t('settings.sender_name')}</label>
                         <input type="text" id="email-from-name" class="form-input" placeholder="Express Cargo" value="${channel.config?.from_name || ''}">
                     </div>
                 </div>
             `;
         } else {
-            content = `<p class="text-muted">Push notifications configurees automatiquement via Firebase.</p>`;
+            content = `<p class="text-muted">${I18n.t('settings.push_auto')}</p>`;
         }
         
         Modal.open({
-            title: `Configurer ${channel.name}`,
+            title: I18n.t('settings.configure_channel').replace('{name}', channel.name),
             content,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-channel">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-channel">${I18n.t('save')}</button>
             `
         });
         
@@ -1259,7 +1259,7 @@ Views.settings = {
         if (channelId === 'sms') {
             const smsProviderSelect = new SearchSelect({
                 container: '#sms-provider-container',
-                placeholder: 'Fournisseur SMS',
+                placeholder: I18n.t('settings.sms_provider'),
                 items: [
                     { id: 'africas_talking', name: "Africa's Talking" },
                     { id: 'twilio', name: 'Twilio' },
@@ -1284,13 +1284,13 @@ Views.settings = {
                 if (apiKey) config.api_key = apiKey;
                 
                 try {
-                    Loader.button(btn, true, { text: 'Enregistrement...' });
+                    Loader.button(btn, true, { text: '...' });
                     await API.notificationSettings.updateChannel('sms', { provider, config, enabled: true });
-                    Toast.success('Configuration SMS enregistree');
+                    Toast.success(I18n.t('settings.sms_saved'));
                     Modal.close();
                     this.renderNotificationsTab(document.getElementById('settings-content'));
                 } catch (error) {
-                    Toast.error(`Erreur: ${error.message}`);
+                    Toast.error(error.message);
                 } finally {
                     Loader.button(btn, false);
                 }
@@ -1305,13 +1305,13 @@ Views.settings = {
                 if (token) config.access_token = token;
                 
                 try {
-                    Loader.button(btn, true, { text: 'Enregistrement...' });
+                    Loader.button(btn, true, { text: '...' });
                     await API.notificationSettings.updateChannel('whatsapp', { provider: 'WhatsApp Business API', config, enabled: true });
-                    Toast.success('Configuration WhatsApp enregistree');
+                    Toast.success(I18n.t('settings.wa_saved'));
                     Modal.close();
                     this.renderNotificationsTab(document.getElementById('settings-content'));
                 } catch (error) {
-                    Toast.error(`Erreur: ${error.message}`);
+                    Toast.error(error.message);
                 } finally {
                     Loader.button(btn, false);
                 }
@@ -1319,7 +1319,7 @@ Views.settings = {
         } else if (channelId === 'email') {
             const emailProviderSelect = new SearchSelect({
                 container: '#email-provider-container',
-                placeholder: 'Fournisseur Email',
+                placeholder: I18n.t('settings.email_provider'),
                 items: [
                     { id: 'sendgrid', name: 'SendGrid' },
                     { id: 'mailgun', name: 'Mailgun' },
@@ -1375,20 +1375,20 @@ Views.settings = {
                 }
                 
                 try {
-                    Loader.button(btn, true, { text: 'Enregistrement...' });
+                    Loader.button(btn, true, { text: '...' });
                     await API.notificationSettings.updateChannel('email', { provider, config, enabled: true });
-                    Toast.success('Configuration Email enregistree');
+                    Toast.success(I18n.t('settings.email_saved'));
                     Modal.close();
                     this.renderNotificationsTab(document.getElementById('settings-content'));
                 } catch (error) {
-                    Toast.error(`Erreur: ${error.message}`);
+                    Toast.error(error.message);
                 } finally {
                     Loader.button(btn, false);
                 }
             });
         } else {
             document.getElementById('btn-save-channel')?.addEventListener('click', () => {
-                Toast.success(`Configuration ${channel.name} enregistree`);
+                Toast.success(I18n.t('settings.saved'));
                 Modal.close();
             });
         }
@@ -1511,34 +1511,34 @@ Views.settings = {
         }).join('');
         
         Modal.open({
-            title: `Modele: ${def.name}`,
+            title: I18n.t('settings.template').replace('{name}', def.name),
             size: 'lg',
             content: `
                 <div class="template-variables mb-md">
-                    <p class="text-sm font-medium mb-xs">Cliquez pour inserer dans le message:</p>
+                    <p class="text-sm font-medium mb-xs">${I18n.t('settings.click_to_insert')}</p>
                     <div class="variables-btn-list">
                         ${variableButtons}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">${Icons.get('message-square', {size:14})} SMS <span class="text-muted">(160 car. max recommande)</span></label>
+                    <label class="form-label">${Icons.get('message-square', {size:14})} SMS <span class="text-muted">(160 max)</span></label>
                     <textarea id="tpl-sms" class="form-input template-textarea" rows="2" maxlength="320">${smsValue}</textarea>
-                    <div class="char-count text-xs text-muted mt-xs"><span id="sms-count">${smsValue.length}</span>/160 caracteres</div>
+                    <div class="char-count text-xs text-muted mt-xs"><span id="sms-count">${smsValue.length}</span>/160 ${I18n.t('settings.chars')}</div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">${Icons.get('message-circle', {size:14})} WhatsApp</label>
                     <textarea id="tpl-whatsapp" class="form-input template-textarea" rows="5">${waValue}</textarea>
-                    <p class="text-xs text-muted mt-xs">Utilisez *texte* pour le gras</p>
+                    <p class="text-xs text-muted mt-xs">${I18n.t('settings.bold_hint')}</p>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">${Icons.get('mail', {size:14})} Email (corps du message)</label>
+                    <label class="form-label">${Icons.get('mail', {size:14})} ${I18n.t('settings.email_body')}</label>
                     <textarea id="tpl-email" class="form-input template-textarea" rows="6">${emailValue}</textarea>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-outline" id="btn-reset-tpl">${Icons.get('refresh-cw', {size:14})} Reinitialiser</button>
-                <button class="btn btn-primary" id="btn-save-tpl">${Icons.get('save', {size:14})} Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-outline" id="btn-reset-tpl">${Icons.get('refresh-cw', {size:14})} ${I18n.t('settings.reset')}</button>
+                <button class="btn btn-primary" id="btn-save-tpl">${Icons.get('save', {size:14})} ${I18n.t('save')}</button>
             `
         });
         
@@ -1571,7 +1571,7 @@ Views.settings = {
             document.getElementById('tpl-whatsapp').value = def.defaults.whatsapp;
             document.getElementById('tpl-email').value = def.defaults.email;
             document.getElementById('sms-count').textContent = def.defaults.sms.length;
-            Toast.info('Valeurs par defaut restaurees');
+            Toast.info(I18n.t('settings.defaults_restored'));
         });
         
         // Sauvegarder
@@ -1582,17 +1582,16 @@ Views.settings = {
             const emailBody = document.getElementById('tpl-email').value;
             
             try {
-                Loader.button(btn, true, { text: 'Enregistrement...' });
+                Loader.button(btn, true, { text: I18n.t('saving') });
                 await API.notificationSettings.updateTemplate(templateId, { 
                     sms, 
                     whatsapp, 
                     email: { subject: `${def.name} - {tracking}`, body: emailBody },
                     push: sms.substring(0, 100) // Push = version courte du SMS
                 });
-                Toast.success('Modele enregistre');
-                Modal.close();
+                Toast.success(I18n.t('settings.template_saved'));
             } catch (error) {
-                Toast.error(`Erreur: ${error.message}`);
+                Toast.error(error.message);
             } finally {
                 Loader.button(btn, false);
             }
@@ -1629,12 +1628,12 @@ Views.settings = {
         
         container.innerHTML = `
             <div class="card mb-md">
-                <div class="card-header"><h3 class="card-title">Theme</h3></div>
+                <div class="card-header"><h3 class="card-title">${I18n.t('settings.theme')}</h3></div>
                 <div class="card-body">
                     <div class="setting-item">
                         <div>
-                            <div class="font-medium">Mode sombre</div>
-                            <div class="text-sm text-muted">Activer le theme sombre</div>
+                            <div class="font-medium">${I18n.t('settings.dark_mode')}</div>
+                            <div class="text-sm text-muted">${I18n.t('settings.dark_mode_desc')}</div>
                         </div>
                         <label class="toggle">
                             <input type="checkbox" id="dark-mode" ${isDark ? 'checked' : ''}>
@@ -1646,40 +1645,40 @@ Views.settings = {
             
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">${Icons.get('printer', {size:18})} Format d'impression par defaut</h3>
+                    <h3 class="card-title">${Icons.get('printer', {size:18})} ${I18n.t('settings.print_format')}</h3>
                 </div>
                 <div class="card-body">
-                    <p class="form-hint mb-md">Choisissez le format utilise par defaut pour l'impression des recus et factures.</p>
+                    <p class="form-hint mb-md">${I18n.t('settings.print_format_hint')}</p>
                     
                     <div class="print-format-options">
                         <label class="print-format-card ${currentPrintFormat === 'quick' ? 'selected' : ''}" data-format="quick">
                             <input type="radio" name="default_print_format" value="quick" ${currentPrintFormat === 'quick' ? 'checked' : ''}>
                             <div class="print-format-card-icon">${Icons.get('printer', {size:24})}</div>
                             <div class="print-format-card-content">
-                                <span class="print-format-card-title">Impression rapide</span>
-                                <span class="print-format-card-desc">Ticket HTML pour imprimante thermique (80mm)</span>
+                                <span class="print-format-card-title">${I18n.t('settings.quick_print')}</span>
+                                <span class="print-format-card-desc">${I18n.t('settings.quick_print_desc')}</span>
                             </div>
-                            ${currentPrintFormat === 'quick' ? `<span class="print-format-badge">Actuel</span>` : ''}
+                            ${currentPrintFormat === 'quick' ? `<span class="print-format-badge">${I18n.t('settings.current')}</span>` : ''}
                         </label>
                         
                         <label class="print-format-card ${currentPrintFormat === 'pdf_a4' ? 'selected' : ''}" data-format="pdf_a4">
                             <input type="radio" name="default_print_format" value="pdf_a4" ${currentPrintFormat === 'pdf_a4' ? 'checked' : ''}>
                             <div class="print-format-card-icon">${Icons.get('file-text', {size:24})}</div>
                             <div class="print-format-card-content">
-                                <span class="print-format-card-title">PDF A4</span>
-                                <span class="print-format-card-desc">Document complet format A4 professionnel</span>
+                                <span class="print-format-card-title">${I18n.t('settings.pdf_a4')}</span>
+                                <span class="print-format-card-desc">${I18n.t('settings.pdf_a4_desc')}</span>
                             </div>
-                            ${currentPrintFormat === 'pdf_a4' ? `<span class="print-format-badge">Actuel</span>` : ''}
+                            ${currentPrintFormat === 'pdf_a4' ? `<span class="print-format-badge">${I18n.t('settings.current')}</span>` : ''}
                         </label>
                         
                         <label class="print-format-card ${currentPrintFormat === 'pdf_ticket' ? 'selected' : ''}" data-format="pdf_ticket">
                             <input type="radio" name="default_print_format" value="pdf_ticket" ${currentPrintFormat === 'pdf_ticket' ? 'checked' : ''}>
-                            <div class="print-format-card-icon">${Icons.get('receipt', {size:24})}</div>
+                            <div class="print-format-card-icon">${Icons.get('file-text', {size:24})}</div>
                             <div class="print-format-card-content">
-                                <span class="print-format-card-title">PDF Ticket</span>
-                                <span class="print-format-card-desc">PDF format ticket 80mm pour imprimante thermique</span>
+                                <span class="print-format-card-title">${I18n.t('settings.pdf_ticket')}</span>
+                                <span class="print-format-card-desc">${I18n.t('settings.pdf_ticket_desc')}</span>
                             </div>
-                            ${currentPrintFormat === 'pdf_ticket' ? `<span class="print-format-badge">Actuel</span>` : ''}
+                            ${currentPrintFormat === 'pdf_ticket' ? `<span class="print-format-badge">${I18n.t('settings.current')}</span>` : ''}
                         </label>
                     </div>
                 </div>
@@ -1752,7 +1751,7 @@ Views.settings = {
                 [data-theme="dark"] .print-format-card.selected { background: var(--color-gray-800); }
                 [data-theme="dark"] .print-format-card-icon { background: var(--color-gray-700); color: var(--color-gray-400); }
                 [data-theme="dark"] .print-format-card.selected .print-format-card-icon { background: var(--color-primary-900); }
-                [data-theme="dark"] .print-format-card-title { color: var(--color-gray-100); }
+                [data-theme="dark"] .print-format-card-title { color: white; }
                 [data-theme="dark"] .print-format-card-desc { color: var(--color-gray-400); }
             </style>
         `;
@@ -1780,12 +1779,12 @@ Views.settings = {
                 // Add badge
                 const badge = document.createElement('span');
                 badge.className = 'print-format-badge';
-                badge.textContent = 'Actuel';
+                badge.textContent = I18n.t('settings.current');
                 card.appendChild(badge);
                 
                 // Save to localStorage
                 InvoiceService.setDefaultPrintFormat(format);
-                Toast.success('Format d\'impression mis a jour');
+                Toast.success(I18n.t('settings.format_saved'));
             });
         });
     },
@@ -1803,17 +1802,17 @@ Views.settings = {
             // Champs spécifiques AWS SES
             fieldsHTML = `
                 <div class="form-group">
-                    <label class="form-label">AWS Access Key ID</label>
+                    <label class="form-label">${I18n.t('settings.aws_access_key')}</label>
                     <input type="password" id="email-api-key" class="form-input" placeholder="AKIA...">
-                    <p class="form-hint text-xs">Votre clé d'accès AWS (Access Key ID)</p>
+                    <p class="form-hint text-xs">${I18n.t('settings.aws_access_hint')}</p>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">AWS Secret Access Key</label>
+                    <label class="form-label">${I18n.t('settings.aws_secret_key')}</label>
                     <input type="password" id="email-secret-key" class="form-input" placeholder="wJalrXUt...">
-                    <p class="form-hint text-xs">Votre clé secrète AWS</p>
+                    <p class="form-hint text-xs">${I18n.t('settings.aws_secret_hint')}</p>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Région AWS</label>
+                    <label class="form-label">${I18n.t('settings.aws_region')}</label>
                     <select id="email-region" class="form-input">
                         <option value="us-east-1">US East (N. Virginia) - us-east-1</option>
                         <option value="us-west-2">US West (Oregon) - us-west-2</option>
@@ -1821,15 +1820,15 @@ Views.settings = {
                         <option value="eu-central-1">EU (Frankfurt) - eu-central-1</option>
                         <option value="ap-southeast-1">Asia Pacific (Singapore) - ap-southeast-1</option>
                     </select>
-                    <p class="form-hint text-xs">Région où votre SES est configuré</p>
+                    <p class="form-hint text-xs">${I18n.t('settings.aws_region_hint')}</p>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Email expediteur</label>
+                    <label class="form-label">${I18n.t('settings.sender_email')}</label>
                     <input type="email" id="email-from" class="form-input" placeholder="noreply@expresscargo.com" value="${channel.config?.from_email || ''}">
-                    <p class="form-hint text-xs">Email vérifié dans AWS SES</p>
+                    <p class="form-hint text-xs">${I18n.t('settings.aws_email_hint')}</p>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Nom expediteur</label>
+                    <label class="form-label">${I18n.t('settings.sender_name')}</label>
                     <input type="text" id="email-from-name" class="form-input" placeholder="Express Cargo" value="${channel.config?.from_name || ''}">
                 </div>
             `;
@@ -1838,14 +1837,14 @@ Views.settings = {
             fieldsHTML = `
                 <div class="form-group">
                     <label class="form-label">API Key</label>
-                    <input type="password" id="email-api-key" class="form-input" placeholder="Votre cle API">
+                    <input type="password" id="email-api-key" class="form-input" placeholder="API Key">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Email expediteur</label>
+                    <label class="form-label">${I18n.t('settings.sender_email')}</label>
                     <input type="email" id="email-from" class="form-input" placeholder="noreply@expresscargo.com" value="${channel.config?.from_email || ''}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Nom expediteur</label>
+                    <label class="form-label">${I18n.t('settings.sender_name')}</label>
                     <input type="text" id="email-from-name" class="form-input" placeholder="Express Cargo" value="${channel.config?.from_name || ''}">
                 </div>
             `;
@@ -1872,7 +1871,7 @@ Views.settings = {
     // ONGLET PAIEMENT EN LIGNE
     // ============================================
     async renderOnlinePaymentsTab(container) {
-        container.innerHTML = Loader.page('Chargement...');
+        container.innerHTML = Loader.page(I18n.t('loading'));
         
         this._opProviders = [];
         this._opTemplates = {};
@@ -1890,14 +1889,14 @@ Views.settings = {
                     <div class="card mb-md">
                         <div class="card-body" style="text-align:center;padding:48px 24px;">
                             ${Icons.get('lock', {size:48})}
-                            <h3 style="margin-top:16px;">Paiement en ligne non disponible</h3>
-                            <p class="text-muted" style="margin-top:8px;">Votre plan actuel ne permet pas les paiements en ligne. Contactez le support pour upgrader.</p>
+                            <h3 style="margin-top:16px;">${I18n.t('settings.op_unavailable')}</h3>
+                            <p class="text-muted" style="margin-top:8px;">${I18n.t('settings.op_unavailable_desc')}</p>
                         </div>
                     </div>
                 `;
                 return;
             }
-            container.innerHTML = `<div class="alert alert-error">Erreur: ${error.message}</div>`;
+            container.innerHTML = `<div class="alert alert-error">${error.message}</div>`;
             return;
         }
         
@@ -1907,20 +1906,20 @@ Views.settings = {
         container.innerHTML = `
             <div class="card mb-md">
                 <div class="card-header">
-                    <h3 class="card-title">${Icons.get('credit-card', {size:18})} Providers de paiement</h3>
+                    <h3 class="card-title">${Icons.get('credit-card', {size:18})} ${I18n.t('settings.op_title')}</h3>
                     ${availableTemplates.length > 0 ? `
                         <button class="btn btn-sm btn-primary" id="btn-add-provider">
-                            ${Icons.get('plus', {size:14})} Ajouter un provider
+                            ${Icons.get('plus', {size:14})} ${I18n.t('settings.op_add')}
                         </button>
                     ` : ''}
                 </div>
                 <div class="card-body">
-                    <p class="form-hint mb-md">Configurez vos propres cles API pour permettre a vos clients de payer leurs colis en ligne.</p>
+                    <p class="form-hint mb-md">${I18n.t('settings.op_hint')}</p>
                     <div id="op-providers-list">
                         ${this._opProviders.length > 0 ? this._renderOpProvidersList() : `
                             <div style="text-align:center;padding:32px 0;">
                                 ${Icons.get('credit-card', {size:40})}
-                                <p class="text-muted" style="margin-top:12px;">Aucun provider configure. Ajoutez un provider pour commencer.</p>
+                                <p class="text-muted" style="margin-top:12px;">${I18n.t('settings.op_empty')}</p>
                             </div>
                         `}
                     </div>
@@ -1942,18 +1941,18 @@ Views.settings = {
                         </div>
                         <div class="payment-method-info">
                             <span class="payment-method-name">${tpl.name || p.provider_code}</span>
-                            <span class="text-sm text-muted">${p.is_test_mode ? 'Mode test' : 'Production'} ${p.has_credentials ? '' : '- Non configure'}</span>
+                            <span class="text-sm text-muted">${p.is_test_mode ? I18n.t('settings.op_test_mode') : I18n.t('settings.op_production')} ${p.has_credentials ? '' : '- ' + I18n.t('settings.not_configured')}</span>
                             ${p.total_transactions > 0 ? `<span class="text-sm text-muted">${p.total_transactions} transaction(s)</span>` : ''}
                         </div>
                         <div class="payment-method-actions">
                             <label class="toggle-label">
                                 <input type="checkbox" ${p.is_enabled ? 'checked' : ''} onchange="Views.settings._opToggleProvider('${p.provider_code}')">
-                                <span class="text-sm">Actif</span>
+                                <span class="text-sm">${I18n.t('staff.active')}</span>
                             </label>
-                            <button class="btn btn-sm btn-ghost" onclick="Views.settings._opEditProvider('${p.provider_code}')" title="Configurer">
+                            <button class="btn btn-sm btn-ghost" onclick="Views.settings._opEditProvider('${p.provider_code}')" title="${I18n.t('settings.configure')}">
                                 ${Icons.get('edit', {size:14})}
                             </button>
-                            <button class="btn btn-sm btn-ghost text-error" onclick="Views.settings._opDeleteProvider('${p.provider_code}')" title="Supprimer">
+                            <button class="btn btn-sm btn-ghost text-error" onclick="Views.settings._opDeleteProvider('${p.provider_code}')" title="${I18n.t('delete')}">
                                 ${Icons.get('trash', {size:14})}
                             </button>
                         </div>
@@ -1968,30 +1967,30 @@ Views.settings = {
         const available = Object.entries(this._opTemplates).filter(([code]) => !configuredCodes.includes(code));
         
         if (available.length === 0) {
-            Toast.info('Tous les providers sont deja configures');
+            Toast.info(I18n.t('settings.op_all_configured'));
             return;
         }
         
         Modal.open({
-            title: 'Ajouter un provider',
+            title: I18n.t('settings.op_add'),
             content: `
                 <div class="form-group">
-                    <label class="form-label">Choisir un provider</label>
+                    <label class="form-label">${I18n.t('settings.op_choose')}</label>
                     <select id="op-new-provider" class="form-input">
-                        <option value="">-- Selectionner --</option>
+                        <option value="">${I18n.t('settings.op_select')}</option>
                         ${available.map(([code, tpl]) => `<option value="${code}">${tpl.name} - ${tpl.description || ''}</option>`).join('')}
                     </select>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-confirm-add-provider">Configurer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-confirm-add-provider">${I18n.t('settings.configure')}</button>
             `
         });
         
         document.getElementById('btn-confirm-add-provider')?.addEventListener('click', () => {
             const code = document.getElementById('op-new-provider')?.value;
-            if (!code) { Toast.error('Selectionnez un provider'); return; }
+            if (!code) { Toast.error(I18n.t('settings.op_select_error')); return; }
             Modal.close();
             this._opEditProvider(code);
         });
@@ -1999,7 +1998,7 @@ Views.settings = {
     
     _opEditProvider(providerCode) {
         const tpl = this._opTemplates[providerCode];
-        if (!tpl) { Toast.error('Provider inconnu'); return; }
+        if (!tpl) { Toast.error(I18n.t('settings.op_unknown')); return; }
         
         const existing = this._opProviders.find(p => p.provider_code === providerCode);
         const maskedCreds = existing?.credentials_masked || {};
@@ -2043,36 +2042,36 @@ Views.settings = {
         }
         
         Modal.open({
-            title: `Configurer ${tpl.name}`,
+            title: I18n.t('settings.op_configure').replace('{name}', tpl.name),
             size: 'large',
             content: `
                 <p class="text-muted mb-md">${tpl.description || ''}</p>
-                <p class="text-sm text-muted mb-md">Devises: ${(tpl.supported_currencies || []).join(', ')} | Methodes: ${(tpl.supported_methods || []).join(', ')}</p>
+                <p class="text-sm text-muted mb-md">${I18n.t('settings.op_currencies')}: ${(tpl.supported_currencies || []).join(', ')} | ${I18n.t('settings.op_methods')}: ${(tpl.supported_methods || []).join(', ')}</p>
                 
-                <h4 style="margin-bottom:12px;">Identifiants API</h4>
+                <h4 style="margin-bottom:12px;">${I18n.t('settings.op_api_credentials')}</h4>
                 ${credFields}
-                ${existing?.has_credentials ? '<p class="form-hint">Laissez vide pour conserver les identifiants actuels</p>' : ''}
+                ${existing?.has_credentials ? `<p class="form-hint">${I18n.t('settings.keep_current')}</p>` : ''}
                 
-                ${configFields ? `<h4 style="margin:16px 0 12px;">Configuration</h4>${configFields}` : ''}
+                ${configFields ? `<h4 style="margin:16px 0 12px;">${I18n.t('settings.configuration')}</h4>${configFields}` : ''}
                 
                 <div class="form-row" style="margin-top:16px;">
                     <div class="form-group">
                         <label class="toggle-label">
                             <input type="checkbox" id="op-test-mode" ${existing?.is_test_mode !== false ? 'checked' : ''}>
-                            <span>Mode test (sandbox)</span>
+                            <span>${I18n.t('settings.op_test_sandbox')}</span>
                         </label>
                     </div>
                     <div class="form-group">
                         <label class="toggle-label">
                             <input type="checkbox" id="op-enabled" ${existing?.is_enabled ? 'checked' : ''}>
-                            <span>Activer</span>
+                            <span>${I18n.t('settings.op_enable')}</span>
                         </label>
                     </div>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-provider">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-provider">${I18n.t('save')}</button>
             `
         });
         
@@ -2088,7 +2087,7 @@ Views.settings = {
             });
             
             if (!existing && !hasNewCreds) {
-                Toast.error('Renseignez au moins les identifiants requis');
+                Toast.error(I18n.t('settings.op_fill_credentials'));
                 return;
             }
             
@@ -2106,7 +2105,7 @@ Views.settings = {
             
             try {
                 await API.paymentProviders.configure(providerCode, payload);
-                Toast.success('Provider configure');
+                Toast.success(I18n.t('settings.op_saved'));
                 Modal.close();
                 this.renderOnlinePaymentsTab(document.getElementById('settings-content'));
             } catch (err) {
@@ -2118,7 +2117,7 @@ Views.settings = {
     async _opToggleProvider(providerCode) {
         try {
             const result = await API.paymentProviders.toggle(providerCode);
-            Toast.success(result.message || 'Statut mis a jour');
+            Toast.success(result.message || I18n.t('settings.op_toggled'));
             this.renderOnlinePaymentsTab(document.getElementById('settings-content'));
         } catch (err) {
             Toast.error(err.message);
@@ -2128,11 +2127,11 @@ Views.settings = {
     
     async _opDeleteProvider(providerCode) {
         const tpl = this._opTemplates[providerCode] || {};
-        if (!confirm(`Supprimer la configuration de ${tpl.name || providerCode} ?`)) return;
+        if (!confirm(I18n.t('settings.op_confirm_delete').replace('{name}', tpl.name || providerCode))) return;
         
         try {
             await API.paymentProviders.delete(providerCode);
-            Toast.success('Provider supprime');
+            Toast.success(I18n.t('settings.op_deleted'));
             this.renderOnlinePaymentsTab(document.getElementById('settings-content'));
         } catch (err) {
             Toast.error(err.message);

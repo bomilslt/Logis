@@ -17,7 +17,7 @@ Views.accessDenied = {
                         ${Icons.get('lock', {size: 64, color: 'var(--color-error)'})}
                     </div>
                     
-                    <h1 class="access-denied-title">Accès refusé</h1>
+                    <h1 class="access-denied-title">${I18n.t('access_denied.title')}</h1>
                     
                     <div class="access-denied-message">
                         ${this.createAccessDeniedMessage(accessInfo)}
@@ -25,25 +25,25 @@ Views.accessDenied = {
                     
                     <div class="access-denied-details">
                         <div class="detail-item">
-                            <strong>Votre rôle:</strong> ${this.getRoleLabel(accessInfo.userRole)}
+                            <strong>${I18n.t('access_denied.your_role')}</strong> ${this.getRoleLabel(accessInfo.userRole)}
                         </div>
                         <div class="detail-item">
-                            <strong>Page demandée:</strong> ${accessInfo.path}
+                            <strong>${I18n.t('access_denied.requested_page')}</strong> ${accessInfo.path}
                         </div>
                         <div class="detail-item">
-                            <strong>Raison:</strong> ${this.getReasonLabel(accessInfo.reason)}
+                            <strong>${I18n.t('access_denied.reason')}</strong> ${this.getReasonLabel(accessInfo.reason)}
                         </div>
                         ${accessInfo.accessModules ? `<div class="detail-item">
-                            <strong>Modules actifs:</strong> ${accessInfo.accessModules.length > 0 ? accessInfo.accessModules.join(', ') : 'Aucun'}
+                            <strong>${I18n.t('access_denied.active_modules')}</strong> ${accessInfo.accessModules.length > 0 ? accessInfo.accessModules.join(', ') : I18n.t('access_denied.none')}
                         </div>` : ''}
                     </div>
                     
                     <div class="access-denied-actions">
                         <button class="btn btn-primary" onclick="Views.accessDenied.goToSuggested()">
-                            Aller vers ${this.getSuggestedLabel(accessInfo.suggestedRoute)}
+                            ${I18n.t('access_denied.go_to')} ${this.getSuggestedLabel(accessInfo.suggestedRoute)}
                         </button>
                         <button class="btn btn-secondary" onclick="Views.accessDenied.goBack()">
-                            Retour
+                            ${I18n.t('access_denied.back')}
                         </button>
                         <button class="btn btn-ghost" onclick="Views.accessDenied.goToDashboard()">
                             Dashboard
@@ -52,15 +52,15 @@ Views.accessDenied = {
                     
                     <div class="access-denied-help">
                         <details>
-                            <summary>Besoin d'aide ?</summary>
+                            <summary>${I18n.t('access_denied.need_help')}</summary>
                             <div class="help-content">
-                                <p>Si vous pensez que vous devriez avoir accès à cette page, contactez votre administrateur.</p>
+                                <p>${I18n.t('access_denied.help_text')}</p>
                                 <div class="help-actions">
                                     <button class="btn btn-sm btn-outline" onclick="Views.accessDenied.contactAdmin()">
-                                        Contacter l'administrateur
+                                        ${I18n.t('access_denied.contact_admin')}
                                     </button>
                                     <button class="btn btn-sm btn-outline" onclick="Views.accessDenied.showDebugInfo()">
-                                        Informations techniques
+                                        ${I18n.t('access_denied.tech_info')}
                                     </button>
                                 </div>
                             </div>
@@ -71,7 +71,7 @@ Views.accessDenied = {
         `;
         
         // Mettre à jour le titre de la page
-        document.title = 'Accès refusé - Express Cargo';
+        document.title = I18n.t('access_denied.title') + ' - Express Cargo';
         
         // Mettre à jour la navigation
         Router.updateNav('');
@@ -84,39 +84,39 @@ Views.accessDenied = {
         const roleLabel = this.getRoleLabel(userRole);
         const suggestedLabel = this.getSuggestedLabel(suggestedRoute);
         
-        let msg = `<p>La page <strong>"${path}"</strong> n'est pas disponible avec vos droits actuels.</p>`;
+        let msg = `<p>${I18n.t('access_denied.page_unavailable').replace('{path}', path)}</p>`;
         
         if (userRole === 'staff' && accessModules && accessModules.length > 0) {
             const moduleLabels = accessModules.map(m => {
                 const defs = window.ViewFilter?.getModuleDefinitions() || {};
                 return defs[m]?.label || m;
             });
-            msg += `<p>Vos modules d'accès : <strong>${moduleLabels.join(', ')}</strong></p>`;
+            msg += `<p>${I18n.t('access_denied.your_modules')} <strong>${moduleLabels.join(', ')}</strong></p>`;
         } else if (userRole === 'staff') {
-            msg += `<p>Aucun module d'accès ne vous a été attribué.</p>`;
+            msg += `<p>${I18n.t('access_denied.no_modules')}</p>`;
         }
         
-        msg += `<p>Contactez votre administrateur pour obtenir l'accès à cette fonctionnalité.</p>`;
+        msg += `<p>${I18n.t('access_denied.contact_for_access')}</p>`;
         
         return msg;
     },
     
     getRoleLabel(role) {
         const roleLabels = {
-            admin: 'Administrateur',
-            staff: 'Agent'
+            admin: I18n.t('access_denied.role_admin'),
+            staff: I18n.t('access_denied.role_staff')
         };
         
-        return roleLabels[role] || role || 'Utilisateur';
+        return roleLabels[role] || role || I18n.t('access_denied.role_default');
     },
     
     getSuggestedLabel(route) {
         const labels = {
             dashboard: 'Dashboard',
-            packages: 'Colis',
-            clients: 'Clients',
-            profile: 'Mon profil',
-            'pickups-payments': 'Retraits et Paiements'
+            packages: I18n.t('access_denied.suggested_packages'),
+            clients: I18n.t('access_denied.suggested_clients'),
+            profile: I18n.t('access_denied.suggested_profile'),
+            'pickups-payments': I18n.t('access_denied.suggested_pickups')
         };
         
         return labels[route] || route;
@@ -124,11 +124,11 @@ Views.accessDenied = {
     
     getReasonLabel(reason) {
         const reasons = {
-            role_restricted: 'Permissions insuffisantes',
-            module_restricted: 'Module d\'accès non attribué',
-            public: 'Page publique',
-            authorized: 'Autorisé',
-            profile: 'Profil utilisateur'
+            role_restricted: I18n.t('access_denied.reason_role'),
+            module_restricted: I18n.t('access_denied.reason_module'),
+            public: I18n.t('access_denied.reason_public'),
+            authorized: I18n.t('access_denied.reason_authorized'),
+            profile: I18n.t('access_denied.reason_profile')
         };
         
         return reasons[reason] || reason;
@@ -151,7 +151,7 @@ Views.accessDenied = {
     contactAdmin() {
         // Ouvre un email ou une modal de contact
         const user = Store.getUser();
-        const subject = encodeURIComponent('Demande d\'accès - Express Cargo');
+        const subject = encodeURIComponent(I18n.t('access_denied.email_subject'));
         const body = encodeURIComponent(`
 Bonjour,
 
@@ -181,15 +181,15 @@ Merci d'avance.
         };
         
         Modal.open({
-            title: 'Informations techniques',
+            title: I18n.t('access_denied.tech_info'),
             size: 'lg',
             content: `
                 <div class="debug-info">
-                    <h3>Informations de débogage</h3>
+                    <h3>${I18n.t('access_denied.debug_info')}</h3>
                     <pre class="debug-json">${JSON.stringify(debugInfo, null, 2)}</pre>
                     <div class="debug-actions">
                         <button class="btn btn-sm btn-outline" onclick="navigator.clipboard.writeText('${JSON.stringify(debugInfo, null, 2)}')">
-                            Copier dans le presse-papiers
+                            ${I18n.t('access_denied.copy_clipboard')}
                         </button>
                     </div>
                 </div>

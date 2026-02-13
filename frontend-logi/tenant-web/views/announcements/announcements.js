@@ -47,8 +47,8 @@ Views.announcements = {
                 document.getElementById('announcements-list').innerHTML = `
                     <div class="empty-state">
                         ${Icons.get('alert-circle', {size:32})}
-                        <p>Erreur de chargement: ${error.message}</p>
-                        <button class="btn btn-outline" onclick="Views.announcements.loadData()">Reessayer</button>
+                        <p>${I18n.t('error_loading')}: ${error.message}</p>
+                        <button class="btn btn-outline" onclick="Views.announcements.loadData()">${I18n.t('retry')}</button>
                     </div>
                 `;
             }
@@ -62,9 +62,9 @@ Views.announcements = {
             container.innerHTML = `
                 <div class="empty-state">
                     ${Icons.get('megaphone', {size:32})}
-                    <p>Aucune annonce</p>
+                    <p>${I18n.t('announcements.no_announcements')}</p>
                     <button class="btn btn-primary" onclick="Views.announcements.showForm()">
-                        ${Icons.get('plus', {size:16})} Creer une annonce
+                        ${Icons.get('plus', {size:16})} ${I18n.t('announcements.create_announcement')}
                     </button>
                 </div>
             `;
@@ -86,10 +86,10 @@ Views.announcements = {
             urgent: 'alert-circle'
         };
         const typeLabels = {
-            info: 'Information',
-            warning: 'Avertissement',
-            promo: 'Promotion',
-            urgent: 'Urgent'
+            info: I18n.t('announcements.type_info'),
+            warning: I18n.t('announcements.type_warning'),
+            promo: I18n.t('announcements.type_promo'),
+            urgent: I18n.t('announcements.type_urgent')
         };
         
         return `
@@ -104,7 +104,7 @@ Views.announcements = {
                         </div>
                         <div class="announcement-badges">
                             <span class="status-badge ${a.is_active ? 'status-delivered' : 'status-pending'}">
-                                ${a.is_active ? 'Active' : 'Inactive'}
+                                ${a.is_active ? I18n.t('announcements.active') : I18n.t('announcements.inactive')}
                             </span>
                             ${a.type ? `<span class="type-badge type-${a.type}">${typeLabels[a.type] || a.type}</span>` : ''}
                         </div>
@@ -114,25 +114,25 @@ Views.announcements = {
                         <div class="announcement-meta">
                             <span class="text-sm text-muted">
                                 ${Icons.get('calendar', {size:12})}
-                                ${a.created_at ? new Date(a.created_at).toLocaleDateString('fr-FR') : ''}
+                                ${a.created_at ? new Date(a.created_at).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : ''}
                             </span>
                             ${a.start_date || a.end_date ? `
                                 <span class="text-sm text-muted">
                                     ${Icons.get('clock', {size:12})}
-                                    ${a.start_date ? new Date(a.start_date).toLocaleDateString('fr-FR') : ''} 
+                                    ${a.start_date ? new Date(a.start_date).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : ''} 
                                     ${a.start_date && a.end_date ? '→' : ''} 
-                                    ${a.end_date ? new Date(a.end_date).toLocaleDateString('fr-FR') : ''}
+                                    ${a.end_date ? new Date(a.end_date).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : ''}
                                 </span>
                             ` : ''}
                         </div>
                         <div class="announcement-actions">
-                            <button class="btn btn-sm btn-ghost" onclick="Views.announcements.toggleActive('${a.id}', this)" title="${a.is_active ? 'Desactiver' : 'Activer'}">
+                            <button class="btn btn-sm btn-ghost" onclick="Views.announcements.toggleActive('${a.id}', this)" title="${a.is_active ? I18n.t('announcements.inactive') : I18n.t('announcements.active')}">
                                 ${Icons.get(a.is_active ? 'eye-off' : 'eye', {size:14})}
                             </button>
-                            <button class="btn btn-sm btn-ghost" onclick="Views.announcements.editAnnouncement('${a.id}')" title="Modifier">
+                            <button class="btn btn-sm btn-ghost" onclick="Views.announcements.editAnnouncement('${a.id}')" title="${I18n.t('edit')}">
                                 ${Icons.get('edit', {size:14})}
                             </button>
-                            <button class="btn btn-sm btn-ghost text-error" onclick="Views.announcements.deleteAnnouncement('${a.id}', this)" title="Supprimer">
+                            <button class="btn btn-sm btn-ghost text-error" onclick="Views.announcements.deleteAnnouncement('${a.id}', this)" title="${I18n.t('delete')}">
                                 ${Icons.get('trash', {size:14})}
                             </button>
                         </div>
@@ -149,60 +149,60 @@ Views.announcements = {
         if (isEdit) {
             announcement = this.announcements.find(a => a.id === announcementId);
             if (!announcement) {
-                Toast.error('Annonce non trouvee');
+                Toast.error(I18n.t('announcements.not_found'));
                 return;
             }
         }
         
         Modal.open({
-            title: isEdit ? 'Modifier l\'annonce' : 'Nouvelle annonce',
+            title: isEdit ? I18n.t('announcements.edit_announcement') : I18n.t('announcements.new_announcement'),
             content: `
                 <div class="form-group">
-                    <label class="form-label">Titre *</label>
-                    <input type="text" id="ann-title" class="form-input" value="${announcement?.title || ''}" placeholder="Ex: Fermeture pour les fetes">
+                    <label class="form-label">${I18n.t('announcements.ann_title')} *</label>
+                    <input type="text" id="ann-title" class="form-input" value="${announcement?.title || ''}" placeholder="${I18n.t('announcements.title_placeholder')}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Contenu *</label>
-                    <textarea id="ann-content" class="form-input" rows="4" placeholder="Contenu de l'annonce...">${announcement?.content || ''}</textarea>
+                    <label class="form-label">${I18n.t('announcements.content')} *</label>
+                    <textarea id="ann-content" class="form-input" rows="4" placeholder="${I18n.t('announcements.content_placeholder')}">${announcement?.content || ''}</textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Type</label>
+                    <label class="form-label">${I18n.t('announcements.type')}</label>
                     <div id="ann-type-container"></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Date de debut</label>
+                        <label class="form-label">${I18n.t('announcements.start_date')}</label>
                         <div id="ann-start-date-container"></div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Date de fin</label>
+                        <label class="form-label">${I18n.t('announcements.end_date')}</label>
                         <div id="ann-end-date-container"></div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Priorite</label>
-                    <input type="number" id="ann-priority" class="form-input" value="${announcement?.priority || 0}" min="0" max="100" placeholder="0 = normale, plus = prioritaire">
-                    <small class="form-hint">Les annonces avec une priorite plus elevee s'affichent en premier</small>
+                    <label class="form-label">${I18n.t('announcements.priority')}</label>
+                    <input type="number" id="ann-priority" class="form-input" value="${announcement?.priority || 0}" min="0" max="100" placeholder="0">
+                    <small class="form-hint">${I18n.t('announcements.priority_hint')}</small>
                 </div>
                 <div class="form-group">
                     <label class="toggle-label">
                         <input type="checkbox" id="ann-active" ${announcement?.is_active !== false ? 'checked' : ''}>
-                        <span>Active (visible par les clients)</span>
+                        <span>${I18n.t('announcements.active_label')}</span>
                     </label>
                 </div>
                 
                 ${!isEdit ? `
                 <div class="form-divider"></div>
-                <h4 class="form-section-title">Notifications</h4>
+                <h4 class="form-section-title">${I18n.t('announcements.notifications')}</h4>
                 <div class="form-group">
                     <label class="toggle-label">
                         <input type="checkbox" id="ann-notify" checked>
-                        <span>Notifier tous les clients</span>
+                        <span>${I18n.t('announcements.notify_all')}</span>
                     </label>
-                    <small class="form-hint">Envoyer une notification push a tous les clients actifs</small>
+                    <small class="form-hint">${I18n.t('announcements.notify_hint')}</small>
                 </div>
                 <div class="form-group" id="notify-channels-group">
-                    <label class="form-label">Canaux de notification</label>
+                    <label class="form-label">${I18n.t('announcements.notify_channels')}</label>
                     <div class="checkbox-group">
                         <label class="checkbox-label">
                             <input type="checkbox" name="notify-channel" value="push" checked>
@@ -225,20 +225,20 @@ Views.announcements = {
                 ` : ''}
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-ann">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-ann">${I18n.t('save')}</button>
             `
         });
         
         // Init type select
         this.typeSelect = new SearchSelect({
             container: '#ann-type-container',
-            placeholder: 'Type d\'annonce',
+            placeholder: I18n.t('announcements.type_placeholder'),
             items: [
-                { id: 'info', name: 'Information' },
-                { id: 'warning', name: 'Avertissement' },
-                { id: 'promo', name: 'Promotion' },
-                { id: 'urgent', name: 'Urgent' }
+                { id: 'info', name: I18n.t('announcements.type_info') },
+                { id: 'warning', name: I18n.t('announcements.type_warning') },
+                { id: 'promo', name: I18n.t('announcements.type_promo') },
+                { id: 'urgent', name: I18n.t('announcements.type_urgent') }
             ],
             onSelect: () => {}
         });
@@ -247,14 +247,14 @@ Views.announcements = {
         // Init date pickers
         this.startDatePicker = new DatePicker({
             container: document.getElementById('ann-start-date-container'),
-            placeholder: 'Date de debut',
+            placeholder: I18n.t('announcements.start_date'),
             value: announcement?.start_date?.split('T')[0] || null,
             onChange: () => {}
         });
         
         this.endDatePicker = new DatePicker({
             container: document.getElementById('ann-end-date-container'),
-            placeholder: 'Date de fin',
+            placeholder: I18n.t('announcements.end_date'),
             value: announcement?.end_date?.split('T')[0] || null,
             onChange: () => {}
         });
@@ -282,11 +282,11 @@ Views.announcements = {
         const isActive = document.getElementById('ann-active').checked;
         
         if (!title) {
-            Toast.error('Entrez un titre');
+            Toast.error(I18n.t('announcements.enter_title'));
             return;
         }
         if (!content) {
-            Toast.error('Entrez le contenu');
+            Toast.error(I18n.t('announcements.enter_content'));
             return;
         }
         
@@ -320,10 +320,10 @@ Views.announcements = {
         
         try {
             if (!btn) btn = document.getElementById('btn-save-ann');
-            Loader.button(btn, true, { text: 'Enregistrement...' });
+            Loader.button(btn, true, { text: '...' });
             if (announcementId) {
                 await API.announcements.update(announcementId, data);
-                Toast.success('Annonce modifiee');
+                Toast.success(I18n.t('announcements.ann_updated'));
             } else {
                 const result = await API.announcements.create(data);
                 
@@ -331,14 +331,14 @@ Views.announcements = {
                 if (data.notify_clients && result.notifications) {
                     const notifs = result.notifications;
                     if (notifs.error) {
-                        Toast.warning(`Annonce creee mais erreur notifications: ${notifs.error}`);
+                        Toast.warning(I18n.t('announcements.ann_created_notif_error').replace('{e}', notifs.error));
                     } else if (notifs.success !== undefined) {
-                        Toast.success(`Annonce creee et ${notifs.success} clients notifies`);
+                        Toast.success(I18n.t('announcements.ann_created_notified').replace('{n}', notifs.success));
                     } else {
-                        Toast.success('Annonce creee et notifications envoyees');
+                        Toast.success(I18n.t('announcements.ann_created_notif_sent'));
                     }
                 } else {
-                    Toast.success('Annonce creee');
+                    Toast.success(I18n.t('announcements.ann_created'));
                 }
             }
             Modal.close();
@@ -361,7 +361,7 @@ Views.announcements = {
             Loader.button(btn, true, { text: '' });
             await API.announcements.toggleActive(id);
             const ann = this.announcements.find(a => a.id === id);
-            Toast.success(ann?.is_active ? 'Annonce desactivee' : 'Annonce activee');
+            Toast.success(ann?.is_active ? I18n.t('announcements.ann_deactivated') : I18n.t('announcements.ann_activated'));
             ViewCache.onMutate('announcements');
             await this.loadData();
         } catch (error) {
@@ -372,11 +372,11 @@ Views.announcements = {
     },
     
     async deleteAnnouncement(id, btn = null) {
-        if (await Modal.confirm({ title: 'Supprimer ?', message: 'Supprimer cette annonce ?', danger: true })) {
+        if (await Modal.confirm({ title: I18n.t('delete') + ' ?', message: I18n.t('announcements.confirm_delete'), danger: true })) {
             try {
                 Loader.button(btn, true, { text: '' });
                 await API.announcements.delete(id);
-                Toast.success('Annonce supprimee');
+                Toast.success(I18n.t('announcements.ann_deleted'));
                 ViewCache.onMutate('announcements');
                 await this.loadData();
             } catch (error) {

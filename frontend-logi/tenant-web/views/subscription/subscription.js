@@ -6,20 +6,20 @@ const SubscriptionView = {
     render() {
         // Mettre à jour la navigation
         Router.updateNav('subscription');
-        Router.updateTitle('Mon Abonnement');
+        Router.updateTitle(I18n.t('subscription.title'));
 
         const container = document.getElementById('main-content');
         container.innerHTML = `
             <div class="subscription-container">
                 <div class="page-header">
-                    <h1 class="page-title">Mon Abonnement</h1>
-                    <p class="text-muted">Gérez votre offre et vos renouvellements</p>
+                    <h1 class="page-title">${I18n.t('subscription.title')}</h1>
+                    <p class="text-muted">${I18n.t('subscription.subtitle')}</p>
                 </div>
                 
                 <div id="subscription-content">
                     <div class="loading-state">
                         <div class="spinner"></div>
-                        <p>Chargement des informations...</p>
+                        <p>${I18n.t('subscription.loading')}</p>
                     </div>
                 </div>
             </div>
@@ -58,9 +58,9 @@ const SubscriptionView = {
                 document.getElementById('subscription-content').innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon text-danger">⚠️</div>
-                        <h3>Erreur de chargement</h3>
-                        <p>${error.message || "Impossible de récupérer les informations d'abonnement."}</p>
-                        <button class="btn btn-primary mt-md" onclick="SubscriptionView.render()">Réessayer</button>
+                        <h3>${I18n.t('subscription.error_loading')}</h3>
+                        <p>${error.message || I18n.t('subscription.error_text')}</p>
+                        <button class="btn btn-primary mt-md" onclick="SubscriptionView.render()">${I18n.t('subscription.retry')}</button>
                     </div>
                 `;
             }
@@ -69,7 +69,7 @@ const SubscriptionView = {
 
     renderContent(sub) {
         const container = document.getElementById('subscription-content');
-        const planName = sub.plan ? (sub.plan.name || sub.plan.toUpperCase()) : 'Inconnu';
+        const planName = sub.plan ? (sub.plan.name || sub.plan.toUpperCase()) : I18n.t('subscription.unknown');
         const statusLabel = this.getStatusLabel(sub.status);
         const daysRemaining = sub.days_remaining !== undefined ? sub.days_remaining : '-';
         const endDate = sub.end_date ? new Date(sub.end_date).toLocaleDateString() : '-';
@@ -98,7 +98,7 @@ const SubscriptionView = {
             <div class="subscription-grid">
                 <!-- Status Card -->
                 <div class="subscription-card text-center">
-                    <h3 class="card-title justify-center">Statut Actuel</h3>
+                    <h3 class="card-title justify-center">${I18n.t('subscription.current_status')}</h3>
                     <div class="plan-info">
                         <div class="plan-name">${planName}</div>
                         <span class="plan-status status-${sub.status}">${statusLabel}</span>
@@ -106,15 +106,15 @@ const SubscriptionView = {
                     
                     <div class="time-remaining">
                         <div class="days-remaining">${daysRemaining}</div>
-                        <div class="days-label">Jours Restants</div>
+                        <div class="days-label">${I18n.t('subscription.days_remaining')}</div>
                     </div>
                     
-                    <p class="text-muted mt-md">Expire le : <strong>${endDate}</strong></p>
+                    <p class="text-muted mt-md">${I18n.t('subscription.expires_on')} <strong>${endDate}</strong></p>
                     
                     <div class="actions-row">
                         <button class="btn-renew" onclick="SubscriptionView.startRenewal()">
                             <svg class="icon" style="width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2"><use href="#refresh-cw"></use></svg>
-                            Renouveler maintenant
+                            ${I18n.t('subscription.renew_now')}
                         </button>
                     </div>
                 </div>
@@ -123,12 +123,12 @@ const SubscriptionView = {
                 <div class="subscription-card">
                     <h3 class="card-title">
                         <svg class="icon"><use href="#list"></use></svg>
-                        Fonctionnalités incluses
+                        ${I18n.t('subscription.features_included')}
                     </h3>
                     <ul class="limits-list">
                         ${featuresHtml || ''}
                         ${planAddonsHtml || ''}
-                        ${!featuresHtml && !planAddonsHtml ? '<li class="text-muted">Aucune fonctionnalité listée</li>' : ''}
+                        ${!featuresHtml && !planAddonsHtml ? `<li class="text-muted">${I18n.t('subscription.no_features')}</li>` : ''}
                     </ul>
                 </div>
             </div>
@@ -139,28 +139,28 @@ const SubscriptionView = {
             <div class="subscription-card">
                 <h3 class="card-title">
                     <svg class="icon" style="width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2"><use href="#plus-circle"></use></svg>
-                    Offres Complémentaires
+                    ${I18n.t('subscription.addons')}
                 </h3>
                 <div id="addons-container" class="addons-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
                     <!-- Add-ons will be rendered here -->
-                    <div class="text-muted">Chargement des offres...</div>
+                    <div class="text-muted">${I18n.t('subscription.addons_loading')}</div>
                 </div>
             </div>
             
             <!-- History Section -->
             <div class="subscription-card">
-                <h3 class="card-title">Historique</h3>
+                <h3 class="card-title">${I18n.t('subscription.history')}</h3>
                 <div class="table-responsive">
                     <table class="history-table">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Action</th>
-                                <th>Détails</th>
+                                <th>${I18n.t('subscription.date')}</th>
+                                <th>${I18n.t('subscription.action')}</th>
+                                <th>${I18n.t('subscription.details')}</th>
                             </tr>
                         </thead>
                         <tbody id="history-tbody">
-                            <tr><td colspan="3" class="text-center text-muted">Chargement de l'historique...</td></tr>
+                            <tr><td colspan="3" class="text-center text-muted">${I18n.t('subscription.history_loading')}</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -177,7 +177,7 @@ const SubscriptionView = {
             const tbody = document.getElementById('history-tbody');
 
             if (history.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Aucun historique disponible</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted">${I18n.t('subscription.no_history')}</td></tr>`;
                 return;
             }
 
@@ -191,7 +191,7 @@ const SubscriptionView = {
 
         } catch (e) {
             console.error('History error', e);
-            document.getElementById('history-tbody').innerHTML = '<tr><td colspan="3" class="text-danger">Erreur chargement historique</td></tr>';
+            document.getElementById('history-tbody').innerHTML = `<tr><td colspan="3" class="text-danger">${I18n.t('subscription.history_error')}</td></tr>`;
         }
     },
 
@@ -199,7 +199,7 @@ const SubscriptionView = {
         // Add-ons are not available without an external billing service
         const container = document.getElementById('addons-container');
         if (container) {
-            container.innerHTML = '<div class="text-muted">Aucune offre complémentaire disponible pour le moment</div>';
+            container.innerHTML = `<div class="text-muted">${I18n.t('subscription.no_addons')}</div>`;
         }
     },
 
@@ -225,8 +225,8 @@ const SubscriptionView = {
                         ${message}
                     </div>
                     <div class="modal-actions">
-                        <button class="btn-modal btn-cancel" id="modal-cancel-btn">Annuler</button>
-                        <button class="btn-modal btn-confirm" id="modal-confirm-btn">Confirmer</button>
+                        <button class="btn-modal btn-cancel" id="modal-cancel-btn">${I18n.t('cancel')}</button>
+                        <button class="btn-modal btn-confirm" id="modal-confirm-btn">${I18n.t('confirm')}</button>
                     </div>
                 </div>
             `;
@@ -255,7 +255,7 @@ const SubscriptionView = {
 
 
     formatCurrency(amount, currency = 'XAF') {
-        return new Intl.NumberFormat('fr-FR', {
+        return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US', {
             style: 'currency',
             currency: currency,
             minimumFractionDigits: 0
@@ -283,7 +283,7 @@ const SubscriptionView = {
             }
 
             if (details.duration_days) {
-                parts.push(`${details.duration_days} jours`);
+                parts.push(`${details.duration_days} ${I18n.t('subscription.days')}`);
             }
 
             if (details.billing_order_id) {
@@ -305,10 +305,10 @@ const SubscriptionView = {
 
     getStatusLabel(status) {
         const map = {
-            'active': 'Actif',
-            'expired': 'Expiré',
-            'trial': 'Essai',
-            'cancelled': 'Annulé'
+            'active': I18n.t('subscription.active'),
+            'expired': I18n.t('subscription.expired'),
+            'trial': I18n.t('subscription.trial'),
+            'cancelled': I18n.t('subscription.cancelled')
         };
         return map[status] || status;
     },
@@ -316,7 +316,7 @@ const SubscriptionView = {
     async startRenewal() {
         const btn = document.querySelector('.btn-renew');
         const oldText = btn.innerHTML;
-        btn.innerHTML = 'Chargement...';
+        btn.innerHTML = I18n.t('subscription.renewal_loading');
         btn.disabled = true;
 
         try {
@@ -328,11 +328,11 @@ const SubscriptionView = {
                 // Open the renewal link (WhatsApp, mailto, or custom URL)
                 window.open(data.url, '_blank');
             } else {
-                Toast.warning('Aucun lien de renouvellement configuré. Contactez le support.');
+                Toast.warning(I18n.t('subscription.no_renewal_link'));
             }
         } catch (error) {
             console.error('Renewal error:', error);
-            Toast.error(error.message || 'Impossible de charger le lien de renouvellement');
+            Toast.error(error.message || I18n.t('subscription.renewal_error'));
         } finally {
             btn.innerHTML = oldText;
             btn.disabled = false;

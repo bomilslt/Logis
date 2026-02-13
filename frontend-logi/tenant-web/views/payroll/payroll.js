@@ -28,13 +28,13 @@ Views.payroll = {
                 <!-- Onglets -->
                 <div class="payroll-tabs mb-md">
                     <button class="payroll-tab ${this.currentTab === 'employees' ? 'active' : ''}" data-tab="employees">
-                        ${Icons.get('users', {size:16})} Employes
+                        ${Icons.get('users', {size:16})} ${I18n.t('payroll.tab_employees')}
                     </button>
                     <button class="payroll-tab ${this.currentTab === 'payments' ? 'active' : ''}" data-tab="payments">
-                        ${Icons.get('dollar-sign', {size:16})} Paiements
+                        ${Icons.get('dollar-sign', {size:16})} ${I18n.t('payroll.tab_payments')}
                     </button>
                     <button class="payroll-tab ${this.currentTab === 'expenses' ? 'active' : ''}" data-tab="expenses">
-                        ${Icons.get('file-text', {size:16})} Charges diverses
+                        ${Icons.get('file-text', {size:16})} ${I18n.t('payroll.tab_expenses')}
                     </button>
                 </div>
                 
@@ -108,7 +108,7 @@ Views.payroll = {
                 this.employees = [];
                 this.payments = [];
                 this.expenses = [];
-                Toast.error('Erreur de chargement des données');
+                Toast.error(I18n.t('error_loading'));
                 this.renderCurrentTab();
             }
         }
@@ -141,21 +141,21 @@ Views.payroll = {
                     <div class="stat-icon bg-primary">${Icons.get('users', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value">${activeEmployees.length}</span>
-                        <span class="stat-label">Employes actifs</span>
+                        <span class="stat-label">${I18n.t('payroll.active_employees')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon bg-warning">${Icons.get('dollar-sign', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value">${this.formatMoney(totalSalaries)}</span>
-                        <span class="stat-label">Masse salariale / mois</span>
+                        <span class="stat-label">${I18n.t('payroll.monthly_payroll')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon bg-info">${Icons.get('trending-up', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value">${this.formatMoney(Math.round(totalSalaries / (activeEmployees.length || 1)))}</span>
-                        <span class="stat-label">Salaire moyen</span>
+                        <span class="stat-label">${I18n.t('payroll.avg_salary')}</span>
                     </div>
                 </div>
             </div>
@@ -167,13 +167,13 @@ Views.payroll = {
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Employe</th>
-                                    <th>Contact</th>
-                                    <th>Poste</th>
-                                    <th>Salaire</th>
-                                    <th>Role</th>
-                                    <th>Statut</th>
-                                    <th>Actions</th>
+                                    <th>${I18n.t('staff.name')}</th>
+                                    <th>${I18n.t('clients.phone')}</th>
+                                    <th>${I18n.t('payroll.position')}</th>
+                                    <th>${I18n.t('payroll.salary')}</th>
+                                    <th>${I18n.t('staff.role')}</th>
+                                    <th>${I18n.t('staff.status')}</th>
+                                    <th>${I18n.t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -181,7 +181,7 @@ Views.payroll = {
                                     <tr>
                                         <td>
                                             <div class="font-medium">${emp.name}</div>
-                                            <div class="text-sm text-muted">Depuis ${new Date(emp.hire_date).toLocaleDateString('fr-FR')}</div>
+                                            <div class="text-sm text-muted">${I18n.t('payroll.since')} ${new Date(emp.hire_date).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')}</div>
                                         </td>
                                         <td>
                                             <div class="text-sm">${emp.email}</div>
@@ -191,23 +191,23 @@ Views.payroll = {
                                         <td class="font-medium">${this.formatMoney(emp.salary)}</td>
                                         <td>
                                             <span class="status-badge ${emp.role === 'admin' ? 'status-transit' : 'status-received'}">
-                                                ${emp.role === 'admin' ? 'Admin' : 'Employe'}
+                                                ${emp.role === 'admin' ? I18n.t('staff.admin') : I18n.t('staff.employee')}
                                             </span>
                                         </td>
                                         <td>
                                             <span class="status-badge ${emp.status === 'active' ? 'status-delivered' : 'status-customs'}">
-                                                ${emp.status === 'active' ? 'Actif' : 'Inactif'}
+                                                ${emp.status === 'active' ? I18n.t('staff.active') : I18n.t('staff.inactive')}
                                             </span>
                                         </td>
                                         <td>
                                             <div class="table-actions">
-                                                <button class="btn btn-sm btn-primary" onclick="Views.payroll.showPaySalaryModal('${emp.id}')" title="Payer salaire">
+                                                <button class="btn btn-sm btn-primary" onclick="Views.payroll.showPaySalaryModal('${emp.id}')" title="${I18n.t('payroll.pay_salary')}">
                                                     ${Icons.get('dollar-sign', {size:14})}
                                                 </button>
-                                                <button class="btn btn-sm btn-outline" onclick="Views.payroll.showEmployeeModal('${emp.id}')" title="Modifier">
+                                                <button class="btn btn-sm btn-outline" onclick="Views.payroll.showEmployeeModal('${emp.id}')" title="${I18n.t('edit')}">
                                                     ${Icons.get('edit', {size:14})}
                                                 </button>
-                                                <button class="btn btn-sm btn-outline" onclick="Views.payroll.showAccessModal('${emp.id}')" title="Gerer les acces">
+                                                <button class="btn btn-sm btn-outline" onclick="Views.payroll.showAccessModal('${emp.id}')" title="${I18n.t('payroll.manage_access')}">
                                                     ${Icons.get('settings', {size:14})}
                                                 </button>
                                             </div>
@@ -236,21 +236,21 @@ Views.payroll = {
                     <div class="stat-icon bg-success">${Icons.get('check-circle', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value">${thisMonthPayments.length} / ${activeEmployees.length}</span>
-                        <span class="stat-label">Payes ce mois</span>
+                        <span class="stat-label">${I18n.t('payroll.paid_this_month')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon bg-primary">${Icons.get('dollar-sign', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value">${this.formatMoney(totalPaid)}</span>
-                        <span class="stat-label">Total verse</span>
+                        <span class="stat-label">${I18n.t('payroll.total_paid')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon bg-warning">${Icons.get('alert-circle', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value">${this.formatMoney(totalDue - totalPaid)}</span>
-                        <span class="stat-label">Reste a payer</span>
+                        <span class="stat-label">${I18n.t('payroll.remaining_to_pay')}</span>
                     </div>
                 </div>
             </div>
@@ -258,26 +258,26 @@ Views.payroll = {
             <!-- Historique paiements -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Historique des paiements</h3>
+                    <h3 class="card-title">${I18n.t('payroll.payment_history')}</h3>
                 </div>
                 <div class="card-body">
                     <div class="table-wrapper">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Employe</th>
-                                    <th>Periode</th>
-                                    <th>Montant</th>
-                                    <th>Methode</th>
+                                    <th>${I18n.t('payments.date')}</th>
+                                    <th>${I18n.t('staff.name')}</th>
+                                    <th>${I18n.t('payroll.period')}</th>
+                                    <th>${I18n.t('payments.amount')}</th>
+                                    <th>${I18n.t('payments.method')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${this.payments.length === 0 ? `
-                                    <tr><td colspan="5" class="text-center text-muted py-md">Aucun paiement enregistre</td></tr>
+                                    <tr><td colspan="5" class="text-center text-muted py-md">${I18n.t('payroll.no_payments')}</td></tr>
                                 ` : this.payments.map(pay => `
                                     <tr>
-                                        <td>${new Date(pay.paid_at).toLocaleDateString('fr-FR')}</td>
+                                        <td>${new Date(pay.paid_at).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')}</td>
                                         <td class="font-medium">${pay.employee_name}</td>
                                         <td>${this.formatMonth(pay.month)}</td>
                                         <td class="text-error">-${this.formatMoney(pay.amount)}</td>
@@ -302,14 +302,14 @@ Views.payroll = {
                     <div class="stat-icon bg-danger">${Icons.get('dollar-sign', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value">${this.formatMoney(totalExpenses)}</span>
-                        <span class="stat-label">Total charges</span>
+                        <span class="stat-label">${I18n.t('payroll.total_expenses')}</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon bg-info">${Icons.get('file-text', {size:24})}</div>
                     <div class="stat-info">
                         <span class="stat-value">${this.expenses.length}</span>
-                        <span class="stat-label">Nombre de charges</span>
+                        <span class="stat-label">${I18n.t('payroll.expense_count')}</span>
                     </div>
                 </div>
             </div>
@@ -317,9 +317,9 @@ Views.payroll = {
             <!-- Liste charges -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Charges diverses</h3>
+                    <h3 class="card-title">${I18n.t('payroll.tab_expenses')}</h3>
                     <button class="btn btn-sm btn-primary" onclick="Views.payroll.showExpenseModal()">
-                        ${Icons.get('plus', {size:14})} Ajouter
+                        ${Icons.get('plus', {size:14})} ${I18n.t('payroll.add')}
                     </button>
                 </div>
                 <div class="card-body">
@@ -327,19 +327,19 @@ Views.payroll = {
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Categorie</th>
-                                    <th>Description</th>
-                                    <th>Montant</th>
-                                    <th>Actions</th>
+                                    <th>${I18n.t('payments.date')}</th>
+                                    <th>${I18n.t('payroll.category')}</th>
+                                    <th>${I18n.t('payroll.description')}</th>
+                                    <th>${I18n.t('payments.amount')}</th>
+                                    <th>${I18n.t('actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${this.expenses.length === 0 ? `
-                                    <tr><td colspan="5" class="text-center text-muted py-md">Aucune charge enregistree</td></tr>
+                                    <tr><td colspan="5" class="text-center text-muted py-md">${I18n.t('payroll.no_expenses')}</td></tr>
                                 ` : this.expenses.map(exp => `
                                     <tr>
-                                        <td>${new Date(exp.date).toLocaleDateString('fr-FR')}</td>
+                                        <td>${new Date(exp.date).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')}</td>
                                         <td><span class="expense-category expense-cat-${exp.category}">${this.getExpenseCategoryLabel(exp.category)}</span></td>
                                         <td>${exp.description}</td>
                                         <td class="text-error font-medium">-${this.formatMoney(exp.amount)}</td>
@@ -369,68 +369,68 @@ Views.payroll = {
         const isEdit = !!employee;
         
         Modal.open({
-            title: isEdit ? 'Modifier employe' : 'Nouvel employe',
+            title: isEdit ? I18n.t('payroll.edit_employee') : I18n.t('payroll.new_employee'),
             size: 'lg',
             content: `
                 <div class="form-section">
-                    <h4 class="form-section-title">Informations personnelles</h4>
+                    <h4 class="form-section-title">${I18n.t('payroll.personal_info')}</h4>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label class="form-label">Nom complet</label>
+                            <label class="form-label">${I18n.t('payroll.full_name')}</label>
                             <input type="text" class="form-input" id="emp-name" value="${employee?.name || ''}" placeholder="Jean Dupont">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Poste</label>
-                            <input type="text" class="form-input" id="emp-position" value="${employee?.position || ''}" placeholder="Gestionnaire">
+                            <label class="form-label">${I18n.t('payroll.position')}</label>
+                            <input type="text" class="form-input" id="emp-position" value="${employee?.position || ''}">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Telephone</label>
+                            <label class="form-label">${I18n.t('staff.phone')}</label>
                             <input type="tel" class="form-input" id="emp-phone" value="${employee?.phone || ''}" placeholder="+86 138 0000 0000">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Salaire mensuel (XAF)</label>
+                            <label class="form-label">${I18n.t('payroll.monthly_salary')}</label>
                             <input type="number" class="form-input" id="emp-salary" value="${employee?.salary || ''}" placeholder="300000">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Date d'embauche</label>
+                            <label class="form-label">${I18n.t('payroll.hire_date')}</label>
                             <div id="emp-hire-date"></div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Statut</label>
+                            <label class="form-label">${I18n.t('staff.status')}</label>
                             <div id="emp-status"></div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="form-section">
-                    <h4 class="form-section-title">Compte utilisateur</h4>
+                    <h4 class="form-section-title">${I18n.t('payroll.user_account')}</h4>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">${I18n.t('staff.email')}</label>
                             <input type="email" class="form-input" id="emp-email" value="${employee?.email || ''}" placeholder="employe@expresscargo.com">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Role</label>
+                            <label class="form-label">${I18n.t('staff.role')}</label>
                             <div id="emp-role"></div>
                         </div>
                         <div class="form-group" id="emp-warehouse-group">
-                            <label class="form-label">Entrepots *</label>
+                            <label class="form-label">${I18n.t('payroll.warehouses')} *</label>
                             <div id="emp-warehouse" class="warehouse-checkboxes"></div>
-                            <small class="form-hint">Selectionnez un ou plusieurs entrepots pour l'employe</small>
+                            <small class="form-hint">${I18n.t('payroll.warehouses_hint')}</small>
                         </div>
                         ${!isEdit ? `
                             <div class="form-group">
-                                <label class="form-label">Mot de passe</label>
-                                <input type="password" class="form-input" id="emp-password" placeholder="Min. 8 caracteres">
+                                <label class="form-label">${I18n.t('payroll.password')}</label>
+                                <input type="password" class="form-input" id="emp-password" placeholder="${I18n.t('payroll.min_8_chars')}">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Confirmer mot de passe</label>
-                                <input type="password" class="form-input" id="emp-password-confirm" placeholder="Confirmer">
+                                <label class="form-label">${I18n.t('payroll.confirm_password')}</label>
+                                <input type="password" class="form-input" id="emp-password-confirm">
                             </div>
                         ` : `
                             <div class="form-group full-width">
                                 <button class="btn btn-outline btn-sm" type="button" id="btn-change-password">
-                                    ${Icons.get('edit', {size:14})} Modifier le mot de passe
+                                    ${Icons.get('edit', {size:14})} ${I18n.t('payroll.change_password')}
                                 </button>
                             </div>
                         `}
@@ -438,25 +438,25 @@ Views.payroll = {
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-employee">${isEdit ? 'Enregistrer' : 'Ajouter'}</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-employee">${isEdit ? I18n.t('save') : I18n.t('payroll.add')}</button>
             `
         });
         
         // Init DatePicker
         new DatePicker({
             container: '#emp-hire-date',
-            placeholder: 'Date embauche',
+            placeholder: I18n.t('payroll.hire_date'),
             value: employee?.hire_date || new Date().toISOString().split('T')[0]
         });
         
         // Init SearchSelect pour statut
         const statusSelect = new SearchSelect({
             container: '#emp-status',
-            placeholder: 'Statut',
+            placeholder: I18n.t('staff.status'),
             items: [
-                { id: 'active', name: 'Actif' },
-                { id: 'inactive', name: 'Inactif' }
+                { id: 'active', name: I18n.t('staff.active') },
+                { id: 'inactive', name: I18n.t('staff.inactive') }
             ]
         });
         statusSelect.setValue(employee?.status || 'active');
@@ -464,10 +464,10 @@ Views.payroll = {
         // Init SearchSelect pour role
         const roleSelect = new SearchSelect({
             container: '#emp-role',
-            placeholder: 'Role',
+            placeholder: I18n.t('staff.role'),
             items: [
-                { id: 'staff', name: 'Employe' },
-                { id: 'admin', name: 'Administrateur' }
+                { id: 'staff', name: I18n.t('staff.employee') },
+                { id: 'admin', name: I18n.t('staff.admin') }
             ],
             onSelect: (item) => {
                 const warehouseGroup = document.getElementById('emp-warehouse-group');
@@ -519,13 +519,13 @@ Views.payroll = {
             `).join('');
             
             if (warehouses.length === 0) {
-                container.innerHTML = '<p class="text-muted text-sm">Aucun entrepot configure</p>';
+                container.innerHTML = `<p class="text-muted text-sm">${I18n.t('payroll.no_warehouse')}</p>`;
             }
             
             return true;
         } catch (error) {
             console.error('Load warehouses error:', error);
-            document.getElementById('emp-warehouse').innerHTML = '<p class="text-error text-sm">Erreur chargement</p>';
+            document.getElementById('emp-warehouse').innerHTML = `<p class="text-error text-sm">${I18n.t('payroll.error_loading')}</p>`;
             return false;
         }
     },
@@ -540,20 +540,20 @@ Views.payroll = {
         if (!employee) return;
         
         Modal.open({
-            title: `Modifier mot de passe - ${employee.name}`,
+            title: I18n.t('payroll.change_password_title').replace('{name}', employee.name),
             content: `
                 <div class="form-group mb-md">
-                    <label class="form-label">Nouveau mot de passe</label>
-                    <input type="password" class="form-input" id="new-password" placeholder="Min. 8 caracteres">
+                    <label class="form-label">${I18n.t('payroll.new_password')}</label>
+                    <input type="password" class="form-input" id="new-password" placeholder="${I18n.t('payroll.min_8_chars')}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Confirmer mot de passe</label>
-                    <input type="password" class="form-input" id="confirm-password" placeholder="Confirmer">
+                    <label class="form-label">${I18n.t('payroll.confirm_password')}</label>
+                    <input type="password" class="form-input" id="confirm-password">
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Views.payroll.showEmployeeModal('${employeeId}')">Retour</button>
-                <button class="btn btn-primary" id="btn-save-password">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Views.payroll.showEmployeeModal('${employeeId}')">${I18n.t('payroll.back')}</button>
+                <button class="btn btn-primary" id="btn-save-password">${I18n.t('save')}</button>
             `
         });
         
@@ -563,22 +563,22 @@ Views.payroll = {
             const confirmPwd = document.getElementById('confirm-password').value;
             
             if (newPwd.length < 8) {
-                Toast.error('Le mot de passe doit contenir au moins 8 caractères');
+                Toast.error(I18n.t('payroll.password_min_8'));
                 return;
             }
             if (newPwd !== confirmPwd) {
-                Toast.error('Les mots de passe ne correspondent pas');
+                Toast.error(I18n.t('payroll.passwords_mismatch'));
                 return;
             }
             
             try {
-                Loader.button(btn, true, { text: 'Enregistrement...' });
+                Loader.button(btn, true, { text: '...' });
                 await API.staff.resetPassword(employeeId);
-                Toast.success('Mot de passe réinitialisé');
+                Toast.success(I18n.t('payroll.password_reset'));
                 this.showEmployeeModal(employeeId);
             } catch (error) {
                 console.error('Change password error:', error);
-                Toast.error(error.message || 'Erreur lors du changement');
+                Toast.error(error.message);
             } finally {
                 Loader.button(btn, false);
             }
@@ -600,11 +600,11 @@ Views.payroll = {
         const hireDate = hireDateInput?.value || new Date().toISOString().split('T')[0];
         
         if (!name || !position || !email || salary <= 0) {
-            Toast.error('Veuillez remplir tous les champs obligatoires');
+            Toast.error(I18n.t('payroll.fill_required'));
             return;
         }
         if (role === 'staff' && warehouseIds.length === 0) {
-            Toast.error('Selectionnez au moins un entrepot pour l\'employe');
+            Toast.error(I18n.t('payroll.select_warehouse'));
             return;
         }
         
@@ -615,7 +615,7 @@ Views.payroll = {
         
         try {
             if (!btn) btn = document.getElementById('btn-save-employee');
-            Loader.button(btn, true, { text: employeeId ? 'Enregistrement...' : 'Creation...' });
+            Loader.button(btn, true, { text: '...' });
             
             if (employeeId) {
                 // Mise à jour
@@ -631,18 +631,18 @@ Views.payroll = {
                     is_active: status === 'active',
                     warehouse_ids: role === 'staff' ? warehouseIds : []
                 });
-                Toast.success('Employé modifié');
+                Toast.success(I18n.t('payroll.employee_updated'));
             } else {
                 // Création
                 const password = document.getElementById('emp-password')?.value;
                 const passwordConfirm = document.getElementById('emp-password-confirm')?.value;
                 
                 if (!password || password.length < 8) {
-                    Toast.error('Le mot de passe doit contenir au moins 8 caractères');
+                    Toast.error(I18n.t('payroll.password_min_8'));
                     return;
                 }
                 if (password !== passwordConfirm) {
-                    Toast.error('Les mots de passe ne correspondent pas');
+                    Toast.error(I18n.t('payroll.passwords_mismatch'));
                     return;
                 }
                 
@@ -658,14 +658,14 @@ Views.payroll = {
                     password,
                     warehouse_ids: role === 'staff' ? warehouseIds : []
                 });
-                Toast.success('Employé ajouté');
+                Toast.success(I18n.t('payroll.employee_added'));
             }
             
             Modal.close();
             this.loadData();
         } catch (error) {
             console.error('Save employee error:', error);
-            Toast.error(error.message || 'Erreur lors de l\'enregistrement');
+            Toast.error(error.message);
         } finally {
             Loader.button(btn, false);
         }
@@ -692,9 +692,9 @@ Views.payroll = {
         ];
         
         Modal.open({
-            title: `Gestion des acces - ${employee.name}`,
+            title: I18n.t('payroll.access_title').replace('{name}', employee.name),
             content: `
-                <p class="text-sm text-muted mb-md">Definir les permissions pour cet employe</p>
+                <p class="text-sm text-muted mb-md">${I18n.t('payroll.define_permissions')}</p>
                 <div class="access-list">
                     ${allPermissions.map(p => `
                         <label class="access-item">
@@ -704,13 +704,13 @@ Views.payroll = {
                     `).join('')}
                 </div>
                 <div class="access-actions mt-md">
-                    <button class="btn btn-sm btn-ghost" type="button" id="btn-select-all">Tout selectionner</button>
-                    <button class="btn btn-sm btn-ghost" type="button" id="btn-deselect-all">Tout deselectionner</button>
+                    <button class="btn btn-sm btn-ghost" type="button" id="btn-select-all">${I18n.t('payroll.select_all')}</button>
+                    <button class="btn btn-sm btn-ghost" type="button" id="btn-deselect-all">${I18n.t('payroll.deselect_all')}</button>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-access">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-access">${I18n.t('save')}</button>
             `
         });
         
@@ -730,14 +730,14 @@ Views.payroll = {
             });
             
             try {
-                Loader.button(btn, true, { text: 'Enregistrement...' });
+                Loader.button(btn, true, { text: '...' });
                 await API.staff.updatePermissions(employeeId, permissions);
-                Toast.success('Accès mis à jour');
+                Toast.success(I18n.t('payroll.access_updated'));
                 Modal.close();
                 this.loadData();
             } catch (error) {
                 console.error('Update permissions error:', error);
-                Toast.error(error.message || 'Erreur lors de la mise à jour');
+                Toast.error(error.message);
             } finally {
                 Loader.button(btn, false);
             }
@@ -751,51 +751,51 @@ Views.payroll = {
         const currentMonth = new Date().toISOString().slice(0, 7);
         
         Modal.open({
-            title: `Payer salaire - ${employee.name}`,
+            title: I18n.t('payroll.pay_salary_title').replace('{name}', employee.name),
             content: `
                 <div class="pay-salary-info mb-md">
                     <div class="info-row">
-                        <span class="label">Employe</span>
+                        <span class="label">${I18n.t('staff.name')}</span>
                         <span class="value font-medium">${employee.name}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">Poste</span>
+                        <span class="label">${I18n.t('payroll.position')}</span>
                         <span class="value">${employee.position}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">Salaire</span>
+                        <span class="label">${I18n.t('payroll.salary')}</span>
                         <span class="value text-success font-medium">${this.formatMoney(employee.salary)}</span>
                     </div>
                 </div>
                 
                 <div class="form-group mb-md">
-                    <label class="form-label">Periode (mois)</label>
+                    <label class="form-label">${I18n.t('payroll.period_month')}</label>
                     <input type="month" class="form-input" id="pay-month" value="${currentMonth}">
                 </div>
                 
                 <div class="form-group mb-md">
-                    <label class="form-label">Montant</label>
+                    <label class="form-label">${I18n.t('payments.amount')}</label>
                     <input type="number" class="form-input" id="pay-amount" value="${employee.salary}">
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Methode de paiement</label>
+                    <label class="form-label">${I18n.t('payroll.payment_method')}</label>
                     <div id="pay-method"></div>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-confirm-pay">Confirmer le paiement</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-confirm-pay">${I18n.t('payroll.confirm_payment')}</button>
             `
         });
         
         const methodSelect = new SearchSelect({
             container: '#pay-method',
-            placeholder: 'Methode...',
+            placeholder: I18n.t('payroll.payment_method'),
             items: [
                 { id: 'virement', name: 'Virement bancaire' },
                 { id: 'mobile_money', name: 'Mobile Money' },
-                { id: 'especes', name: 'Especes' }
+                { id: 'especes', name: 'Espèces' }
             ]
         });
         methodSelect.setValue('virement');
@@ -811,7 +811,7 @@ Views.payroll = {
         const method = methodSelect.getValue();
         
         if (!month || amount <= 0) {
-            Toast.error('Veuillez remplir tous les champs');
+            Toast.error(I18n.t('payroll.fill_required'));
             return;
         }
         
@@ -819,7 +819,7 @@ Views.payroll = {
         
         try {
             if (!btn) btn = document.getElementById('btn-confirm-pay');
-            Loader.button(btn, true, { text: 'Paiement...' });
+            Loader.button(btn, true, { text: '...' });
             
             await API.accounting.addSalary({
                 employee_id: employeeId,
@@ -832,12 +832,12 @@ Views.payroll = {
                 payment_method: method
             });
             
-            Toast.success('Salaire payé avec succès');
+            Toast.success(I18n.t('payroll.salary_paid'));
             Modal.close();
             this.loadData();
         } catch (error) {
             console.error('Pay salary error:', error);
-            Toast.error(error.message || 'Erreur lors du paiement');
+            Toast.error(error.message);
         } finally {
             Loader.button(btn, false);
         }
@@ -845,34 +845,34 @@ Views.payroll = {
     
     showExpenseModal() {
         Modal.open({
-            title: 'Nouvelle charge',
+            title: I18n.t('payroll.new_expense_title'),
             content: `
                 <div class="form-group mb-md">
-                    <label class="form-label">Categorie</label>
+                    <label class="form-label">${I18n.t('payroll.category')}</label>
                     <div id="expense-category"></div>
                 </div>
                 <div class="form-group mb-md">
-                    <label class="form-label">Description</label>
-                    <input type="text" class="form-input" id="expense-desc" placeholder="Ex: Loyer bureau janvier">
+                    <label class="form-label">${I18n.t('payroll.description')}</label>
+                    <input type="text" class="form-input" id="expense-desc" placeholder="${I18n.t('payroll.expense_desc_placeholder')}">
                 </div>
                 <div class="form-group mb-md">
-                    <label class="form-label">Montant (XAF)</label>
+                    <label class="form-label">${I18n.t('payments.amount')} (XAF)</label>
                     <input type="number" class="form-input" id="expense-amount" placeholder="0">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Date</label>
+                    <label class="form-label">${I18n.t('payments.date')}</label>
                     <div id="expense-date"></div>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-expense">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-expense">${I18n.t('save')}</button>
             `
         });
         
         const categorySelect = new SearchSelect({
             container: '#expense-category',
-            placeholder: 'Categorie...',
+            placeholder: I18n.t('payroll.category'),
             items: [
                 { id: 'loyer', name: 'Loyer' },
                 { id: 'utilities', name: 'Electricite / Internet' },
@@ -888,7 +888,7 @@ Views.payroll = {
         
         new DatePicker({
             container: '#expense-date',
-            placeholder: 'Date',
+            placeholder: I18n.t('payments.date'),
             value: new Date().toISOString().split('T')[0]
         });
         
@@ -903,13 +903,13 @@ Views.payroll = {
         const amount = parseInt(document.getElementById('expense-amount').value) || 0;
         
         if (!description || amount <= 0) {
-            Toast.error('Veuillez remplir tous les champs');
+            Toast.error(I18n.t('payroll.fill_required'));
             return;
         }
         
         try {
             if (!btn) btn = document.getElementById('btn-save-expense');
-            Loader.button(btn, true, { text: 'Enregistrement...' });
+            Loader.button(btn, true, { text: '...' });
             
             await API.accounting.addExpense({
                 category,
@@ -918,12 +918,12 @@ Views.payroll = {
                 date: new Date().toISOString().split('T')[0]
             });
             
-            Toast.success('Charge enregistrée');
+            Toast.success(I18n.t('payroll.expense_saved'));
             Modal.close();
             this.loadData();
         } catch (error) {
             console.error('Save expense error:', error);
-            Toast.error(error.message || 'Erreur lors de l\'enregistrement');
+            Toast.error(error.message);
         } finally {
             Loader.button(btn, false);
         }
@@ -931,8 +931,8 @@ Views.payroll = {
     
     async deleteExpense(expenseId, btn = null) {
         const confirmed = await Modal.confirm({
-            title: 'Supprimer la charge',
-            message: 'Voulez-vous vraiment supprimer cette charge ?',
+            title: I18n.t('payroll.delete_expense'),
+            message: I18n.t('payroll.delete_expense_msg'),
             danger: true
         });
         
@@ -941,11 +941,11 @@ Views.payroll = {
         try {
             Loader.button(btn, true, { text: '' });
             await API.accounting.deleteExpense(expenseId);
-            Toast.success('Charge supprimée');
+            Toast.success(I18n.t('payroll.expense_deleted'));
             this.loadData();
         } catch (error) {
             console.error('Delete expense error:', error);
-            Toast.error(error.message || 'Erreur lors de la suppression');
+            Toast.error(error.message);
         } finally {
             Loader.button(btn, false);
         }
@@ -956,17 +956,17 @@ Views.payroll = {
     // ========================================
     
     formatMoney(amount) {
-        return new Intl.NumberFormat('fr-FR').format(amount) + ' XAF';
+        return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount) + ' XAF';
     },
     
     formatMonth(monthStr) {
         const [year, month] = monthStr.split('-');
-        const months = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
-        return `${months[parseInt(month) - 1]} ${year}`;
+        const date = new Date(parseInt(year), parseInt(month) - 1, 1);
+        return date.toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US', { month: 'long', year: 'numeric' });
     },
     
     getPaymentMethodLabel(method) {
-        const labels = { virement: 'Virement', mobile_money: 'Mobile Money', especes: 'Especes' };
+        const labels = { virement: 'Virement', mobile_money: 'Mobile Money', especes: 'Espèces' };
         return labels[method] || method;
     },
     
@@ -974,7 +974,7 @@ Views.payroll = {
         const labels = {
             loyer: 'Loyer', utilities: 'Utilities', fournitures: 'Fournitures',
             transport: 'Transport', communication: 'Communication', maintenance: 'Maintenance',
-            taxes: 'Taxes', other: 'Autres'
+            taxes: 'Taxes', other: I18n.locale === 'fr' ? 'Autres' : 'Other'
         };
         return labels[cat] || cat;
     }

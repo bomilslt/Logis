@@ -6,20 +6,20 @@ Views.guide = {
 
     async render() {
         const main = document.getElementById('main-content');
-        main.innerHTML = Loader.page('Chargement...');
+        main.innerHTML = Loader.page(I18n.t('loading'));
         try { this.supportContact = await API.request('/support/contact-info'); } catch(e) { this.supportContact = {}; }
         main.innerHTML = `<div class="guide-page">
-            <div class="page-header"><h1 class="page-title">${Icons.get('book-open',{size:22})} Guide d'utilisation</h1></div>
+            <div class="page-header"><h1 class="page-title">${Icons.get('book-open',{size:22})} ${I18n.t('guide.title')}</h1></div>
             ${this.renderSupportCard()}
             <div id="guide-sections">${this.renderAllSections()}</div>
             <div class="support-messages" id="support-section">
-                <h2 style="margin-bottom:16px">${Icons.get('message-circle',{size:20})} Messages au support</h2>
+                <h2 style="margin-bottom:16px">${Icons.get('message-circle',{size:20})} ${I18n.t('guide.support_messages')}</h2>
                 <div class="card" style="padding:16px;margin-bottom:16px">
-                    <div class="form-group"><label class="form-label">Sujet</label>
-                        <input type="text" id="support-subject" class="form-input" placeholder="Sujet..."></div>
-                    <div class="form-group"><label class="form-label">Message</label>
-                        <textarea id="support-body" class="form-input" style="min-height:80px" placeholder="Votre message..."></textarea></div>
-                    <button class="btn btn-primary" id="btn-send-support">${Icons.get('send',{size:16})} Envoyer</button>
+                    <div class="form-group"><label class="form-label">${I18n.t('guide.subject')}</label>
+                        <input type="text" id="support-subject" class="form-input" placeholder="${I18n.t('guide.subject_placeholder')}"></div>
+                    <div class="form-group"><label class="form-label">${I18n.t('guide.message')}</label>
+                        <textarea id="support-body" class="form-input" style="min-height:80px" placeholder="${I18n.t('guide.message_placeholder')}"></textarea></div>
+                    <button class="btn btn-primary" id="btn-send-support">${Icons.get('send',{size:16})} ${I18n.t('guide.send')}</button>
                 </div>
                 <div id="support-threads"></div>
             </div></div>`;
@@ -34,7 +34,7 @@ Views.guide = {
             <div class="support-icon">${Icons.get('headphones',{size:28})}</div>
             <div class="support-contact-info">
                 <h3>Support ${c.platform_name||''}</h3>
-                <p>Besoin d'aide ? Contactez notre equipe.</p>
+                <p>${I18n.t('guide.need_help')}</p>
                 ${c.support_phone?'<p>'+Icons.get('phone',{size:14})+' '+c.support_phone+'</p>':''}
                 ${c.support_email?'<p>'+Icons.get('mail',{size:14})+' '+c.support_email+'</p>':''}
             </div>
@@ -47,12 +47,12 @@ Views.guide = {
     async sendMsg() {
         const s = document.getElementById('support-subject')?.value.trim();
         const b = document.getElementById('support-body')?.value.trim();
-        if (!s||!b) { Toast.error('Sujet et message requis'); return; }
+        if (!s||!b) { Toast.error(I18n.t('guide.subject_required')); return; }
         try {
             await API.request('/support/messages',{method:'POST',body:JSON.stringify({subject:s,body:b}),headers:{'Content-Type':'application/json'}});
             document.getElementById('support-subject').value='';
             document.getElementById('support-body').value='';
-            Toast.success('Message envoye'); this.loadMsgs();
+            Toast.success(I18n.t('guide.message_sent')); this.loadMsgs();
         } catch(e) { Toast.error(e.message); }
     },
 
@@ -62,21 +62,21 @@ Views.guide = {
         try {
             const data = await API.request('/support/messages');
             const msgs = data.messages||[];
-            if(!msgs.length){el.innerHTML='<p class="text-muted">Aucun message.</p>';return;}
+            if(!msgs.length){el.innerHTML=`<p class="text-muted">${I18n.t('guide.no_messages')}</p>`;return;}
             el.innerHTML = msgs.map(m => {
                 const replies = m.replies||[];
                 const hasUnread = replies.some(r=>r.direction==='admin_to_tenant'&&!r.is_read);
                 return `<div class="support-thread" data-id="${m.id}">
                     <div class="support-thread-header" onclick="this.parentElement.classList.toggle('open')">
                         <h4>${hasUnread?'<span class="unread-dot"></span> ':''}${m.subject}</h4>
-                        <span class="support-thread-meta">${new Date(m.created_at).toLocaleDateString('fr-FR')} - ${replies.length} reponse(s)</span>
+                        <span class="support-thread-meta">${new Date(m.created_at).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')} - ${replies.length} ${I18n.t('guide.reply')}</span>
                     </div>
                     <div class="support-thread-body">
-                        <div class="support-bubble sent"><div>${m.body}</div><div class="support-bubble-meta">${m.sender_name||'Vous'} - ${new Date(m.created_at).toLocaleString('fr-FR')}</div></div>
-                        ${replies.map(r=>`<div class="support-bubble ${r.direction==='admin_to_tenant'?'received':'sent'}"><div>${r.body}</div><div class="support-bubble-meta">${r.sender_name||'Support'} - ${new Date(r.created_at).toLocaleString('fr-FR')}</div></div>`).join('')}
+                        <div class="support-bubble sent"><div>${m.body}</div><div class="support-bubble-meta">${m.sender_name||I18n.t('guide.you')} - ${new Date(m.created_at).toLocaleString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')}</div></div>
+                        ${replies.map(r=>`<div class="support-bubble ${r.direction==='admin_to_tenant'?'received':'sent'}"><div>${r.body}</div><div class="support-bubble-meta">${r.sender_name||'Support'} - ${new Date(r.created_at).toLocaleString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')}</div></div>`).join('')}
                     </div></div>`;
             }).join('');
-        } catch(e) { el.innerHTML='<p class="text-muted">Erreur chargement messages.</p>'; }
+        } catch(e) { el.innerHTML=`<p class="text-muted">${I18n.t('guide.messages_error')}</p>`; }
     },
 
     renderAllSections() {

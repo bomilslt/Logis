@@ -12,9 +12,9 @@ Views.notFound = {
                 <svg class="empty-state-icon" viewBox="0 0 24 24">
                     <use href="#alert-circle"></use>
                 </svg>
-                <h3 class="empty-state-title">Page introuvable</h3>
-                <p class="empty-state-text">La page "${Sanitize.escapeHtml(path)}" n'existe pas.</p>
-                <button class="btn btn-primary" onclick="Router.navigate('/dashboard')">Retour au tableau de bord</button>
+                <h3 class="empty-state-title">${I18n.t('not_found.title')}</h3>
+                <p class="empty-state-text">${I18n.t('not_found.text').replace('{path}', Sanitize.escapeHtml(path))}</p>
+                <button class="btn btn-primary" onclick="Router.navigate('/dashboard')">${I18n.t('not_found.back_home')}</button>
             </div>
         `;
     }

@@ -20,8 +20,8 @@ Views.warehouses = {
         main.innerHTML = `
             <div class="warehouses-page">
                 <div class="page-header">
-                    <h1 class="page-title">Entrepots</h1>
-                    <button class="btn btn-primary" id="btn-add">Ajouter</button>
+                    <h1 class="page-title">${I18n.t('warehouses.title')}</h1>
+                    <button class="btn btn-primary" id="btn-add">${I18n.t('warehouses.add')}</button>
                 </div>
                 
                 ${Object.entries(warehouses).map(([country, whs]) => `
@@ -31,7 +31,7 @@ Views.warehouses = {
                         </div>
                         <div class="card-body">
                             <table class="table">
-                                <thead><tr><th>ID</th><th>Nom</th><th>Actions</th></tr></thead>
+                                <thead><tr><th>${I18n.t('warehouses.id')}</th><th>${I18n.t('warehouses.name')}</th><th>${I18n.t('warehouses.actions')}</th></tr></thead>
                                 <tbody>
                                     ${whs.map(w => `
                                         <tr>

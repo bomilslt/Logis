@@ -31,24 +31,24 @@ Views.pickupsPayments = {
         main.innerHTML = `
             <div class="pickups-payments-page">
                 <div class="page-header">
-                    <h1 class="page-title">Retraits et Paiements</h1>
+                    <h1 class="page-title">${I18n.t('pickups_payments.title')}</h1>
                 </div>
                 
                 <!-- Tabs -->
                 <div class="tabs-container">
                     <div class="tabs">
                         <button class="tab-btn active" data-tab="pickups">
-                            ${Icons.get('check-circle', {size:16})} Retraits
+                            ${Icons.get('check-circle', {size:16})} ${I18n.t('pickups_payments.tab_pickups')}
                         </button>
                         <button class="tab-btn" data-tab="payments">
-                            ${Icons.get('credit-card', {size:16})} Paiements
+                            ${Icons.get('credit-card', {size:16})} ${I18n.t('pickups_payments.tab_payments')}
                         </button>
                     </div>
                 </div>
                 
                 <!-- Tab Content -->
                 <div id="tab-content">
-                    ${Loader.page('Chargement...')}
+                    ${Loader.page(I18n.t('loading'))}
                 </div>
             </div>
         `;
@@ -89,28 +89,28 @@ Views.pickupsPayments = {
                         <div class="stat-icon bg-warning">${Icons.get('package', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="stat-awaiting">-</span>
-                            <span class="stat-label">En attente</span>
+                            <span class="stat-label">${I18n.t('pickups.awaiting')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-danger">${Icons.get('dollar-sign', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="stat-payment">-</span>
-                            <span class="stat-label">Paiement requis</span>
+                            <span class="stat-label">${I18n.t('pickups.payment_pending')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-success">${Icons.get('check-circle', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="stat-today">-</span>
-                            <span class="stat-label">Aujourd'hui</span>
+                            <span class="stat-label">${I18n.t('pickups.today_pickups')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-primary">${Icons.get('calendar', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="stat-month">-</span>
-                            <span class="stat-label">Ce mois</span>
+                            <span class="stat-label">${I18n.t('pickups.this_month')}</span>
                         </div>
                     </div>
                 </div>
@@ -120,10 +120,10 @@ Views.pickupsPayments = {
                     <div class="card-body">
                         <div class="search-row">
                             <div class="search-group flex-2">
-                                <label class="form-label">Scanner ou rechercher</label>
+                                <label class="form-label">${I18n.t('pickups.scan_code')}</label>
                                 <div class="input-with-btn">
                                     <input type="text" id="pickupSearchInput" class="form-input" 
-                                        placeholder="Tracking, nom ou telephone..." autofocus />
+                                        placeholder="${I18n.t('pickups.scan_placeholder')}" autofocus />
                                     <button id="pickupSearchBtn" class="btn btn-primary">
                                         ${Icons.get('search', {size:18})}
                                     </button>
@@ -137,7 +137,7 @@ Views.pickupsPayments = {
                 <!-- Table des colis -->
                 <div class="card mb-md">
                     <div class="card-header">
-                        <h3 class="card-title">Colis disponibles pour retrait</h3>
+                        <h3 class="card-title">${I18n.t('pickups.available_packages')}</h3>
                     </div>
                     <div class="card-body" id="pickupsTable"></div>
                 </div>
@@ -145,13 +145,13 @@ Views.pickupsPayments = {
                 <!-- Formulaire de retrait -->
                 <div class="card" id="pickupFormCard">
                     <div class="card-header">
-                        <h3 class="card-title">Formulaire de retrait</h3>
-                        <span class="badge badge-secondary" id="pickupFormTracking">Aucun colis selectionne</span>
+                        <h3 class="card-title">${I18n.t('pickups.pickup_form')}</h3>
+                        <span class="badge badge-secondary" id="pickupFormTracking">${I18n.t('pickups.no_package_selected')}</span>
                     </div>
                     <div class="card-body" id="pickupFormContent">
                         <div class="empty-state-sm">
                             ${Icons.get('package', {size:32})}
-                            <p>Selectionnez un colis dans la liste ou recherchez par tracking</p>
+                            <p>${I18n.t('pickups.no_package_selected')}</p>
                         </div>
                     </div>
                 </div>
@@ -177,7 +177,7 @@ Views.pickupsPayments = {
     
     async loadAvailablePackages() {
         const container = document.getElementById('pickupsTable');
-        container.innerHTML = Loader.page('Chargement...');
+        container.innerHTML = Loader.page(I18n.t('loading'));
         
         try {
             const response = await API.request('/pickups/available?per_page=20');
@@ -187,7 +187,7 @@ Views.pickupsPayments = {
                 container.innerHTML = `
                     <div class="empty-state">
                         ${Icons.get('check-circle', {size:48})}
-                        <p>Aucun colis en attente de retrait</p>
+                        <p>${I18n.t('pickups.no_packages_awaiting')}</p>
                     </div>
                 `;
                 return;
@@ -198,12 +198,12 @@ Views.pickupsPayments = {
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Tracking</th>
-                                <th>Client</th>
-                                <th>Telephone</th>
-                                <th>Description</th>
-                                <th>Reste a payer</th>
-                                <th>Actions</th>
+                                <th>${I18n.t('pickups.tracking')}</th>
+                                <th>${I18n.t('pickups.client')}</th>
+                                <th>${I18n.t('pickups.phone')}</th>
+                                <th>${I18n.t('pickups.description')}</th>
+                                <th>${I18n.t('pickups.remaining_pay')}</th>
+                                <th>${I18n.t('packageDetail.actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -218,7 +218,7 @@ Views.pickupsPayments = {
                                     </td>
                                     <td>
                                         <button class="btn btn-sm btn-primary" onclick="Views.pickupsPayments.selectPackageForPickup('${p.tracking_number}')">
-                                            ${Icons.get('check', {size:14})} Retirer
+                                            ${Icons.get('check', {size:14})} ${I18n.t('pickups.confirm_pickup')}
                                         </button>
                                     </td>
                                 </tr>
@@ -229,7 +229,7 @@ Views.pickupsPayments = {
             `;
         } catch (e) {
             console.error('Erreur chargement colis:', e);
-            container.innerHTML = `<p class="text-danger">Erreur de chargement</p>`;
+            container.innerHTML = `<p class="text-danger">${I18n.t('pickups.load_error')}</p>`;
         }
     },
     
@@ -256,7 +256,7 @@ Views.pickupsPayments = {
             const response = await API.post('/pickups/search', { query });
             this.showPickupForm(response.package, response.payment);
         } catch (error) {
-            errorDiv.textContent = error.message || 'Colis non trouve';
+            errorDiv.textContent = error.message || I18n.t('pickups.not_found');
             errorDiv.style.display = 'block';
         }
     },
@@ -277,79 +277,79 @@ Views.pickupsPayments = {
         document.getElementById('pickupFormContent').innerHTML = `
             <div class="pickup-form-grid">
                 <div class="form-section">
-                    <h4 class="section-title">Informations</h4>
+                    <h4 class="section-title">${I18n.t('clientDetail.information')}</h4>
                     <div class="info-grid">
-                        <div><strong>Client:</strong> ${pkg.client?.full_name || '-'}</div>
-                        <div><strong>Telephone:</strong> ${pkg.client?.phone || '-'}</div>
-                        <div><strong>Description:</strong> ${pkg.description || '-'}</div>
-                        <div><strong>Total:</strong> ${this.formatMoney(payment?.total_amount || 0)}</div>
-                        <div><strong>Paye:</strong> ${this.formatMoney(payment?.paid_amount || 0)}</div>
+                        <div><strong>${I18n.t('pickups.client')}:</strong> ${pkg.client?.full_name || '-'}</div>
+                        <div><strong>${I18n.t('pickups.phone')}:</strong> ${pkg.client?.phone || '-'}</div>
+                        <div><strong>${I18n.t('pickups.description')}:</strong> ${pkg.description || '-'}</div>
+                        <div><strong>${I18n.t('pickups.total_amount')}:</strong> ${this.formatMoney(payment?.total_amount || 0)}</div>
+                        <div><strong>${I18n.t('pickups.already_paid')}:</strong> ${this.formatMoney(payment?.paid_amount || 0)}</div>
                         <div class="${remaining > 0 ? 'text-danger font-bold' : 'text-success'}">
-                            <strong>Reste:</strong> ${this.formatMoney(remaining)}
+                            <strong>${I18n.t('pickups.remaining_to_pay')}:</strong> ${this.formatMoney(remaining)}
                         </div>
                     </div>
                 </div>
                 
                 <div class="form-section">
-                    <h4 class="section-title">Qui retire ?</h4>
+                    <h4 class="section-title">${I18n.t('pickups.who_picks_up')}</h4>
                     <div class="radio-group">
                         <label class="radio-label">
                             <input type="radio" name="pickupBy" value="client" checked>
-                            <span>Client lui-meme</span>
+                            <span>${I18n.t('pickups.client_self')}</span>
                         </label>
                         <label class="radio-label">
                             <input type="radio" name="pickupBy" value="proxy">
-                            <span>Mandataire</span>
+                            <span>${I18n.t('pickups.proxy')}</span>
                         </label>
                     </div>
                     
                     <div id="proxyFieldsPickup" style="display:none;" class="mt-sm">
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Nom *</label>
+                                <label class="form-label">${I18n.t('pickups.proxy_name')} *</label>
                                 <input type="text" id="proxyNamePickup" class="form-input">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Telephone *</label>
+                                <label class="form-label">${I18n.t('pickups.phone')} *</label>
                                 <input type="tel" id="proxyPhonePickup" class="form-input">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Piece d'identite</label>
-                                <input type="text" id="proxyIdPickup" class="form-input" placeholder="CNI, Passeport...">
+                                <label class="form-label">${I18n.t('pickups.id_type')}</label>
+                                <input type="text" id="proxyIdPickup" class="form-input" placeholder="${I18n.t('pickups.cni')}, ${I18n.t('pickups.passport')}...">
                             </div>
                         </div>
                     </div>
                     
                     ${remaining > 0 ? `
-                        <h4 class="section-title mt-md">Encaissement: ${this.formatMoney(remaining)}</h4>
+                        <h4 class="section-title mt-md">${I18n.t('pickups.collection')}: ${this.formatMoney(remaining)}</h4>
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Methode *</label>
+                                <label class="form-label">${I18n.t('pickups.method')}</label>
                                 <select id="pickupPaymentMethod" class="form-input">
-                                    <option value="">Selectionner...</option>
-                                    <option value="cash">Especes</option>
-                                    <option value="mobile_money">Mobile Money</option>
-                                    <option value="bank_transfer">Virement</option>
+                                    <option value="">${I18n.t('pickups.select')}</option>
+                                    <option value="cash">${I18n.t('pickups.cash')}</option>
+                                    <option value="mobile_money">${I18n.t('pickups.mobile_money')}</option>
+                                    <option value="bank_transfer">${I18n.t('pickups.bank_transfer')}</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Reference</label>
-                                <input type="text" id="pickupPaymentRef" class="form-input" placeholder="N° transaction">
+                                <label class="form-label">${I18n.t('pickups.reference')}</label>
+                                <input type="text" id="pickupPaymentRef" class="form-input" placeholder="${I18n.t('pickups.ref_placeholder')}">
                             </div>
                         </div>
                     ` : ''}
                     
                     <div class="form-group mt-md">
-                        <label class="form-label">Notes</label>
+                        <label class="form-label">${I18n.t('pickups.notes')}</label>
                         <textarea id="pickupNotes" class="form-input" rows="2"></textarea>
                     </div>
                     
                     <div class="form-actions mt-md">
-                        <button class="btn btn-outline" onclick="Views.pickupsPayments.cancelPickup()">Annuler</button>
+                        <button class="btn btn-outline" onclick="Views.pickupsPayments.cancelPickup()">${I18n.t('cancel')}</button>
                         <button class="btn btn-primary" onclick="Views.pickupsPayments.confirmPickup(this)">
-                            ${Icons.get('check', {size:16})} Confirmer le retrait
+                            ${Icons.get('check', {size:16})} ${I18n.t('pickups.confirm_pickup')}
                         </button>
                     </div>
                 </div>
@@ -369,12 +369,12 @@ Views.pickupsPayments = {
     
     cancelPickup() {
         this.pickups.currentPackage = null;
-        document.getElementById('pickupFormTracking').textContent = 'Aucun colis selectionne';
+        document.getElementById('pickupFormTracking').textContent = I18n.t('pickups.no_package_selected');
         document.getElementById('pickupFormTracking').className = 'badge badge-secondary';
         document.getElementById('pickupFormContent').innerHTML = `
             <div class="empty-state-sm">
                 ${Icons.get('package', {size:32})}
-                <p>Selectionnez un colis dans la liste ou recherchez par tracking</p>
+                <p>${I18n.t('pickups.no_package_selected')}</p>
             </div>
         `;
         document.getElementById('pickupSearchInput').value = '';
@@ -398,7 +398,7 @@ Views.pickupsPayments = {
             data.proxy_id = document.getElementById('proxyIdPickup')?.value;
             
             if (!data.proxy_name || !data.proxy_phone) {
-                Toast.error('Nom et telephone du mandataire requis');
+                Toast.error(I18n.t('pickups.proxy_fields_required'));
                 return;
             }
         }
@@ -411,9 +411,9 @@ Views.pickupsPayments = {
         }
         
         try {
-            Loader.button(btn, true, { text: 'Validation...' });
+            Loader.button(btn, true, { text: I18n.t('pickups.validating') });
             await API.post('/pickups/confirm', data);
-            Toast.success('Retrait confirme');
+            Toast.success(I18n.t('pickups.pickup_success'));
             this.cancelPickup();
             this.loadPickupsStats();
             this.loadAvailablePackages();
@@ -437,28 +437,28 @@ Views.pickupsPayments = {
                         <div class="stat-icon bg-success">${Icons.get('dollar-sign', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="pay-stat-today">-</span>
-                            <span class="stat-label">Aujourd'hui</span>
+                            <span class="stat-label">${I18n.t('payments.today_collections')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-primary">${Icons.get('trending-up', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="pay-stat-week">-</span>
-                            <span class="stat-label">Cette semaine</span>
+                            <span class="stat-label">${I18n.t('payments.this_week')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-info">${Icons.get('calendar', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="pay-stat-month">-</span>
-                            <span class="stat-label">Ce mois</span>
+                            <span class="stat-label">${I18n.t('payments.this_month')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon bg-warning">${Icons.get('clock', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value" id="pay-stat-pending">-</span>
-                            <span class="stat-label">En attente</span>
+                            <span class="stat-label">${I18n.t('payments.pending')}</span>
                         </div>
                     </div>
                 </div>
@@ -466,7 +466,7 @@ Views.pickupsPayments = {
                 <!-- Actions -->
                 <div class="page-actions mb-md">
                     <button class="btn btn-primary" id="btn-new-payment">
-                        ${Icons.get('plus', {size:16})} Nouveau paiement
+                        ${Icons.get('plus', {size:16})} ${I18n.t('payments.new_payment')}
                     </button>
                 </div>
                 
@@ -475,19 +475,19 @@ Views.pickupsPayments = {
                     <div class="card-body">
                         <div class="filters-grid">
                             <div class="form-group">
-                                <label class="form-label">Recherche</label>
-                                <input type="text" id="pay-filter-search" class="form-input" placeholder="Client, reference...">
+                                <label class="form-label">${I18n.t('search')}</label>
+                                <input type="text" id="pay-filter-search" class="form-input" placeholder="${I18n.t('payments.search_placeholder')}">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Methode</label>
+                                <label class="form-label">${I18n.t('payments.method')}</label>
                                 <div id="pay-filter-method"></div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Du</label>
+                                <label class="form-label">${I18n.t('payments.date_from')}</label>
                                 <div id="pay-filter-from"></div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Au</label>
+                                <label class="form-label">${I18n.t('payments.date_to')}</label>
                                 <div id="pay-filter-to"></div>
                             </div>
                         </div>
@@ -497,7 +497,7 @@ Views.pickupsPayments = {
                 <!-- Liste -->
                 <div class="card">
                     <div class="card-body" id="payments-list">
-                        ${Loader.page('Chargement...')}
+                        ${Loader.page(I18n.t('loading'))}
                     </div>
                 </div>
             </div>
@@ -514,22 +514,22 @@ Views.pickupsPayments = {
             this.payments.paymentMethods = await API.settings.getPaymentMethods();
         } catch (e) {
             this.payments.paymentMethods = [
-                { id: 'mobile_money', name: 'Mobile Money' },
-                { id: 'cash', name: 'Especes' },
-                { id: 'bank', name: 'Virement' }
+                { id: 'mobile_money', name: I18n.t('pickups.mobile_money') },
+                { id: 'cash', name: I18n.t('pickups.cash') },
+                { id: 'bank', name: I18n.t('pickups.bank_transfer') }
             ];
         }
     },
     
     initPaymentFilters() {
         const methods = [
-            { id: '', name: 'Toutes' },
+            { id: '', name: I18n.t('payments.all_methods') },
             ...this.payments.paymentMethods.map(m => ({ id: m.id, name: m.name }))
         ];
         
         new SearchSelect({
             container: '#pay-filter-method',
-            placeholder: 'Toutes',
+            placeholder: I18n.t('payments.all_methods'),
             items: methods,
             onSelect: (item) => {
                 this.payments.filters.method = item?.id || '';
@@ -540,7 +540,7 @@ Views.pickupsPayments = {
         
         new DatePicker({
             container: document.getElementById('pay-filter-from'),
-            placeholder: 'Date debut',
+            placeholder: I18n.t('payments.date_from'),
             onChange: (d, v) => {
                 this.payments.filters.dateFrom = v || '';
                 this.payments.currentPage = 1;
@@ -550,7 +550,7 @@ Views.pickupsPayments = {
         
         new DatePicker({
             container: document.getElementById('pay-filter-to'),
-            placeholder: 'Date fin',
+            placeholder: I18n.t('payments.date_to'),
             onChange: (d, v) => {
                 this.payments.filters.dateTo = v || '';
                 this.payments.currentPage = 1;
@@ -561,7 +561,7 @@ Views.pickupsPayments = {
     
     async loadPayments() {
         const container = document.getElementById('payments-list');
-        container.innerHTML = Loader.page('Chargement...');
+        container.innerHTML = Loader.page(I18n.t('loading'));
         
         try {
             // Construire les params en excluant les valeurs vides
@@ -591,7 +591,7 @@ Views.pickupsPayments = {
                 container.innerHTML = `
                     <div class="empty-state">
                         ${Icons.get('dollar-sign', {size:48})}
-                        <p>Aucun paiement trouvé</p>
+                        <p>${I18n.t('payments.no_payments')}</p>
                     </div>
                 `;
                 return;
@@ -605,7 +605,7 @@ Views.pickupsPayments = {
                 <div class="error-state">
                     ${Icons.get('alert-circle', {size:48})}
                     <p>${error.message}</p>
-                    <button class="btn btn-primary" onclick="Views.pickupsPayments.loadPayments()">Réessayer</button>
+                    <button class="btn btn-primary" onclick="Views.pickupsPayments.loadPayments()">${I18n.t('retry')}</button>
                 </div>
             `;
         }
@@ -620,18 +620,18 @@ Views.pickupsPayments = {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Client</th>
-                            <th>Montant</th>
-                            <th>Methode</th>
-                            <th>Reference</th>
-                            <th>Statut</th>
-                            <th>Actions</th>
+                            <th>${I18n.t('payments.date')}</th>
+                            <th>${I18n.t('pickups.client')}</th>
+                            <th>${I18n.t('payments.amount')}</th>
+                            <th>${I18n.t('payments.method')}</th>
+                            <th>${I18n.t('payments.reference')}</th>
+                            <th>${I18n.t('pickups.status')}</th>
+                            <th>${I18n.t('packageDetail.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${payments.map(p => {
-                            const date = p.created_at ? new Date(p.created_at).toLocaleDateString('fr-FR') : '-';
+                            const date = p.created_at ? new Date(p.created_at).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : '-';
                             const method = this.payments.paymentMethods.find(m => m.id === p.method);
                             return `
                             <tr>
@@ -645,7 +645,7 @@ Views.pickupsPayments = {
                                 <td><code>${p.reference || '-'}</code></td>
                                 <td>
                                     <span class="status-badge ${p.status === 'completed' ? 'status-delivered' : 'status-pending'}">
-                                        ${p.status === 'completed' ? 'Confirme' : 'En attente'}
+                                        ${p.status === 'completed' ? I18n.t('payments.confirmed') : I18n.t('payments.pending')}
                                     </span>
                                 </td>
                                 <td>
@@ -699,57 +699,57 @@ Views.pickupsPayments = {
     
     async showPaymentForm() {
         Modal.open({
-            title: 'Nouveau paiement',
+            title: I18n.t('payments.new_payment'),
             content: `
                 <div class="form-group">
-                    <label class="form-label">Payeur *</label>
+                    <label class="form-label">${I18n.t('payments.payer')} *</label>
                     <div class="payer-toggle mb-sm">
                         <label class="radio-label">
                             <input type="radio" name="payer-type" value="client" checked>
-                            <span>Client existant</span>
+                            <span>${I18n.t('payments.existing_client')}</span>
                         </label>
                         <label class="radio-label">
                             <input type="radio" name="payer-type" value="other">
-                            <span>Autre personne</span>
+                            <span>${I18n.t('payments.other_person')}</span>
                         </label>
                     </div>
                     <div id="payment-client-select"></div>
                     <div id="payment-payer-fields" style="display:none;">
-                        <input type="text" id="payment-payer-name" class="form-input" placeholder="Nom du payeur *">
-                        <input type="tel" id="payment-payer-phone" class="form-input mt-sm" placeholder="Telephone (optionnel)">
+                        <input type="text" id="payment-payer-name" class="form-input" placeholder="${I18n.t('payments.payer_name')} *">
+                        <input type="tel" id="payment-payer-phone" class="form-input mt-sm" placeholder="${I18n.t('payments.phone_optional')}">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Montant (XAF) *</label>
+                        <label class="form-label">${I18n.t('payments.amount_xaf')} *</label>
                         <input type="number" id="payment-amount" class="form-input" placeholder="0">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Methode *</label>
+                        <label class="form-label">${I18n.t('payments.method')} *</label>
                         <div id="payment-method-select"></div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Reference</label>
-                    <input type="text" id="payment-reference" class="form-input" placeholder="N° transaction">
+                    <label class="form-label">${I18n.t('payments.reference')}</label>
+                    <input type="text" id="payment-reference" class="form-input" placeholder="${I18n.t('pickups.ref_placeholder')}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Notes</label>
+                    <label class="form-label">${I18n.t('payments.notes')}</label>
                     <textarea id="payment-notes" class="form-input" rows="2"></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Imprimer reçu</label>
+                    <label class="form-label">${I18n.t('payments.print_receipt')}</label>
                     <div class="print-options">
                         <label class="checkbox-label">
                             <input type="checkbox" id="payment-print-receipt" checked>
-                            <span>Générer un reçu</span>
+                            <span>${I18n.t('payments.generate_receipt')}</span>
                         </label>
                     </div>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-payment">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-payment">${I18n.t('save')}</button>
             `
         });
         
@@ -769,19 +769,19 @@ Views.pickupsPayments = {
             
             this._paymentClientSelect = new SearchSelect({
                 container: '#payment-client-select',
-                placeholder: 'Selectionner un client',
+                placeholder: I18n.t('payments.select_client'),
                 items: clients.map(c => ({
                     id: c.id,
                     name: `${c.full_name || c.first_name} (${c.phone || ''})`
                 }))
             });
         } catch (e) {
-            document.getElementById('payment-client-select').innerHTML = '<p class="text-error">Erreur</p>';
+            document.getElementById('payment-client-select').innerHTML = `<p class="text-error">${I18n.t('payments.error_loading_clients')}</p>`;
         }
         
         this._paymentMethodSelect = new SearchSelect({
             container: '#payment-method-select',
-            placeholder: 'Methode',
+            placeholder: I18n.t('payments.method'),
             items: this.payments.paymentMethods.map(m => ({ id: m.id, name: m.name }))
         });
         
@@ -799,14 +799,14 @@ Views.pickupsPayments = {
         const notes = document.getElementById('payment-notes')?.value;
         const printReceipt = document.getElementById('payment-print-receipt')?.checked;
         
-        if (payerType === 'client' && !clientId) { Toast.error('Selectionnez un client'); return; }
-        if (payerType === 'other' && !payerName) { Toast.error('Entrez le nom du payeur'); return; }
-        if (!amount || amount <= 0) { Toast.error('Montant invalide'); return; }
-        if (!method) { Toast.error('Selectionnez une methode'); return; }
+        if (payerType === 'client' && !clientId) { Toast.error(I18n.t('payments.select_client')); return; }
+        if (payerType === 'other' && !payerName) { Toast.error(I18n.t('payments.enter_payer_name')); return; }
+        if (!amount || amount <= 0) { Toast.error(I18n.t('payments.invalid_amount')); return; }
+        if (!method) { Toast.error(I18n.t('payments.select_method')); return; }
         
         try {
             if (!btn) btn = document.getElementById('btn-save-payment');
-            Loader.button(btn, true, { text: 'Enregistrement...' });
+            Loader.button(btn, true, { text: I18n.t('payments.saving') });
             const paymentData = {
                 amount,
                 method,
@@ -823,7 +823,7 @@ Views.pickupsPayments = {
             
             const result = await API.payments.create(paymentData);
             
-            Toast.success('Paiement enregistre');
+            Toast.success(I18n.t('payments.payment_saved'));
             Modal.close();
             
             // Imprimer le reçu si demandé
@@ -841,15 +841,15 @@ Views.pickupsPayments = {
     
     async confirmPayment(paymentId, btn = null) {
         const confirmed = await Modal.confirm({
-            title: 'Confirmer le paiement',
-            message: 'Confirmer que ce paiement a bien ete recu ?'
+            title: I18n.t('payments.confirm_payment'),
+            message: I18n.t('payments.confirm_payment_msg')
         });
         
         if (confirmed) {
             try {
                 Loader.button(btn, true, { text: '' });
                 await API.payments.confirm(paymentId);
-                Toast.success('Paiement confirme');
+                Toast.success(I18n.t('payments.payment_confirmed'));
                 this.loadPayments();
             } catch (error) {
                 Toast.error(error.message);
@@ -878,12 +878,12 @@ Views.pickupsPayments = {
                         data: data.payment
                     });
                 }).catch(err => {
-                    Toast.error('Erreur lors du chargement du reçu');
+                    Toast.error(I18n.t('payments.payment_not_found'));
                     console.error(err);
                 });
             }
         } else {
-            Toast.error('Service d\'impression non disponible');
+            Toast.error(I18n.t('payments.payment_not_found'));
         }
     },
     
@@ -891,6 +891,6 @@ Views.pickupsPayments = {
     
     formatMoney(amount) {
         if (!amount) return '0 XAF';
-        return new Intl.NumberFormat('fr-FR').format(amount) + ' XAF';
+        return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount) + ' XAF';
     }
 };

@@ -14,43 +14,43 @@ Views.profile = {
                 </div>
                 
                 <div class="card">
-                    <div class="card-header"><h3 class="card-title">Informations personnelles</h3></div>
+                    <div class="card-header"><h3 class="card-title">${I18n.t('profile.personal_info')}</h3></div>
                     <div class="card-body">
                         <form id="profile-form">
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label class="form-label">Prenom</label>
+                                    <label class="form-label">${I18n.t('profile.first_name')}</label>
                                     <input type="text" id="first_name" class="form-input" value="${user.first_name || ''}">
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Nom</label>
+                                    <label class="form-label">${I18n.t('profile.last_name')}</label>
                                     <input type="text" id="last_name" class="form-input" value="${user.last_name || ''}">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Telephone</label>
+                                <label class="form-label">${I18n.t('profile.phone')}</label>
                                 <input type="tel" id="phone" class="form-input" value="${user.phone || ''}">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Email</label>
+                                <label class="form-label">${I18n.t('profile.email')}</label>
                                 <div class="input-with-action">
                                     <input type="email" class="form-input" value="${user.email || ''}" disabled id="current-email">
                                     <button type="button" class="btn btn-sm btn-outline" id="btn-change-email">
-                                        ${Icons.get('edit-2', {size:14})} Modifier
+                                        ${Icons.get('edit-2', {size:14})} ${I18n.t('profile.change_email')}
                                     </button>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary" id="btn-save-profile">Enregistrer</button>
+                            <button type="submit" class="btn btn-primary" id="btn-save-profile">${I18n.t('profile.save_profile')}</button>
                         </form>
                     </div>
                 </div>
                 
                 <div class="card mt-md">
-                    <div class="card-header"><h3 class="card-title">${Icons.get('lock', {size:18})} Securite</h3></div>
+                    <div class="card-header"><h3 class="card-title">${Icons.get('lock', {size:18})} ${I18n.t('profile.security')}</h3></div>
                     <div class="card-body">
-                        <p class="text-muted mb-md">Pour des raisons de securite, le changement de mot de passe necessite une verification par code OTP.</p>
+                        <p class="text-muted mb-md">${I18n.t('profile.security_note')}</p>
                         <button class="btn btn-outline" id="btn-change-password">
-                            ${Icons.get('key', {size:16})} Changer le mot de passe
+                            ${Icons.get('key', {size:16})} ${I18n.t('profile.change_password')}
                         </button>
                     </div>
                 </div>
@@ -81,7 +81,7 @@ Views.profile = {
     async saveProfile() {
         const btn = document.getElementById('btn-save-profile');
         btn.disabled = true;
-        btn.innerHTML = Loader.inline('sm') + ' Enregistrement...';
+        btn.innerHTML = Loader.inline('sm') + ' ' + I18n.t('profile.saving');
         
         try {
             const data = await API.auth.updateProfile({
@@ -91,12 +91,12 @@ Views.profile = {
             });
             
             Store.setUser(data.user);
-            Toast.success('Profil mis a jour');
+            Toast.success(I18n.t('profile.profile_updated'));
         } catch (error) {
-            Toast.error(error.message || 'Erreur');
+            Toast.error(error.message);
         } finally {
             btn.disabled = false;
-            btn.textContent = 'Enregistrer';
+            btn.textContent = I18n.t('profile.save_profile');
         }
     },
     
@@ -108,7 +108,7 @@ Views.profile = {
             email: user.email,
             phone: user.phone,
             onSuccess: () => {
-                Toast.success('Mot de passe modifié avec succès');
+                Toast.success(I18n.t('profile.password_changed'));
             },
             onCancel: () => {
                 // Rien
@@ -124,7 +124,7 @@ Views.profile = {
             onSuccess: (response) => {
                 // Mettre à jour l'affichage
                 document.getElementById('current-email').value = response.user?.email || '';
-                Toast.success('Email modifié avec succès');
+                Toast.success(I18n.t('profile.email_changed'));
             },
             onCancel: () => {
                 // Rien

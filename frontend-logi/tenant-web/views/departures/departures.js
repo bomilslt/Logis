@@ -15,19 +15,19 @@ Views.departures = {
             <div class="departures-page">
                 <div class="page-header">
                     <h1 class="page-title">${I18n.t('departures.title')}</h1>
-                    <button class="btn btn-primary" id="btn-new-departure" title="Programmer un nouveau départ">
-                        ${Icons.get('plus', {size:16})} Programmer un depart
+                    <button class="btn btn-primary" id="btn-new-departure" title="${I18n.t('departures.new_departure')}">
+                        ${Icons.get('plus', {size:16})} ${I18n.t('departures.new_departure')}
                     </button>
                 </div>
                 
                 <div class="departures-tabs">
-                    <button class="departure-tab ${this.currentTab === 'upcoming' ? 'active' : ''}" data-tab="upcoming">A venir</button>
-                    <button class="departure-tab ${this.currentTab === 'in_transit' ? 'active' : ''}" data-tab="in_transit">En transit</button>
-                    <button class="departure-tab ${this.currentTab === 'arrived' ? 'active' : ''}" data-tab="arrived">Arrives</button>
-                    <button class="departure-tab ${this.currentTab === 'all' ? 'active' : ''}" data-tab="all">Tous</button>
+                    <button class="departure-tab ${this.currentTab === 'upcoming' ? 'active' : ''}" data-tab="upcoming">${I18n.t('departures.tab_upcoming')}</button>
+                    <button class="departure-tab ${this.currentTab === 'in_transit' ? 'active' : ''}" data-tab="in_transit">${I18n.t('departures.tab_in_transit')}</button>
+                    <button class="departure-tab ${this.currentTab === 'arrived' ? 'active' : ''}" data-tab="arrived">${I18n.t('departures.tab_arrived')}</button>
+                    <button class="departure-tab ${this.currentTab === 'all' ? 'active' : ''}" data-tab="all">${I18n.t('departures.tab_all')}</button>
                 </div>
                 
-                <div id="departures-list">${Loader.page('Chargement...')}</div>
+                <div id="departures-list">${Loader.page(I18n.t('loading'))}</div>
             </div>
         `;
         
@@ -114,10 +114,10 @@ Views.departures = {
         
         if (filtered.length === 0) {
             const emptyMessages = {
-                upcoming: 'Aucun départ programmé',
-                in_transit: 'Aucun départ en transit',
-                arrived: 'Aucun départ arrivé',
-                all: 'Aucun départ enregistré'
+                upcoming: I18n.t('departures.empty_upcoming'),
+                in_transit: I18n.t('departures.empty_in_transit'),
+                arrived: I18n.t('departures.empty_arrived'),
+                all: I18n.t('departures.empty_all')
             };
             container.innerHTML = `
                 <div class="departures-empty">
@@ -154,7 +154,7 @@ Views.departures = {
         const originCity = RatesService.getCityLabel(dep.origin_country, dep.origin_city);
         const destLabel = RatesService.getDestinationLabel(dep.dest_country);
         
-        const statusLabels = { scheduled: 'Programme', departed: 'En transit', arrived: 'Arrive', cancelled: 'Annule' };
+        const statusLabels = { scheduled: I18n.t('departures.status_scheduled'), departed: I18n.t('departures.status_departed'), arrived: I18n.t('departures.status_arrived'), cancelled: I18n.t('departures.status_cancelled') };
         const statusBadgeClass = { scheduled: 'status-pending', departed: 'status-in-transit', arrived: 'status-delivered', cancelled: 'status-customs' };
         
         // Compter les colis
@@ -164,15 +164,15 @@ Views.departures = {
         let timingInfo = '';
         if (dep.status === 'scheduled') {
             const daysUntil = Math.ceil((dateObj - new Date()) / (1000 * 60 * 60 * 24));
-            timingInfo = daysUntil === 0 ? "Aujourd'hui" : daysUntil === 1 ? 'Demain' : daysUntil > 0 ? `Dans ${daysUntil} jours` : '';
+            timingInfo = daysUntil === 0 ? I18n.t('departures.today') : daysUntil === 1 ? I18n.t('departures.tomorrow') : daysUntil > 0 ? I18n.t('departures.in_days').replace('{n}', daysUntil) : '';
         } else if (dep.status === 'departed') {
             const departedDate = new Date(dep.departed_at || dep.departure_date);
             const daysSince = Math.floor((new Date() - departedDate) / (1000 * 60 * 60 * 24));
             const daysRemaining = dep.estimated_duration - daysSince;
             if (daysRemaining > 0) {
-                timingInfo = `~${daysRemaining} jours restants`;
+                timingInfo = I18n.t('departures.days_remaining').replace('{n}', daysRemaining);
             } else {
-                timingInfo = 'Arrivee imminente';
+                timingInfo = I18n.t('departures.imminent_arrival');
             }
         }
         
@@ -207,83 +207,83 @@ Views.departures = {
                                 <div class="departure-timing">
                                     <span class="timing-item">
                                         ${Icons.get('calendar', {size:14})}
-                                        Depart: ${fullDate}
+                                        ${I18n.t('departures.departure_label')}: ${fullDate}
                                     </span>
                                     <span class="timing-item">
                                         ${Icons.get('clock', {size:14})}
-                                        Duree: ~${dep.estimated_duration} jours
+                                        ${I18n.t('departures.duration_label')}: ~${dep.estimated_duration} ${I18n.t('departures.days')}
                                     </span>
                                     <span class="timing-item">
                                         ${Icons.get('map-pin', {size:14})}
-                                        Arrivee estimee: ${arrivalStr}
+                                        ${I18n.t('departures.estimated_arrival')}: ${arrivalStr}
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <div class="departure-badges">
                             <span class="status-badge ${statusBadgeClass[dep.status]}">${statusLabels[dep.status]}</span>
-                            ${dep.notified ? `<span class="status-badge status-delivered" title="Clients notifies">${Icons.get('bell', {size:12})} Notifie</span>` : ''}
+                            ${dep.notified ? `<span class="status-badge status-delivered" title="${I18n.t('departures.clients_notified')}">${Icons.get('bell', {size:12})} ${I18n.t('departures.notified')}</span>` : ''}
                         </div>
                     </div>
                     
                     <div class="departure-stats">
                         <div class="departure-stat">
                             <div class="departure-stat-value">${packagesCount}</div>
-                            <div class="departure-stat-label">Colis</div>
+                            <div class="departure-stat-label">${I18n.t('departures.packages')}</div>
                         </div>
                     </div>
                     
                     ${dep.notes ? `<p class="departure-notes">${Icons.get('info', {size:14})} ${dep.notes}</p>` : ''}
                     
                     <div class="departure-actions">
-                        <button class="btn btn-sm btn-outline" onclick="Views.departures.viewDepartureDetail('${dep.id}', this)" title="Voir détails">
-                            ${Icons.get('eye', {size:14})} Détails
+                        <button class="btn btn-sm btn-outline" onclick="Views.departures.viewDepartureDetail('${dep.id}', this)" title="${I18n.t('departures.details')}">
+                            ${Icons.get('eye', {size:14})} ${I18n.t('departures.details')}
                         </button>
                         <button class="btn btn-sm btn-outline" onclick="Views.departures.viewPackages('${dep.id}', this)">
-                            ${Icons.get('package', {size:14})} Colis
+                            ${Icons.get('package', {size:14})} ${I18n.t('departures.packages')}
                         </button>
                         
                         ${dep.status === 'scheduled' || dep.status === 'departed' ? `
                             <button class="btn btn-sm ${dep.carrier ? 'btn-outline' : 'btn-primary'}" onclick="Views.departures.showCarrierModal('${dep.id}')">
-                                ${Icons.get('truck', {size:14})} ${dep.carrier ? 'Changer transporteur' : 'Transporteur'}
+                                ${Icons.get('truck', {size:14})} ${dep.carrier ? I18n.t('departures.change_carrier') : I18n.t('departures.carrier')}
                             </button>
                         ` : ''}
                         
                         ${dep.status === 'scheduled' ? `
-                            <button class="btn btn-sm btn-outline" onclick="Views.departures.editDeparture('${dep.id}')" title="Modifier ce départ">
-                                ${Icons.get('edit', {size:14})} Modifier
+                            <button class="btn btn-sm btn-outline" onclick="Views.departures.editDeparture('${dep.id}')" title="${I18n.t('departures.edit')}">
+                                ${Icons.get('edit', {size:14})} ${I18n.t('departures.edit')}
                             </button>
                             ${!dep.notified ? `
-                                <button class="btn btn-sm btn-outline" onclick="Views.departures.notifyClients('${dep.id}', this)" title="Notifier les clients">
-                                    ${Icons.get('bell', {size:14})} Notifier
+                                <button class="btn btn-sm btn-outline" onclick="Views.departures.notifyClients('${dep.id}', this)" title="${I18n.t('departures.notify')}">
+                                    ${Icons.get('bell', {size:14})} ${I18n.t('departures.notify')}
                                 </button>
                             ` : ''}
                             ${packagesCount > 0 ? `
-                                <button class="btn btn-sm btn-primary" onclick="Views.departures.markDeparted('${dep.id}', this)" title="Marquer comme parti">
-                                    ${Icons.get('send', {size:14})} Marquer parti
+                                <button class="btn btn-sm btn-primary" onclick="Views.departures.markDeparted('${dep.id}', this)" title="${I18n.t('departures.mark_departed')}">
+                                    ${Icons.get('send', {size:14})} ${I18n.t('departures.mark_departed')}
                                 </button>
                             ` : `
-                                <button class="btn btn-sm btn-outline" disabled title="Ajoutez des colis avant de marquer comme parti">
-                                    ${Icons.get('send', {size:14})} Marquer parti
+                                <button class="btn btn-sm btn-outline" disabled title="${I18n.t('departures.add_packages_first')}">
+                                    ${Icons.get('send', {size:14})} ${I18n.t('departures.mark_departed')}
                                 </button>
                             `}
-                            <button class="btn btn-sm btn-ghost text-error" onclick="Views.departures.deleteDeparture('${dep.id}', this)" title="Supprimer ce départ">
+                            <button class="btn btn-sm btn-ghost text-error" onclick="Views.departures.deleteDeparture('${dep.id}', this)" title="${I18n.t('delete')}">
                                 ${Icons.get('trash', {size:14})}
                             </button>
                         ` : ''}
                         
                         ${dep.status === 'departed' ? `
-                            <button class="btn btn-sm btn-outline" onclick="Views.departures.editDeparture('${dep.id}')" title="Modifier ce départ">
-                                ${Icons.get('edit', {size:14})} Modifier
+                            <button class="btn btn-sm btn-outline" onclick="Views.departures.editDeparture('${dep.id}')" title="${I18n.t('departures.edit')}">
+                                ${Icons.get('edit', {size:14})} ${I18n.t('departures.edit')}
                             </button>
-                            <button class="btn btn-sm btn-primary" onclick="Views.departures.markArrived('${dep.id}', this)" title="Marquer comme arrivé">
-                                ${Icons.get('check', {size:14})} Marquer arrivé
+                            <button class="btn btn-sm btn-primary" onclick="Views.departures.markArrived('${dep.id}', this)" title="${I18n.t('departures.mark_arrived')}">
+                                ${Icons.get('check', {size:14})} ${I18n.t('departures.mark_arrived')}
                             </button>
                         ` : ''}
                         
                         ${dep.status === 'arrived' ? `
-                            <button class="btn btn-sm btn-outline" onclick="Views.departures.viewPackages('${dep.id}')" title="Gérer les colis de ce départ">
-                                ${Icons.get('package', {size:14})} Gerer colis
+                            <button class="btn btn-sm btn-outline" onclick="Views.departures.viewPackages('${dep.id}')" title="${I18n.t('departures.manage_packages')}">
+                                ${Icons.get('package', {size:14})} ${I18n.t('departures.manage_packages')}
                             </button>
                         ` : ''}
                     </div>
@@ -321,56 +321,56 @@ Views.departures = {
         const content = `
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Pays d'origine *</label>
+                    <label class="form-label">${I18n.t('departures.origin_country')} *</label>
                     <div id="dep-origin-container"></div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Ville *</label>
+                    <label class="form-label">${I18n.t('departures.city')} *</label>
                     <div id="dep-city-container"></div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">Destination *</label>
+                <label class="form-label">${I18n.t('departures.destination')} *</label>
                 <div id="dep-dest-container"></div>
             </div>
             <div class="form-group">
-                <label class="form-label">Type de transport *</label>
+                <label class="form-label">${I18n.t('departures.transport_type')} *</label>
                 <div id="dep-transport-container"></div>
-                <p class="form-hint" id="transport-hint" style="display:none;color:#d97706;">Sélectionnez origine et destination pour voir les transports disponibles</p>
+                <p class="form-hint" id="transport-hint" style="display:none;color:#d97706;">${I18n.t('departures.select_origin_dest')}</p>
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Date de depart *</label>
+                    <label class="form-label">${I18n.t('departures.departure_date')} *</label>
                     <div id="dep-date-container"></div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Duree estimee (jours) *</label>
+                    <label class="form-label">${I18n.t('departures.duration_days')} *</label>
                     <input type="number" id="dep-duration" class="form-input" min="1" value="${dep?.estimated_duration || 7}" placeholder="Ex: 7">
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">Notes</label>
-                <textarea id="dep-notes" class="form-input" rows="2" placeholder="Numero de vol, conteneur, etc.">${dep?.notes || ''}</textarea>
+                <label class="form-label">${I18n.t('departures.notes')}</label>
+                <textarea id="dep-notes" class="form-input" rows="2" placeholder="${I18n.t('departures.notes_placeholder')}">${dep?.notes || ''}</textarea>
             </div>
             
             ${!isEdit ? `
                 <div class="auto-assign-section" id="auto-assign-section">
                     <div class="auto-assign-info" id="auto-assign-info">
                         ${Icons.get('package', {size:16})}
-                        <span>Selectionnez la route et le transport pour voir les colis en attente</span>
+                        <span>${I18n.t('departures.select_route_transport')}</span>
                     </div>
                     <label class="toggle-label" id="auto-assign-toggle" style="display:none;">
                         <input type="checkbox" id="dep-auto-assign" checked>
-                        <span id="auto-assign-label">Assigner automatiquement les colis en attente</span>
+                        <span id="auto-assign-label">${I18n.t('departures.auto_assign')}</span>
                     </label>
                 </div>
             ` : ''}
         `;
         
         const result = await Modal.form({
-            title: isEdit ? 'Modifier le depart' : 'Programmer un depart',
+            title: isEdit ? I18n.t('departures.edit_departure') : I18n.t('departures.schedule_departure'),
             content,
-            confirmText: isEdit ? 'Enregistrer' : 'Programmer',
+            confirmText: isEdit ? I18n.t('save') : I18n.t('departures.schedule_departure'),
             size: 'md',
             onOpen: () => {
                 // Fonction pour mettre à jour les transports disponibles
@@ -393,7 +393,7 @@ Views.departures = {
                         this.depTransportSelect?.setItems([]);
                         this.depTransportSelect?.clear();
                         if (hint) {
-                            hint.textContent = 'Aucun transport configuré pour cette route';
+                            hint.textContent = I18n.t('departures.no_transport_route');
                             hint.style.display = 'block';
                         }
                     } else {
@@ -422,7 +422,7 @@ Views.departures = {
                     const labelSpan = document.getElementById('auto-assign-label');
                     
                     if (!origin || !dest || !transport) {
-                        infoDiv.innerHTML = `${Icons.get('package', {size:16})}<span>Selectionnez la route et le transport</span>`;
+                        infoDiv.innerHTML = `${Icons.get('package', {size:16})}<span>${I18n.t('departures.select_route_transport')}</span>`;
                         infoDiv.style.display = 'flex';
                         toggleDiv.style.display = 'none';
                         return;
@@ -431,12 +431,12 @@ Views.departures = {
                     const pendingCount = this.countPendingPackagesForRoute(origin, dest, transport);
                     
                     if (pendingCount > 0) {
-                        infoDiv.innerHTML = `${Icons.get('check-circle', {size:16})}<span class="text-success">${pendingCount} colis en attente pour cette route</span>`;
+                        infoDiv.innerHTML = `${Icons.get('check-circle', {size:16})}<span class="text-success">${I18n.t('departures.pending_for_route').replace('{n}', pendingCount)}</span>`;
                         infoDiv.className = 'auto-assign-info has-packages';
                         toggleDiv.style.display = 'flex';
-                        labelSpan.textContent = `Assigner automatiquement les ${pendingCount} colis en attente`;
+                        labelSpan.textContent = I18n.t('departures.auto_assign_count').replace('{n}', pendingCount);
                     } else {
-                        infoDiv.innerHTML = `${Icons.get('info', {size:16})}<span>Aucun colis en attente pour cette route</span>`;
+                        infoDiv.innerHTML = `${Icons.get('info', {size:16})}<span>${I18n.t('departures.no_pending_for_route')}</span>`;
                         infoDiv.className = 'auto-assign-info';
                         toggleDiv.style.display = 'none';
                     }
@@ -451,7 +451,7 @@ Views.departures = {
                 
                 this.depCitySelect = new SearchSelect({
                     container: '#dep-city-container',
-                    placeholder: 'Ville',
+                    placeholder: I18n.t('departures.city'),
                     items: cityItems,
                     onSelect: () => {}
                 });
@@ -459,7 +459,7 @@ Views.departures = {
                 
                 this.depOriginSelect = new SearchSelect({
                     container: '#dep-origin-container',
-                    placeholder: 'Pays d\'origine',
+                    placeholder: I18n.t('departures.origin_country'),
                     items: originItems,
                     onSelect: (item) => {
                         if (item) {
@@ -474,7 +474,7 @@ Views.departures = {
                 
                 this.depDestSelect = new SearchSelect({
                     container: '#dep-dest-container',
-                    placeholder: 'Destination',
+                    placeholder: I18n.t('departures.destination'),
                     items: destItems,
                     onSelect: () => updateTransportSelect()
                 });
@@ -483,7 +483,7 @@ Views.departures = {
                 // Transport select - initialement vide, rempli quand origine+dest sélectionnés
                 this.depTransportSelect = new SearchSelect({
                     container: '#dep-transport-container',
-                    placeholder: 'Sélectionnez origine et destination d\'abord',
+                    placeholder: I18n.t('departures.select_origin_first'),
                     items: [],
                     onSelect: (item) => {
                         if (item) {
@@ -497,7 +497,7 @@ Views.departures = {
                 // Date picker
                 this.depDatePicker = new DatePicker({
                     container: document.getElementById('dep-date-container'),
-                    placeholder: 'Date de depart',
+                    placeholder: I18n.t('departures.departure_date'),
                     value: dep?.departure_date || defaultDateStr,
                     onChange: () => {}
                 });
@@ -524,12 +524,12 @@ Views.departures = {
             const autoAssign = !isEdit && document.getElementById('dep-auto-assign')?.checked;
             
             if (!originCountry || !destCountry || !transport || !date) {
-                Toast.error('Veuillez remplir tous les champs obligatoires');
+                Toast.error(I18n.t('departures.fill_required'));
                 return;
             }
             
             try {
-                Loader.button(confirmBtn, true, { text: isEdit ? 'Enregistrement...' : 'Programmation...' });
+                Loader.button(confirmBtn, true, { text: isEdit ? I18n.t('clients.saving') : I18n.t('departures.schedule_departure') + '...' });
                 if (isEdit) {
                     // Appel API pour modifier
                     const updated = await API.departures.update(editId, {
@@ -547,7 +547,7 @@ Views.departures = {
                     if (idx !== -1) {
                         this.departures[idx] = updated.departure || { ...this.departures[idx], ...updated };
                     }
-                    Toast.success('Départ modifié');
+                    Toast.success(I18n.t('departures.departure_updated'));
                 } else {
                     // Appel API pour créer
                     const created = await API.departures.create({
@@ -566,9 +566,9 @@ Views.departures = {
                     
                     const assignedCount = created.assigned_packages || 0;
                     if (assignedCount > 0) {
-                        Toast.success(`Départ programmé - ${assignedCount} colis assignés automatiquement`);
+                        Toast.success(I18n.t('departures.departure_created_assigned').replace('{n}', assignedCount));
                     } else {
-                        Toast.success('Départ programmé');
+                        Toast.success(I18n.t('departures.departure_created'));
                     }
                 }
                 
@@ -629,17 +629,17 @@ Views.departures = {
     async deleteDeparture(id, btn = null) {
         const packagesCount = this.countPackagesForDeparture(id);
         const message = packagesCount > 0 
-            ? `Ce depart a ${packagesCount} colis assigne(s). Supprimer quand meme ?`
-            : 'Supprimer ce depart programme ?';
+            ? I18n.t('departures.confirm_delete_packages').replace('{n}', packagesCount)
+            : I18n.t('departures.confirm_delete');
             
-        if (await Modal.confirm({ title: 'Supprimer ?', message, danger: true })) {
+        if (await Modal.confirm({ title: I18n.t('delete') + ' ?', message, danger: true })) {
             try {
                 Loader.button(btn, true, { text: '' });
                 await API.departures.delete(id);
                 this.departures = this.departures.filter(d => d.id !== id);
                 this.saveData();
                 this.renderDepartures();
-                Toast.success('Depart supprime');
+                Toast.success(I18n.t('departures.departure_deleted'));
             } catch (error) {
                 console.error('Delete departure error:', error);
                 Toast.error(`Erreur: ${error.message}`);
@@ -650,14 +650,14 @@ Views.departures = {
     },
     
     async markDeparted(id, btn = null) {
-        if (await Modal.confirm({ title: 'Confirmer le depart', message: 'Marquer ce depart comme parti ?' })) {
+        if (await Modal.confirm({ title: I18n.t('departures.confirm_departed'), message: I18n.t('departures.confirm_departed_msg') })) {
             try {
                 Loader.button(btn, true, { text: '' });
                 const result = await API.departures.markDeparted(id);
                 // Recharger les données pour avoir la date mise à jour
                 await this.loadData();
                 this.renderDepartures();
-                Toast.success('Depart marque comme parti');
+                Toast.success(I18n.t('departures.departed_success'));
             } catch (error) {
                 console.error('Mark departed error:', error);
                 Toast.error(`Erreur: ${error.message}`);
@@ -668,14 +668,14 @@ Views.departures = {
     },
     
     async markArrived(id, btn = null) {
-        if (await Modal.confirm({ title: 'Confirmer l\'arrivee', message: 'Marquer ce depart comme arrive a destination ?' })) {
+        if (await Modal.confirm({ title: I18n.t('departures.confirm_arrived'), message: I18n.t('departures.confirm_arrived_msg') })) {
             try {
                 Loader.button(btn, true, { text: '' });
                 const result = await API.departures.markArrived(id);
                 // Recharger les données pour avoir la date mise à jour
                 await this.loadData();
                 this.renderDepartures();
-                Toast.success('Depart marque comme arrive');
+                Toast.success(I18n.t('departures.arrived_success'));
             } catch (error) {
                 console.error('Mark arrived error:', error);
                 Toast.error(`Erreur: ${error.message}`);
@@ -691,10 +691,10 @@ Views.departures = {
         
         const packagesCount = this.countPackagesForDeparture(id);
         const message = packagesCount > 0
-            ? `Envoyer une notification aux clients des ${packagesCount} colis de ce depart ?`
-            : 'Aucun colis assigne a ce depart. Notifier quand meme ?';
+            ? I18n.t('departures.notify_msg').replace('{n}', packagesCount)
+            : I18n.t('departures.notify_no_packages');
         
-        if (await Modal.confirm({ title: 'Notifier les clients', message })) {
+        if (await Modal.confirm({ title: I18n.t('departures.notify_clients'), message })) {
             try {
                 Loader.button(btn, true, { text: '' });
                 await API.departures.notify(id, { target: 'with_packages' });
@@ -702,7 +702,7 @@ Views.departures = {
                 dep.notified_at = new Date().toISOString();
                 this.saveData();
                 this.renderDepartures();
-                Toast.success('Clients notifies');
+                Toast.success(I18n.t('departures.clients_notified'));
             } catch (error) {
                 console.error('Notify clients error:', error);
                 Toast.error(`Erreur: ${error.message}`);
@@ -718,8 +718,8 @@ Views.departures = {
         
         // Afficher un loader pendant le chargement
         Modal.open({
-            title: 'Chargement...',
-            content: Loader.page('Chargement des colis...'),
+            title: I18n.t('loading'),
+            content: Loader.page(I18n.t('loading')),
             closable: false
         });
         
@@ -745,7 +745,7 @@ Views.departures = {
         } catch (error) {
             console.error('Erreur chargement colis:', error);
             Modal.close();
-            Toast.error('Erreur lors du chargement des colis');
+            Toast.error(I18n.t('error_loading'));
         } finally {
             Loader.button(btn, false);
         }
@@ -764,10 +764,10 @@ Views.departures = {
         
         // Vérifier si le départ permet les modifications
         const isEditable = dep.status === 'scheduled';
-        const statusLabels = { scheduled: 'Programmé', departed: 'En transit', arrived: 'Arrivé' };
+        const statusLabels = { scheduled: I18n.t('departures.status_scheduled'), departed: I18n.t('departures.status_departed'), arrived: I18n.t('departures.status_arrived') };
         
         Modal.open({
-            title: `${isEditable ? 'Gestion' : 'Liste'} colis - Depart ${dateStr}`,
+            title: `${isEditable ? I18n.t('departures.management') : I18n.t('departures.list')} ${I18n.t('departures.packages').toLowerCase()} - ${dateStr}`,
             size: 'lg',
             closable: false,
             content: `
@@ -779,29 +779,29 @@ Views.departures = {
                             ${!isEditable ? `<span class="status-badge status-${dep.status === 'departed' ? 'in-transit' : dep.status}">${statusLabels[dep.status]}</span>` : ''}
                         </div>
                         <div class="departure-stats-mini">
-                            <span class="stat-item">${Icons.get('package', {size:14})} ${packages.length} colis</span>
+                            <span class="stat-item">${Icons.get('package', {size:14})} ${packages.length} ${I18n.t('departures.packages').toLowerCase()}</span>
                             <span class="stat-item">${Icons.get('scale', {size:14})} ${totalWeight.toFixed(1)} kg</span>
                         </div>
                     </div>
                     
                     ${!isEditable ? `
                         <div class="info-box warning mb-md">
-                            ${Icons.get('info', {size:16})} Ce départ est ${dep.status === 'departed' ? 'en transit' : 'arrivé'} - les colis ne peuvent plus être modifiés
+                            ${Icons.get('info', {size:16})} ${statusLabels[dep.status]} - ${I18n.t('departures.cannot_modify')}
                         </div>
                     ` : ''}
                     
                     <div class="packages-modal-tabs">
-                        <button class="modal-tab active" data-tab="list">${Icons.get('list', {size:14})} Liste (${packages.length})</button>
+                        <button class="modal-tab active" data-tab="list">${Icons.get('list', {size:14})} ${I18n.t('departures.list')} (${packages.length})</button>
                         ${isEditable ? `
-                            <button class="modal-tab" data-tab="add">${Icons.get('plus', {size:14})} Ajouter</button>
-                            <button class="modal-tab" data-tab="remove">${Icons.get('minus', {size:14})} Retirer</button>
+                            <button class="modal-tab" data-tab="add">${Icons.get('plus', {size:14})} ${I18n.t('departures.add_btn')}</button>
+                            <button class="modal-tab" data-tab="remove">${Icons.get('minus', {size:14})} ${I18n.t('departures.remove_btn')}</button>
                         ` : ''}
                     </div>
                     
                     <div class="modal-tab-content active" id="tab-list">
                         <div class="departure-packages-list">
-                            ${packages.length === 0 ? `<div class="empty-state">${Icons.get('package', {size:32})}<p>Aucun colis</p></div>` : `
-                                <table class="table table-sm"><thead><tr><th>Tracking</th><th>Client</th><th>Description</th><th>Poids</th>${isEditable ? '<th></th>' : ''}</tr></thead>
+                            ${packages.length === 0 ? `<div class="empty-state">${Icons.get('package', {size:32})}<p>${I18n.t('departures.no_packages')}</p></div>` : `
+                                <table class="table table-sm"><thead><tr><th>Tracking</th><th>${I18n.t('clients.name')}</th><th>${I18n.t('packages.description')}</th><th>${I18n.t('packages.weight_kg')}</th>${isEditable ? '<th></th>' : ''}</tr></thead>
                                 <tbody>${packages.map(p => `<tr><td><strong>${p.tracking_number || p.supplier_tracking}</strong></td><td>${getClientName(p)}</td><td>${p.description || ''}</td><td>${p.weight ? p.weight + ' kg' : ''}</td>${isEditable ? `<td><div class="table-actions"><button class="btn btn-sm btn-ghost text-error" onclick="Views.departures.removePackageFromDepartureAPI('${p.id}', '${departureId}', this)">${Icons.get('x', {size:14})}</button></div></td>` : ''}</tr>`).join('')}</tbody></table>
                             `}
                         </div>
@@ -810,7 +810,7 @@ Views.departures = {
                     ${isEditable ? `
                     <div class="modal-tab-content" id="tab-add">
                         <div class="scan-section">
-                            <p class="scan-instruction">${Icons.get('scan', {size:16})} Scannez ou saisissez le code du colis a ajouter</p>
+                            <p class="scan-instruction">${Icons.get('scan', {size:16})} ${I18n.t('departures.scan_add_instruction')}</p>
                             <div class="scan-input-row">
                                 <input type="text" id="add-scan-input" class="form-input scan-input" placeholder="Code tracking..." autocomplete="off">
                                 <button class="btn btn-primary" id="btn-add-scan">${Icons.get('plus', {size:16})}</button>
@@ -818,18 +818,18 @@ Views.departures = {
                             <div class="scan-status" id="add-scan-status"></div>
                         </div>
                         <div class="manual-section">
-                            <p class="section-divider"><span>ou selection manuelle</span></p>
+                            <p class="section-divider"><span>${I18n.t('departures.or_manual')}</span></p>
                             <div class="add-package-row">
                                 <div id="add-package-select" class="add-package-select"></div>
-                                <button class="btn btn-outline" id="btn-add-manual" ${unassignedPackages.length === 0 ? 'disabled' : ''}>${Icons.get('plus', {size:14})} Ajouter</button>
+                                <button class="btn btn-outline" id="btn-add-manual" ${unassignedPackages.length === 0 ? 'disabled' : ''}>${Icons.get('plus', {size:14})} ${I18n.t('departures.add_btn')}</button>
                             </div>
-                            <p class="text-sm text-muted mt-sm">${unassignedPackages.length} colis disponibles</p>
+                            <p class="text-sm text-muted mt-sm">${I18n.t('departures.available_packages').replace('{n}', unassignedPackages.length)}</p>
                         </div>
                     </div>
                     
                     <div class="modal-tab-content" id="tab-remove">
                         <div class="scan-section">
-                            <p class="scan-instruction">${Icons.get('scan', {size:16})} Scannez ou saisissez le code du colis a retirer</p>
+                            <p class="scan-instruction">${Icons.get('scan', {size:16})} ${I18n.t('departures.scan_remove_instruction')}</p>
                             <div class="scan-input-row">
                                 <input type="text" id="remove-scan-input" class="form-input scan-input" placeholder="Code tracking..." autocomplete="off">
                                 <button class="btn btn-error" id="btn-remove-scan">${Icons.get('minus', {size:16})}</button>
@@ -837,18 +837,18 @@ Views.departures = {
                             <div class="scan-status" id="remove-scan-status"></div>
                         </div>
                         <div class="manual-section">
-                            <p class="section-divider"><span>ou selection manuelle</span></p>
+                            <p class="section-divider"><span>${I18n.t('departures.or_manual')}</span></p>
                             <div class="add-package-row">
                                 <div id="remove-package-select" class="add-package-select"></div>
-                                <button class="btn btn-outline text-error" id="btn-remove-manual" ${packages.length === 0 ? 'disabled' : ''}>${Icons.get('minus', {size:14})} Retirer</button>
+                                <button class="btn btn-outline text-error" id="btn-remove-manual" ${packages.length === 0 ? 'disabled' : ''}>${Icons.get('minus', {size:14})} ${I18n.t('departures.remove_btn')}</button>
                             </div>
-                            <p class="text-sm text-muted mt-sm">${packages.length} colis dans ce depart</p>
+                            <p class="text-sm text-muted mt-sm">${I18n.t('departures.packages_in_departure').replace('{n}', packages.length)}</p>
                         </div>
                     </div>
                     ` : ''}
                 </div>
             `,
-            footer: `<button class="btn btn-secondary" onclick="Modal.close()">Fermer</button>`
+            footer: `<button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('close')}</button>`
         });
         
         // Attendre que le DOM soit pret (seulement si éditable)
@@ -908,13 +908,13 @@ Views.departures = {
         document.getElementById('btn-add-manual')?.addEventListener('click', async (e) => {
             const btn = e.currentTarget;
             const id = this.addPackageSelect?.getValue();
-            if (!id) { Toast.error('Selectionnez un colis'); return; }
+            if (!id) { Toast.error(I18n.t('departures.select_package')); return; }
             await this.addPackageToDepartureAPI(id, departureId, btn);
         });
         
         this.removePackageSelect = new SearchSelect({
             container: '#remove-package-select',
-            placeholder: 'Rechercher...',
+            placeholder: I18n.t('search') + '...',
             items: packages.map(p => ({ id: p.id, name: `${p.tracking_number || p.supplier_tracking} - ${getClientName(p)}` })),
             onSelect: () => {},
             dropUp: true  // Ouvrir vers le haut pour éviter le débordement
@@ -922,7 +922,7 @@ Views.departures = {
         document.getElementById('btn-remove-manual')?.addEventListener('click', async (e) => {
             const btn = e.currentTarget;
             const id = this.removePackageSelect?.getValue();
-            if (!id) { Toast.error('Selectionnez un colis'); return; }
+            if (!id) { Toast.error(I18n.t('departures.select_package')); return; }
             await this.removePackageFromDepartureAPI(id, departureId, btn);
         });
     },
@@ -931,7 +931,7 @@ Views.departures = {
         try {
             Loader.button(btn, true, { text: '' });
             await API.departures.assignPackages(departureId, [packageId]);
-            Toast.success('Colis ajoute au depart');
+            Toast.success(I18n.t('departures.package_added'));
             this.viewPackages(departureId);
             this.renderDepartures();
         } catch (error) {
@@ -945,7 +945,7 @@ Views.departures = {
         try {
             Loader.button(btn, true, { text: '' });
             await API.departures.removePackage(departureId, packageId);
-            Toast.success('Colis retire du depart');
+            Toast.success(I18n.t('departures.package_removed'));
             this.viewPackages(departureId);
             this.renderDepartures();
         } catch (error) {
@@ -966,20 +966,20 @@ Views.departures = {
             );
             
             if (!pkg) {
-                statusEl.innerHTML = `<span class="text-error">${Icons.get('x', {size:14})} Colis non trouve</span>`;
+                statusEl.innerHTML = `<span class="text-error">${Icons.get('x', {size:14})} ${I18n.t('departures.package_not_found')}</span>`;
                 return;
             }
             
             if (pkg.departure_id) {
-                statusEl.innerHTML = `<span class="text-warning">${Icons.get('alert-circle', {size:14})} Colis deja assigne</span>`;
+                statusEl.innerHTML = `<span class="text-warning">${Icons.get('alert-circle', {size:14})} ${I18n.t('departures.package_already_assigned')}</span>`;
                 return;
             }
             
             await this.addPackageToDepartureAPI(pkg.id, departureId);
             inputEl.value = '';
-            statusEl.innerHTML = `<span class="text-success">${Icons.get('check', {size:14})} Colis ajoute</span>`;
+            statusEl.innerHTML = `<span class="text-success">${Icons.get('check', {size:14})} ${I18n.t('departures.package_added_scan')}</span>`;
         } catch (error) {
-            statusEl.innerHTML = `<span class="text-error">${Icons.get('x', {size:14})} Erreur</span>`;
+            statusEl.innerHTML = `<span class="text-error">${Icons.get('x', {size:14})} ${I18n.t('error')}</span>`;
         }
     },
     
@@ -994,15 +994,15 @@ Views.departures = {
             );
             
             if (!pkg) {
-                statusEl.innerHTML = `<span class="text-error">${Icons.get('x', {size:14})} Colis non trouve dans ce depart</span>`;
+                statusEl.innerHTML = `<span class="text-error">${Icons.get('x', {size:14})} ${I18n.t('departures.package_not_in_departure')}</span>`;
                 return;
             }
             
             await this.removePackageFromDepartureAPI(pkg.id, departureId);
             inputEl.value = '';
-            statusEl.innerHTML = `<span class="text-success">${Icons.get('check', {size:14})} Colis retire</span>`;
+            statusEl.innerHTML = `<span class="text-success">${Icons.get('check', {size:14})} ${I18n.t('departures.package_removed_scan')}</span>`;
         } catch (error) {
-            statusEl.innerHTML = `<span class="text-error">${Icons.get('x', {size:14})} Erreur</span>`;
+            statusEl.innerHTML = `<span class="text-error">${Icons.get('x', {size:14})} ${I18n.t('error')}</span>`;
         }
     },
     
@@ -1252,7 +1252,7 @@ Views.departures = {
         const destLabel = CONFIG.DESTINATIONS[dep.dest_country]?.label || dep.dest_country;
         const transportLabel = CONFIG.TRANSPORT_MODES.find(t => t.value === dep.transport_mode)?.label || dep.transport_mode;
         
-        const statusLabels = { scheduled: 'Programmé', departed: 'En transit', arrived: 'Arrivé', cancelled: 'Annulé' };
+        const statusLabels = { scheduled: I18n.t('departures.status_scheduled'), departed: I18n.t('departures.status_departed'), arrived: I18n.t('departures.status_arrived'), cancelled: I18n.t('departures.status_cancelled') };
         
         // Déterminer le statut pour le tracking-progress
         let trackingStatus = 'pending';
@@ -1261,7 +1261,7 @@ Views.departures = {
         else if (dep.status === 'scheduled') trackingStatus = 'received';
         
         Modal.open({
-            title: `Détails du départ`,
+            title: I18n.t('departures.details'),
             size: 'lg',
             content: `
                 <div class="departure-detail-modal">
@@ -1278,13 +1278,13 @@ Views.departures = {
                     </div>
                     
                     <div class="departure-tracking-section">
-                        <h4 class="section-title">${Icons.get('map', {size:16})} Suivi du départ</h4>
+                        <h4 class="section-title">${Icons.get('map', {size:16})} ${I18n.t('departures.departure_tracking')}</h4>
                         <tracking-progress status="${trackingStatus}" transport="${dep.transport_mode}"></tracking-progress>
                     </div>
                     
                     ${currentCarrier ? `
                         <div class="current-carrier-section">
-                            <h4 class="section-title">${Icons.get('truck', {size:16})} Transporteur actuel</h4>
+                            <h4 class="section-title">${Icons.get('truck', {size:16})} ${I18n.t('departures.current_carrier')}</h4>
                             <div class="carrier-card active">
                                 <div class="carrier-info">
                                     <span class="carrier-name">${currentCarrier.carrier_name}</span>
@@ -1295,22 +1295,22 @@ Views.departures = {
                                     ${currentCarrier.location ? `<span class="carrier-location">${Icons.get('map-pin', {size:12})} ${currentCarrier.location}</span>` : ''}
                                 </div>
                                 <button class="btn btn-sm btn-outline" onclick="Views.departures.refreshTracking('${departureId}', this)">
-                                    ${Icons.get('refresh', {size:14})} Actualiser
+                                    ${Icons.get('refresh', {size:14})} ${I18n.t('departures.refresh')}
                                 </button>
                             </div>
                         </div>
                     ` : dep.status !== 'scheduled' ? `
                         <div class="no-carrier-section">
-                            <p class="text-muted">${Icons.get('info', {size:14})} Aucun transporteur assigné</p>
+                            <p class="text-muted">${Icons.get('info', {size:14})} ${I18n.t('departures.no_carrier')}</p>
                             <button class="btn btn-sm btn-primary" onclick="Modal.close(); Views.departures.showCarrierModal('${departureId}')">
-                                ${Icons.get('plus', {size:14})} Assigner un transporteur
+                                ${Icons.get('plus', {size:14})} ${I18n.t('departures.assign_carrier')}
                             </button>
                         </div>
                     ` : ''}
                     
                     ${carrierHistory.length > 1 ? `
                         <div class="carrier-history-section">
-                            <h4 class="section-title">${Icons.get('clock', {size:16})} Historique transporteurs</h4>
+                            <h4 class="section-title">${Icons.get('clock', {size:16})} ${I18n.t('departures.carrier_history')}</h4>
                             <div class="carrier-history-list">
                                 ${carrierHistory.slice(0, -1).reverse().map(h => `
                                     <div class="carrier-card past">
@@ -1319,7 +1319,7 @@ Views.departures = {
                                             <span class="carrier-tracking">${Icons.get('hash', {size:12})} ${h.tracking}</span>
                                         </div>
                                         <div class="carrier-dates">
-                                            <span>${Icons.get('calendar', {size:12})} ${new Date(h.from).toLocaleDateString('fr-FR')} → ${h.to ? new Date(h.to).toLocaleDateString('fr-FR') : 'En cours'}</span>
+                                            <span>${Icons.get('calendar', {size:12})} ${new Date(h.from).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')} → ${h.to ? new Date(h.to).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : 'En cours'}</span>
                                         </div>
                                         ${h.final_status ? `<span class="carrier-final-status">${h.final_status}</span>` : ''}
                                     </div>
@@ -1329,19 +1329,19 @@ Views.departures = {
                     ` : ''}
                     
                     <div class="departure-stats-section">
-                        <div class="stat-box"><span class="stat-value">${packages.length}</span><span class="stat-label">Colis</span></div>
-                        <div class="stat-box"><span class="stat-value">${packages.reduce((sum, p) => sum + (p.weight || 0), 0).toFixed(1)}</span><span class="stat-label">kg total</span></div>
-                        <div class="stat-box"><span class="stat-value">${dep.estimated_duration}</span><span class="stat-label">jours</span></div>
-                        <div class="stat-box"><span class="stat-value">${carrierHistory.length}</span><span class="stat-label">transporteur(s)</span></div>
+                        <div class="stat-box"><span class="stat-value">${packages.length}</span><span class="stat-label">${I18n.t('departures.packages')}</span></div>
+                        <div class="stat-box"><span class="stat-value">${packages.reduce((sum, p) => sum + (p.weight || 0), 0).toFixed(1)}</span><span class="stat-label">${I18n.t('departures.kg_total')}</span></div>
+                        <div class="stat-box"><span class="stat-value">${dep.estimated_duration}</span><span class="stat-label">${I18n.t('departures.days')}</span></div>
+                        <div class="stat-box"><span class="stat-value">${carrierHistory.length}</span><span class="stat-label">${I18n.t('departures.carriers_count')}</span></div>
                     </div>
                     
                     ${dep.notes ? `<p class="departure-notes-detail">${Icons.get('info', {size:14})} ${dep.notes}</p>` : ''}
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Fermer</button>
-                <button class="btn btn-outline" onclick="Modal.close(); Views.departures.viewPackages('${departureId}')">${Icons.get('package', {size:14})} Gérer colis</button>
-                ${dep.status === 'departed' && !currentCarrier ? `<button class="btn btn-primary" onclick="Modal.close(); Views.departures.showCarrierModal('${departureId}')">${Icons.get('truck', {size:14})} Assigner transporteur</button>` : ''}
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('close')}</button>
+                <button class="btn btn-outline" onclick="Modal.close(); Views.departures.viewPackages('${departureId}')">${Icons.get('package', {size:14})} ${I18n.t('departures.manage_packages')}</button>
+                ${dep.status === 'departed' && !currentCarrier ? `<button class="btn btn-primary" onclick="Modal.close(); Views.departures.showCarrierModal('${departureId}')">${Icons.get('truck', {size:14})} ${I18n.t('departures.assign_carrier')}</button>` : ''}
             `
         });
     },
@@ -1364,41 +1364,41 @@ Views.departures = {
         ];
         
         Modal.open({
-            title: hasCarrier ? 'Changer de transporteur' : 'Assigner un transporteur',
+            title: hasCarrier ? I18n.t('departures.change_carrier') : I18n.t('departures.assign_carrier'),
             content: `
                 <div class="carrier-form">
                     ${hasCarrier ? `
                         <div class="current-carrier-info mb-md">
-                            <p class="text-sm text-muted">Transporteur actuel: <strong>${dep.carrier.toUpperCase()}</strong> - ${dep.carrier_tracking}</p>
-                            ${dep.carrier_location ? `<p class="text-sm text-muted">Dernière position: ${dep.carrier_location}</p>` : ''}
+                            <p class="text-sm text-muted">${I18n.t('departures.current_carrier_label')}: <strong>${dep.carrier.toUpperCase()}</strong> - ${dep.carrier_tracking}</p>
+                            ${dep.carrier_location ? `<p class="text-sm text-muted">${I18n.t('departures.last_position')}: ${dep.carrier_location}</p>` : ''}
                         </div>
                     ` : ''}
                     <div class="form-group">
-                        <label class="form-label">Transporteur *</label>
+                        <label class="form-label">${I18n.t('departures.carrier')} *</label>
                         <div id="carrier-select-container"></div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Numéro de tracking *</label>
+                        <label class="form-label">${I18n.t('departures.tracking_number')} *</label>
                         <input type="text" id="carrier-tracking-input" class="form-input" placeholder="Ex: 1234567890">
                     </div>
                     <div class="form-group">
                         <label class="toggle-label">
                             <input type="checkbox" id="carrier-is-final-leg" checked>
-                            <span>Étape finale du voyage</span>
+                            <span>${I18n.t('departures.final_leg')}</span>
                         </label>
-                        <p class="form-hint">Décochez si le colis sera repris par un autre transporteur après cette étape</p>
+                        <p class="form-hint">${I18n.t('departures.final_leg_hint')}</p>
                     </div>
                     <div class="form-group">
                         <label class="toggle-label">
                             <input type="checkbox" id="carrier-notify-clients">
-                            <span>Notifier les clients</span>
+                            <span>${I18n.t('departures.notify_clients_checkbox')}</span>
                         </label>
                     </div>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-carrier">${hasCarrier ? 'Changer' : 'Assigner'}</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-carrier">${hasCarrier ? I18n.t('departures.change_carrier') : I18n.t('departures.assign_carrier')}</button>
             `
         });
         
@@ -1419,12 +1419,12 @@ Views.departures = {
                 const notify = document.getElementById('carrier-notify-clients').checked;
                 
                 if (!carrier || !tracking) { 
-                    Toast.error('Transporteur et tracking requis'); 
+                    Toast.error(I18n.t('departures.carrier_tracking_required')); 
                     return; 
                 }
                 
                 try {
-                    Loader.button(btn, true, { text: hasCarrier ? 'Changement...' : 'Assignation...' });
+                    Loader.button(btn, true, { text: '...' });
                     const result = await API.departures.assignCarrier(departureId, { 
                         carrier, 
                         carrier_tracking: tracking, 
@@ -1443,7 +1443,7 @@ Views.departures = {
                     
                     this.saveData();
                     Modal.close();
-                    Toast.success(hasCarrier ? 'Transporteur changé' : 'Transporteur assigné');
+                    Toast.success(hasCarrier ? I18n.t('departures.carrier_changed') : I18n.t('departures.carrier_assigned'));
                     this.renderDepartures();
                 } catch (error) {
                     Toast.error(error.message || 'Erreur');
@@ -1457,9 +1457,9 @@ Views.departures = {
     async refreshTracking(departureId, btn = null) {
         try {
             Loader.button(btn, true, { text: '' });
-            Toast.info('Actualisation...');
+            Toast.info(I18n.t('departures.refreshing'));
             const result = await API.departures.refreshTracking(departureId);
-            Toast.success(`Mis à jour - ${result.updated_packages} colis`);
+            Toast.success(I18n.t('departures.updated_packages').replace('{n}', result.updated_packages));
             Modal.close();
             this.viewDepartureDetail(departureId);
         } catch (error) {

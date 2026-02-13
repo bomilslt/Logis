@@ -97,8 +97,8 @@ Views.dashboard = {
                 <div class="page-header">
                     <h1 class="page-title">${I18n.t('dashboard.title')}</h1>
                     <div class="header-actions">
-                        <span class="text-sm text-muted" id="last-update">Mis a jour: ${new Date().toLocaleTimeString('fr-FR')}</span>
-                        <button class="btn btn-ghost btn-sm" onclick="Views.dashboard.refreshDashboard(this)" title="Actualiser le tableau de bord">
+                        <span class="text-sm text-muted" id="last-update">${I18n.t('dashboard.updated_at')}: ${new Date().toLocaleTimeString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US')}</span>
+                        <button class="btn btn-ghost btn-sm" onclick="Views.dashboard.refreshDashboard(this)" title="${I18n.t('dashboard.refresh')}">
                             ${Icons.get('refresh', {size:16})}
                         </button>
                     </div>
@@ -111,7 +111,7 @@ Views.dashboard = {
                         <div class="stat-info">
                             <span class="stat-value">${stats.packages.total}</span>
                             <span class="stat-label">${I18n.t('dashboard.total_packages')}</span>
-                            <span class="stat-sub">${stats.packages.pending} en attente · ${stats.packages.in_transit} en transit</span>
+                            <span class="stat-sub">${stats.packages.pending} ${I18n.t('dashboard.pending')} · ${stats.packages.in_transit} ${I18n.t('dashboard.in_transit')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -119,7 +119,7 @@ Views.dashboard = {
                         <div class="stat-info">
                             <span class="stat-value">${this.formatMoney(stats.revenue.month)}</span>
                             <span class="stat-label">${I18n.t('dashboard.revenue')}</span>
-                            <span class="stat-change ${growth >= 0 ? 'positive' : 'negative'}">${growth >= 0 ? '+' : ''}${growth}% vs mois dernier</span>
+                            <span class="stat-change ${growth >= 0 ? 'positive' : 'negative'}">${growth >= 0 ? '+' : ''}${growth}% ${I18n.t('dashboard.revenue_vs')}</span>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -133,8 +133,8 @@ Views.dashboard = {
                         <div class="stat-icon bg-info">${Icons.get('users', {size:24})}</div>
                         <div class="stat-info">
                             <span class="stat-value">${stats.clients.active}</span>
-                            <span class="stat-label">${I18n.t('nav.clients')}</span>
-                            <span class="stat-sub text-success">+${stats.clients.new_this_month} ce mois</span>
+                            <span class="stat-label">${I18n.t('dashboard.active_clients')}</span>
+                            <span class="stat-sub text-success">+${stats.clients.new_this_month} ${I18n.t('dashboard.new_this_month')}</span>
                         </div>
                     </div>
                 </div>
@@ -146,15 +146,15 @@ Views.dashboard = {
                         <div class="today-grid">
                             <div class="today-item">
                                 <span class="today-value">${stats.today.received}</span>
-                                <span class="today-label">Colis recus</span>
+                                <span class="today-label">${I18n.t('dashboard.packages_received')}</span>
                             </div>
                             <div class="today-item">
                                 <span class="today-value">${stats.today.status_updates}</span>
-                                <span class="today-label">Mises a jour</span>
+                                <span class="today-label">${I18n.t('dashboard.status_updates')}</span>
                             </div>
                             <div class="today-item">
                                 <span class="today-value">${stats.today.deliveries}</span>
-                                <span class="today-label">Livraisons</span>
+                                <span class="today-label">${I18n.t('dashboard.deliveries')}</span>
                             </div>
                         </div>
                     </div>
@@ -166,26 +166,26 @@ Views.dashboard = {
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">${I18n.t('dashboard.recent_packages')}</h3>
-                            <a href="#/packages" class="btn btn-sm btn-ghost">${I18n.t('all')}</a>
+                            <a href="#/packages" class="btn btn-sm btn-ghost">${I18n.t('dashboard.view_all')}</a>
                         </div>
                         <div class="card-body">
                             <div class="table-wrapper table-responsive-cards">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Tracking</th>
-                                            <th>Client</th>
-                                            <th>Montant</th>
-                                            <th>Statut</th>
+                                            <th>${I18n.t('dashboard.tracking')}</th>
+                                            <th>${I18n.t('dashboard.client')}</th>
+                                            <th>${I18n.t('dashboard.amount')}</th>
+                                            <th>${I18n.t('dashboard.status')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         ${recentPackages.map(p => `
                                             <tr class="clickable" onclick="Router.navigate('/packages/${p.id}')">
-                                                <td data-label="Tracking"><strong>${p.tracking}</strong></td>
-                                                <td data-label="Client">${p.client}</td>
-                                                <td data-label="Montant">${this.formatMoney(p.amount)}</td>
-                                                <td data-label="Statut"><span class="status-badge status-${p.status}">${CONFIG.PACKAGE_STATUSES[p.status]?.label}</span></td>
+                                                <td data-label="${I18n.t('dashboard.tracking')}"><strong>${p.tracking}</strong></td>
+                                                <td data-label="${I18n.t('dashboard.client')}">${p.client}</td>
+                                                <td data-label="${I18n.t('dashboard.amount')}">${this.formatMoney(p.amount)}</td>
+                                                <td data-label="${I18n.t('dashboard.status')}"><span class="status-badge status-${p.status}">${CONFIG.PACKAGE_STATUSES[p.status]?.label}</span></td>
                                             </tr>
                                         `).join('')}
                                     </tbody>
@@ -220,7 +220,7 @@ Views.dashboard = {
                 <!-- Repartition par statut -->
                 <div class="card mt-md">
                     <div class="card-header">
-                        <h3 class="card-title">Repartition des colis</h3>
+                        <h3 class="card-title">${I18n.t('dashboard.status_distribution')}</h3>
                     </div>
                     <div class="card-body">
                         <div class="status-bars">
@@ -261,7 +261,7 @@ Views.dashboard = {
         if (amount >= 1000000) {
             return (amount / 1000000).toFixed(1) + 'M XAF';
         }
-        return new Intl.NumberFormat('fr-FR').format(amount) + ' XAF';
+        return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount) + ' XAF';
     },
     
     // Appele quand on quitte la vue

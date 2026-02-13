@@ -63,20 +63,20 @@ Views.payments = {
                     <div class="card-body">
                         <div class="filters-grid">
                             <div class="form-group">
-                                <label class="form-label">Recherche</label>
+                                <label class="form-label">${I18n.t('search')}</label>
                                 <input type="text" id="filter-search" class="form-input" 
-                                    placeholder="Client, reference..." value="${this.filters.search}">
+                                    placeholder="${I18n.t('payments.search_placeholder')}" value="${this.filters.search}">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Methode</label>
+                                <label class="form-label">${I18n.t('payments.method')}</label>
                                 <div id="filter-method-container"></div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Du</label>
+                                <label class="form-label">${I18n.t('payments.date_from')}</label>
                                 <div id="filter-from-container"></div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Au</label>
+                                <label class="form-label">${I18n.t('payments.date_to')}</label>
                                 <div id="filter-to-container"></div>
                             </div>
                         </div>
@@ -86,7 +86,7 @@ Views.payments = {
                 <!-- Liste -->
                 <div class="card">
                     <div class="card-body" id="payments-list">
-                        ${Loader.page('Chargement...')}
+                        ${Loader.page(I18n.t('loading'))}
                     </div>
                 </div>
             </div>
@@ -116,7 +116,7 @@ Views.payments = {
         document.getElementById('stat-month').textContent = this.formatMoney(stats.month || 0);
         document.getElementById('stat-pending').textContent = this.formatMoney(stats.pending || 0);
         if (payments.length === 0) {
-            document.getElementById('payments-list').innerHTML = `<div class="empty-state">${Icons.get('dollar-sign', {size:48})}<p class="empty-state-title">Aucun paiement trouve</p></div>`;
+            document.getElementById('payments-list').innerHTML = `<div class="empty-state">${Icons.get('dollar-sign', {size:48})}<p class="empty-state-title">${I18n.t('payments.no_payments')}</p></div>`;
             return;
         }
         this.renderList(data.total || payments.length);
@@ -150,13 +150,13 @@ Views.payments = {
     initFilters() {
         // Method SearchSelect - utiliser les méthodes chargées depuis l'API
         const methodItems = [
-            { id: '', name: 'Toutes les methodes' },
+            { id: '', name: I18n.t('payments.all_methods') },
             ...this.paymentMethods.map(m => ({ id: m.id, name: m.name }))
         ];
         
         this.methodSelect = new SearchSelect({
             container: '#filter-method-container',
-            placeholder: 'Toutes',
+            placeholder: I18n.t('all'),
             items: methodItems,
             onSelect: (item) => { this.filters.method = item?.id || ''; this.currentPage = 1; this.loadPayments(); }
         });
@@ -164,14 +164,14 @@ Views.payments = {
         // Date pickers
         this.dateFromPicker = new DatePicker({
             container: document.getElementById('filter-from-container'),
-            placeholder: 'Date debut',
+            placeholder: I18n.t('payments.date_from'),
             value: this.filters.dateFrom,
             onChange: (date, value) => { this.filters.dateFrom = value || ''; this.currentPage = 1; this.loadPayments(); }
         });
         
         this.dateToPicker = new DatePicker({
             container: document.getElementById('filter-to-container'),
-            placeholder: 'Date fin',
+            placeholder: I18n.t('payments.date_to'),
             value: this.filters.dateTo,
             onChange: (date, value) => { this.filters.dateTo = value || ''; this.currentPage = 1; this.loadPayments(); }
         });
@@ -179,7 +179,7 @@ Views.payments = {
 
     async loadPayments(silent = false) {
         const container = document.getElementById('payments-list');
-        if (!silent) container.innerHTML = Loader.page('Chargement...');
+        if (!silent) container.innerHTML = Loader.page(I18n.t('loading'));
         
         const cacheKey = 'payments:list:' + this.currentPage;
         
@@ -204,9 +204,9 @@ Views.payments = {
                 container.innerHTML = `
                     <div class="error-state">
                         ${Icons.get('alert-circle', {size:48})}
-                        <h3>Erreur de chargement</h3>
+                        <h3>${I18n.t('error_loading')}</h3>
                         <p>${error.message}</p>
-                        <button class="btn btn-primary" onclick="Views.payments.loadPayments()">Reessayer</button>
+                        <button class="btn btn-primary" onclick="Views.payments.loadPayments()">${I18n.t('retry')}</button>
                     </div>
                 `;
             }
@@ -221,7 +221,7 @@ Views.payments = {
             container.innerHTML = `
                 <div class="empty-state">
                     ${Icons.get('dollar-sign', {size:48})}
-                    <p class="empty-state-title">Aucun paiement trouve</p>
+                    <p class="empty-state-title">${I18n.t('payments.no_payments')}</p>
                 </div>
             `;
             return;
@@ -235,20 +235,20 @@ Views.payments = {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Client</th>
-                            <th>Montant</th>
-                            <th>Methode</th>
-                            <th>Reference</th>
-                            <th>Colis</th>
-                            <th>Statut</th>
-                            <th>Actions</th>
+                            <th>${I18n.t('payments.date')}</th>
+                            <th>${I18n.t('clients.name')}</th>
+                            <th>${I18n.t('payments.amount')}</th>
+                            <th>${I18n.t('payments.method')}</th>
+                            <th>${I18n.t('payments.reference')}</th>
+                            <th>${I18n.t('departures.packages')}</th>
+                            <th>${I18n.t('packages.status')}</th>
+                            <th>${I18n.t('actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${paginated.map(p => {
                             // Adapter les noms de champs de l'API
-                            const date = p.created_at ? new Date(p.created_at).toLocaleDateString('fr-FR') : p.date || '-';
+                            const date = p.created_at ? new Date(p.created_at).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : p.date || '-';
                             const clientName = p.client?.name || p.client_name || '-';
                             const clientPhone = p.client?.phone || p.client_phone || '';
                             const clientId = p.client?.id || p.client_id || '';
@@ -275,20 +275,20 @@ Views.payments = {
                                 </td>
                                 <td>
                                     <span class="status-badge ${p.status === 'completed' ? 'status-delivered' : 'status-pending'}">
-                                        ${p.status === 'completed' ? 'Confirme' : 'En attente'}
+                                        ${p.status === 'completed' ? I18n.t('payments.confirmed') : I18n.t('payments.pending')}
                                     </span>
                                 </td>
                                 <td>
                                     <div class="table-actions">
                                         ${p.status === 'pending' ? `
-                                            <button class="btn btn-sm btn-ghost" onclick="Views.payments.confirmPayment('${p.id}', this)" title="Confirmer">
+                                            <button class="btn btn-sm btn-ghost" onclick="Views.payments.confirmPayment('${p.id}', this)" title="${I18n.t('payments.confirm_btn')}">
                                                 ${Icons.get('check', {size:14})}
                                             </button>
                                         ` : ''}
-                                        <button class="btn btn-sm btn-ghost" onclick="Views.payments.printReceipt('${p.id}')" title="Recu">
+                                        <button class="btn btn-sm btn-ghost" onclick="Views.payments.printReceipt('${p.id}')" title="${I18n.t('payments.receipt')}">
                                             ${Icons.get('printer', {size:14})}
                                         </button>
-                                        <button class="btn btn-sm btn-ghost" onclick="Views.payments.viewDetails('${p.id}')" title="Details">
+                                        <button class="btn btn-sm btn-ghost" onclick="Views.payments.viewDetails('${p.id}')" title="${I18n.t('payments.details')}">
                                             ${Icons.get('eye', {size:14})}
                                         </button>
                                     </div>
@@ -330,65 +330,65 @@ Views.payments = {
     
     async showPaymentForm(preselectedClient = null, preselectedPackages = []) {
         Modal.open({
-            title: 'Enregistrer un paiement',
+            title: I18n.t('payments.register_payment'),
             content: `
                 <div class="form-group">
-                    <label class="form-label">Payeur *</label>
+                    <label class="form-label">${I18n.t('payments.payer')} *</label>
                     <div class="payer-input-group">
                         <div class="payer-toggle mb-sm">
                             <label class="radio-label">
                                 <input type="radio" name="payer-type" value="client" checked>
-                                <span>Client existant</span>
+                                <span>${I18n.t('payments.existing_client')}</span>
                             </label>
                             <label class="radio-label">
                                 <input type="radio" name="payer-type" value="other">
-                                <span>Autre personne</span>
+                                <span>${I18n.t('payments.other_person')}</span>
                             </label>
                         </div>
                         <div id="payment-client-container"></div>
                         <div id="payment-payer-name-container" style="display:none;">
-                            <input type="text" id="payment-payer-name" class="form-input" placeholder="Nom du payeur">
-                            <input type="tel" id="payment-payer-phone" class="form-input mt-sm" placeholder="Telephone (optionnel)">
+                            <input type="text" id="payment-payer-name" class="form-input" placeholder="${I18n.t('payments.payer_name')}">
+                            <input type="tel" id="payment-payer-phone" class="form-input mt-sm" placeholder="${I18n.t('payments.phone_optional')}">
                         </div>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Montant (XAF) *</label>
+                        <label class="form-label">${I18n.t('payments.amount_xaf')} *</label>
                         <input type="number" id="payment-amount" class="form-input" placeholder="0">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Methode *</label>
+                        <label class="form-label">${I18n.t('payments.method')} *</label>
                         <div id="payment-method-container"></div>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Reference</label>
+                    <label class="form-label">${I18n.t('payments.reference')}</label>
                     <input type="text" id="payment-reference" class="form-input" placeholder="Ex: OM-123456, VIR-789...">
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Affecter aux colis (optionnel)</label>
+                    <label class="form-label">${I18n.t('payments.assign_packages')}</label>
                     <div id="payment-packages-container">
-                        <p class="text-sm text-muted">Selectionnez d'abord un client</p>
+                        <p class="text-sm text-muted">${I18n.t('payments.select_client_first')}</p>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Notes</label>
-                    <textarea id="payment-notes" class="form-input" rows="2" placeholder="Notes internes..."></textarea>
+                    <label class="form-label">${I18n.t('payments.notes')}</label>
+                    <textarea id="payment-notes" class="form-input" rows="2" placeholder="${I18n.t('payments.notes_placeholder')}"></textarea>
                 </div>
                 
                 <label class="toggle-label">
                     <input type="checkbox" id="payment-receipt" checked>
-                    <span>Generer un recu</span>
+                    <span>${I18n.t('payments.generate_receipt')}</span>
                 </label>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-payment">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-payment">${I18n.t('save')}</button>
             `
         });
         
@@ -407,7 +407,7 @@ Views.payments = {
                     payerNameContainer.style.display = 'block';
                     // Vider les colis sélectionnés car pas de client
                     document.getElementById('payment-packages-container').innerHTML = 
-                        '<p class="text-sm text-muted">Non disponible pour un payeur externe</p>';
+                        `<p class="text-sm text-muted">${I18n.t('payments.not_available_external')}</p>`;
                 }
             });
         });
@@ -419,7 +419,7 @@ Views.payments = {
             
             this.paymentClientSelect = new SearchSelect({
                 container: '#payment-client-container',
-                placeholder: 'Selectionner un client',
+                placeholder: I18n.t('payments.select_client'),
                 items: clients.map(c => {
                     const name = c.full_name || `${c.first_name || ''} ${c.last_name || ''}`.trim();
                     const balance = c.balance || 0;
@@ -440,14 +440,14 @@ Views.payments = {
         } catch (error) {
             console.error('Load clients error:', error);
             document.getElementById('payment-client-container').innerHTML = `
-                <p class="text-error">Erreur de chargement des clients</p>
+                <p class="text-error">${I18n.t('payments.error_loading_clients')}</p>
             `;
         }
         
         // Init method SearchSelect - utiliser les méthodes chargées depuis l'API
         this.paymentMethodSelect = new SearchSelect({
             container: '#payment-method-container',
-            placeholder: 'Methode de paiement',
+            placeholder: I18n.t('payments.payment_method'),
             items: this.paymentMethods.map(m => ({ id: m.id, name: m.name })),
             onSelect: (item) => {
                 const refInput = document.getElementById('payment-reference');
@@ -478,7 +478,7 @@ Views.payments = {
             const packages = (data.packages || []).filter(p => (p.remaining_amount || (p.amount - (p.paid_amount || 0))) > 0);
             
             if (packages.length === 0) {
-                container.innerHTML = `<p class="text-sm text-success">Aucun colis en attente de paiement</p>`;
+                container.innerHTML = `<p class="text-sm text-success">${I18n.t('payments.no_pending_payment')}</p>`;
                 return;
             }
             
@@ -493,12 +493,12 @@ Views.payments = {
                             <div class="checkbox-item-content">
                                 <span class="font-medium">${tracking}</span>
                                 <span class="text-sm text-muted">${p.description || ''}</span>
-                                <span class="text-sm text-error">Reste: ${this.formatMoney(remaining)}</span>
+                                <span class="text-sm text-error">${I18n.t('payments.remaining')}: ${this.formatMoney(remaining)}</span>
                             </div>
                         </label>
                     `}).join('')}
                 </div>
-                <button class="btn btn-sm btn-ghost mt-sm" id="btn-select-all-packages">Tout selectionner</button>
+                <button class="btn btn-sm btn-ghost mt-sm" id="btn-select-all-packages">${I18n.t('payments.select_all')}</button>
             `;
             
             // Auto-calculate amount when packages are selected
@@ -542,14 +542,14 @@ Views.payments = {
             .map(cb => cb.value);
         
         // Validation
-        if (payerType === 'client' && !clientId) { Toast.error('Selectionnez un client'); return; }
-        if (payerType === 'other' && !payerName) { Toast.error('Entrez le nom du payeur'); return; }
-        if (!amount || amount <= 0) { Toast.error('Montant invalide'); return; }
-        if (!method) { Toast.error('Selectionnez une methode de paiement'); return; }
+        if (payerType === 'client' && !clientId) { Toast.error(I18n.t('payments.select_client')); return; }
+        if (payerType === 'other' && !payerName) { Toast.error(I18n.t('payments.enter_payer_name')); return; }
+        if (!amount || amount <= 0) { Toast.error(I18n.t('payments.invalid_amount')); return; }
+        if (!method) { Toast.error(I18n.t('payments.select_method')); return; }
         
         try {
             if (!btn) btn = document.getElementById('btn-save-payment');
-            Loader.button(btn, true, { text: 'Enregistrement...' });
+            Loader.button(btn, true, { text: I18n.t('payments.saving') });
             const paymentData = {
                 amount,
                 method,
@@ -570,7 +570,7 @@ Views.payments = {
             
             const payment = await API.payments.create(paymentData);
             
-            Toast.success('Paiement enregistre');
+            Toast.success(I18n.t('payments.payment_saved'));
             Modal.close();
             
             if (generateReceipt && payment.payment) {
@@ -589,15 +589,15 @@ Views.payments = {
 
     async confirmPayment(paymentId, btn = null) {
         const confirmed = await Modal.confirm({
-            title: 'Confirmer le paiement',
-            message: 'Confirmer que ce paiement a bien ete recu ?'
+            title: I18n.t('payments.confirm_payment'),
+            message: I18n.t('payments.confirm_payment_msg')
         });
         
         if (confirmed) {
             try {
                 Loader.button(btn, true, { text: '' });
                 await API.payments.confirm(paymentId);
-                Toast.success('Paiement confirme');
+                Toast.success(I18n.t('payments.payment_confirmed'));
                 this.loadPayments();
             } catch (error) {
                 console.error('Confirm payment error:', error);
@@ -612,61 +612,61 @@ Views.payments = {
         const payment = this.allPayments.find(p => p.id === paymentId);
         if (!payment) return;
         
-        const date = payment.created_at ? new Date(payment.created_at).toLocaleDateString('fr-FR') : payment.date || '-';
+        const date = payment.created_at ? new Date(payment.created_at).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : payment.date || '-';
         const packages = payment.packages || [];
         
         Modal.open({
-            title: 'Details du paiement',
+            title: I18n.t('payments.payment_details'),
             content: `
                 <div class="payment-details">
                     <div class="detail-row">
-                        <span class="detail-label">Date</span>
+                        <span class="detail-label">${I18n.t('payments.date')}</span>
                         <span class="detail-value">${date}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Client</span>
+                        <span class="detail-label">${I18n.t('clients.name')}</span>
                         <span class="detail-value">${payment.client_name || '-'}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Telephone</span>
+                        <span class="detail-label">${I18n.t('clients.phone')}</span>
                         <span class="detail-value">${payment.client_phone || '-'}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Montant</span>
+                        <span class="detail-label">${I18n.t('payments.amount')}</span>
                         <span class="detail-value font-medium text-success">${this.formatMoney(payment.amount)}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Methode</span>
+                        <span class="detail-label">${I18n.t('payments.method')}</span>
                         <span class="detail-value">${this.getPaymentMethodName(payment.method)}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Reference</span>
+                        <span class="detail-label">${I18n.t('payments.reference')}</span>
                         <span class="detail-value"><code>${payment.reference || '-'}</code></span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Colis</span>
+                        <span class="detail-label">${I18n.t('departures.packages')}</span>
                         <span class="detail-value">${packages.length > 0 ? packages.join(', ') : '-'}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">Statut</span>
+                        <span class="detail-label">${I18n.t('packages.status')}</span>
                         <span class="detail-value">
                             <span class="status-badge ${payment.status === 'completed' ? 'status-delivered' : 'status-pending'}">
-                                ${payment.status === 'completed' ? 'Confirme' : 'En attente'}
+                                ${payment.status === 'completed' ? I18n.t('payments.confirmed') : I18n.t('payments.pending')}
                             </span>
                         </span>
                     </div>
                     ${payment.notes ? `
                     <div class="detail-row">
-                        <span class="detail-label">Notes</span>
+                        <span class="detail-label">${I18n.t('payments.notes')}</span>
                         <span class="detail-value">${payment.notes}</span>
                     </div>
                     ` : ''}
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Fermer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('close')}</button>
                 <button class="btn btn-outline" onclick="Views.payments.printReceipt('${paymentId}'); Modal.close();">
-                    ${Icons.get('printer', {size:16})} Imprimer recu
+                    ${Icons.get('printer', {size:16})} ${I18n.t('payments.print_receipt')}
                 </button>
             `
         });
@@ -674,9 +674,9 @@ Views.payments = {
     
     printReceipt(paymentId, paymentData = null, forceMenu = false) {
         const payment = paymentData || this.allPayments.find(p => p.id === paymentId);
-        if (!payment) { Toast.error('Paiement non trouve'); return; }
+        if (!payment) { Toast.error(I18n.t('payments.payment_not_found')); return; }
         
-        const date = payment.created_at ? new Date(payment.created_at).toLocaleDateString('fr-FR') : payment.date || '-';
+        const date = payment.created_at ? new Date(payment.created_at).toLocaleDateString(I18n.locale === 'fr' ? 'fr-FR' : 'en-US') : payment.date || '-';
         const packages = payment.packages || [];
         
         const printData = {
@@ -704,7 +704,7 @@ Views.payments = {
     
     exportPayments() {
         if (this.allPayments.length === 0) { 
-            Toast.error('Aucune donnee a exporter'); 
+            Toast.error(I18n.t('packages.no_data_export')); 
             return; 
         }
         
@@ -724,7 +724,7 @@ Views.payments = {
 
     exportPaymentsPDF() {
         if (this.allPayments.length === 0) { 
-            Toast.error('Aucune donnee a exporter'); 
+            Toast.error(I18n.t('packages.no_data_export')); 
             return; 
         }
         
@@ -737,13 +737,13 @@ Views.payments = {
             created_at: p.created_at || p.date,
             received_by_name: p.received_by_name
         })), {
-            title: 'Liste des Paiements',
+            title: I18n.t('payments.title'),
             format: 'pdf',
             filename: `paiements_export_${new Date().toISOString().split('T')[0]}.pdf`
         });
     },
     
     formatMoney(amount) {
-        return new Intl.NumberFormat('fr-FR').format(amount) + ' XAF';
+        return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount) + ' XAF';
     }
 };

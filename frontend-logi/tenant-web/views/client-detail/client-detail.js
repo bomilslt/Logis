@@ -5,7 +5,7 @@
 Views.clientDetail = {
     render(clientId) {
         const main = document.getElementById('main-content');
-        main.innerHTML = Loader.page('Chargement...');
+        main.innerHTML = Loader.page(I18n.t('loading'));
         
         // ============================================
         // MOCK DATA - Remplacer par: const client = await API.clients.getById(clientId);
@@ -53,17 +53,17 @@ Views.clientDetail = {
                 <div class="page-header">
                     <div>
                         <button class="btn btn-ghost btn-sm" onclick="Router.navigate('/clients')">
-                            ${Icons.get('arrow-left', { size: 16 })} Retour
+                            ${Icons.get('arrow-left', { size: 16 })} ${I18n.t('clientDetail.back')}
                         </button>
                         <h1 class="page-title mt-md">${client.first_name} ${client.last_name}</h1>
                         <p class="text-sm text-muted">${client.phone} - ${client.email}</p>
                     </div>
                     <div class="header-actions">
                         <button class="btn btn-outline" id="btn-add-payment">
-                            ${Icons.get('dollar-sign', {size:16})} Enregistrer paiement
+                            ${Icons.get('dollar-sign', {size:16})} ${I18n.t('clientDetail.register_payment')}
                         </button>
                         <span class="status-badge ${client.is_active ? 'status-delivered' : 'status-pending'}">
-                            ${client.is_active ? 'Actif' : 'Inactif'}
+                            ${client.is_active ? I18n.t('clientDetail.active') : I18n.t('clientDetail.inactive')}
                         </span>
                     </div>
                 </div>
@@ -72,28 +72,28 @@ Views.clientDetail = {
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <span class="stat-card-title">Total colis</span>
+                            <span class="stat-card-title">${I18n.t('clientDetail.total_packages')}</span>
                             <div class="stat-card-icon primary">${Icons.get('package')}</div>
                         </div>
                         <div class="stat-card-value">${client.stats.total_packages}</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <span class="stat-card-title">Livres</span>
+                            <span class="stat-card-title">${I18n.t('clientDetail.delivered')}</span>
                             <div class="stat-card-icon success">${Icons.get('check-circle')}</div>
                         </div>
                         <div class="stat-card-value">${client.stats.delivered}</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <span class="stat-card-title">Total facture</span>
+                            <span class="stat-card-title">${I18n.t('clientDetail.total_invoiced')}</span>
                             <div class="stat-card-icon info">${Icons.get('file-text')}</div>
                         </div>
                         <div class="stat-card-value">${this.formatMoney(client.stats.total_amount)}</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-card-header">
-                            <span class="stat-card-title">Solde du</span>
+                            <span class="stat-card-title">${I18n.t('clientDetail.balance_due')}</span>
                             <div class="stat-card-icon ${balance > 0 ? 'warning' : 'success'}">${Icons.get('dollar-sign')}</div>
                         </div>
                         <div class="stat-card-value ${balanceClass}">${this.formatMoney(balance)}</div>
@@ -104,18 +104,18 @@ Views.clientDetail = {
                     <!-- Colis -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Colis (${client.packages.length})</h3>
-                            <a href="#/packages?client=${client.id}" class="btn btn-sm btn-ghost">Voir tout</a>
+                            <h3 class="card-title">${I18n.t('clientDetail.packages')} (${client.packages.length})</h3>
+                            <a href="#/packages?client=${client.id}" class="btn btn-sm btn-ghost">${I18n.t('clientDetail.view_all')}</a>
                         </div>
                         <div class="card-body">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Tracking</th>
-                                        <th>Description</th>
-                                        <th>Montant</th>
-                                        <th>Paye</th>
-                                        <th>Statut</th>
+                                        <th>${I18n.t('clientDetail.tracking')}</th>
+                                        <th>${I18n.t('clientDetail.description')}</th>
+                                        <th>${I18n.t('clientDetail.amount')}</th>
+                                        <th>${I18n.t('clientDetail.paid')}</th>
+                                        <th>${I18n.t('clientDetail.status')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -136,18 +136,18 @@ Views.clientDetail = {
                     <!-- Historique paiements -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Historique paiements</h3>
+                            <h3 class="card-title">${I18n.t('clientDetail.payment_history')}</h3>
                         </div>
                         <div class="card-body">
                             ${client.payments.length > 0 ? `
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Montant</th>
-                                            <th>Methode</th>
-                                            <th>Reference</th>
-                                            <th>Colis</th>
+                                            <th>${I18n.t('clientDetail.date')}</th>
+                                            <th>${I18n.t('clientDetail.amount')}</th>
+                                            <th>${I18n.t('clientDetail.method')}</th>
+                                            <th>${I18n.t('clientDetail.reference')}</th>
+                                            <th>${I18n.t('clientDetail.packages_col')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -164,7 +164,7 @@ Views.clientDetail = {
                                 </table>
                             ` : `
                                 <div class="empty-state">
-                                    <p class="text-muted">Aucun paiement enregistre</p>
+                                    <p class="text-muted">${I18n.t('clientDetail.no_payments')}</p>
                                 </div>
                             `}
                         </div>
@@ -174,29 +174,29 @@ Views.clientDetail = {
                 <!-- Infos client -->
                 <div class="card mt-md">
                     <div class="card-header">
-                        <h3 class="card-title">Informations</h3>
-                        <button class="btn btn-sm btn-ghost" id="btn-edit-client">${Icons.get('edit', {size:14})} Modifier</button>
+                        <h3 class="card-title">${I18n.t('clientDetail.information')}</h3>
+                        <button class="btn btn-sm btn-ghost" id="btn-edit-client">${Icons.get('edit', {size:14})} ${I18n.t('clientDetail.edit')}</button>
                     </div>
                     <div class="card-body">
                         <div class="info-grid">
                             <div class="detail-row">
-                                <span class="detail-label">Nom complet</span>
+                                <span class="detail-label">${I18n.t('clientDetail.full_name')}</span>
                                 <span class="detail-value">${client.first_name} ${client.last_name}</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">Email</span>
+                                <span class="detail-label">${I18n.t('clientDetail.email')}</span>
                                 <span class="detail-value">${client.email}</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">Telephone</span>
+                                <span class="detail-label">${I18n.t('clientDetail.phone')}</span>
                                 <span class="detail-value">${client.phone}</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">Adresse</span>
+                                <span class="detail-label">${I18n.t('clientDetail.address')}</span>
                                 <span class="detail-value">${client.address || '-'}</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">Inscrit le</span>
+                                <span class="detail-label">${I18n.t('clientDetail.registered_on')}</span>
                                 <span class="detail-value">${client.created_at}</span>
                             </div>
                         </div>
@@ -223,33 +223,33 @@ Views.clientDetail = {
         const unpaidPackages = client.packages.filter(p => p.paid < p.amount);
         
         Modal.open({
-            title: 'Enregistrer un paiement',
+            title: I18n.t('clientDetail.register_payment'),
             content: `
-                <p class="text-sm text-muted mb-md">Client: ${client.first_name} ${client.last_name}</p>
+                <p class="text-sm text-muted mb-md">${I18n.t('clientDetail.packages')}: ${client.first_name} ${client.last_name}</p>
                 
                 <div class="form-group">
-                    <label class="form-label">Montant (XAF)</label>
+                    <label class="form-label">${I18n.t('clientDetail.amount_xaf')}</label>
                     <input type="number" id="payment-amount" class="form-input" placeholder="0">
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Methode de paiement</label>
+                    <label class="form-label">${I18n.t('clientDetail.payment_method')}</label>
                     <div id="payment-method-container"></div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Reference</label>
-                    <input type="text" id="payment-ref" class="form-input" placeholder="Ex: OM-123456, CASH-001...">
+                    <label class="form-label">${I18n.t('clientDetail.reference')}</label>
+                    <input type="text" id="payment-ref" class="form-input" placeholder="${I18n.t('clientDetail.ref_placeholder')}">
                 </div>
                 
                 ${unpaidPackages.length > 0 ? `
                     <div class="form-group">
-                        <label class="form-label">Affecter aux colis</label>
+                        <label class="form-label">${I18n.t('clientDetail.assign_packages')}</label>
                         <div class="checkbox-list">
                             ${unpaidPackages.map(p => `
                                 <label class="checkbox-item">
                                     <input type="checkbox" value="${p.id}" class="payment-pkg">
-                                    <span>${p.tracking} - Reste: ${this.formatMoney(p.amount - p.paid)}</span>
+                                    <span>${p.tracking} - ${I18n.t('clientDetail.remaining')} ${this.formatMoney(p.amount - p.paid)}</span>
                                 </label>
                             `).join('')}
                         </div>
@@ -257,25 +257,25 @@ Views.clientDetail = {
                 ` : ''}
                 
                 <div class="form-group">
-                    <label class="form-label">Notes</label>
+                    <label class="form-label">${I18n.t('clientDetail.notes')}</label>
                     <textarea id="payment-notes" class="form-input" rows="2"></textarea>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-confirm-payment">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-confirm-payment">${I18n.t('clientDetail.save')}</button>
             `
         });
         
         // Init payment method SearchSelect
         new SearchSelect({
             container: '#payment-method-container',
-            placeholder: 'Methode de paiement',
+            placeholder: I18n.t('clientDetail.payment_method'),
             items: [
-                { id: 'mobile_money', name: 'Mobile Money (OM/MOMO)' },
-                { id: 'cash', name: 'Especes' },
-                { id: 'bank', name: 'Virement bancaire' },
-                { id: 'other', name: 'Autre' }
+                { id: 'mobile_money', name: I18n.t('clientDetail.mobile_money') },
+                { id: 'cash', name: I18n.t('clientDetail.cash') },
+                { id: 'bank', name: I18n.t('clientDetail.bank') },
+                { id: 'other', name: I18n.t('clientDetail.other') }
             ],
             onSelect: () => {}
         });
@@ -283,7 +283,7 @@ Views.clientDetail = {
         document.getElementById('btn-confirm-payment')?.addEventListener('click', () => {
             const amount = document.getElementById('payment-amount').value;
             if (!amount || amount <= 0) {
-                Toast.error('Montant invalide');
+                Toast.error(I18n.t('clientDetail.invalid_amount'));
                 return;
             }
             
@@ -292,7 +292,7 @@ Views.clientDetail = {
             // await API.payments.create({ client_id: client.id, amount, method, reference, packages, notes });
             // ============================================
             
-            Toast.success('Paiement enregistre');
+            Toast.success(I18n.t('clientDetail.payment_saved'));
             Modal.close();
             this.render(client.id);
         });
@@ -300,45 +300,45 @@ Views.clientDetail = {
     
     showEditForm(client) {
         Modal.open({
-            title: 'Modifier le client',
+            title: I18n.t('clientDetail.edit_client'),
             content: `
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Prenom</label>
+                        <label class="form-label">${I18n.t('clientDetail.first_name')}</label>
                         <input type="text" id="edit-fname" class="form-input" value="${client.first_name}">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Nom</label>
+                        <label class="form-label">${I18n.t('clientDetail.last_name')}</label>
                         <input type="text" id="edit-lname" class="form-input" value="${client.last_name}">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Telephone</label>
+                    <label class="form-label">${I18n.t('clientDetail.phone')}</label>
                     <input type="tel" id="edit-phone" class="form-input" value="${client.phone}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">${I18n.t('clientDetail.email')}</label>
                     <input type="email" id="edit-email" class="form-input" value="${client.email}">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Adresse</label>
+                    <label class="form-label">${I18n.t('clientDetail.address')}</label>
                     <textarea id="edit-address" class="form-input" rows="2">${client.address || ''}</textarea>
                 </div>
             `,
             footer: `
-                <button class="btn btn-secondary" onclick="Modal.close()">Annuler</button>
-                <button class="btn btn-primary" id="btn-save-client">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="Modal.close()">${I18n.t('cancel')}</button>
+                <button class="btn btn-primary" id="btn-save-client">${I18n.t('clientDetail.save')}</button>
             `
         });
         
         document.getElementById('btn-save-client')?.addEventListener('click', () => {
-            Toast.success('Client mis a jour');
+            Toast.success(I18n.t('clientDetail.client_updated'));
             Modal.close();
             this.render(client.id);
         });
     },
     
     formatMoney(amount) {
-        return new Intl.NumberFormat('fr-FR').format(amount) + ' XAF';
+        return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount) + ' XAF';
     }
 };
