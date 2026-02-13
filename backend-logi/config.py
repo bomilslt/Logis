@@ -60,8 +60,8 @@ def get_cors_origins():
     if origins:
         return [o.strip() for o in origins.split(',') if o.strip()]
     
-    # Défaut: localhost pour le dev
-    return [
+    # Défaut: localhost pour le dev + GitHub Pages pour la prod
+    defaults = [
         'http://localhost:3000',
         'http://localhost:5000',
         'http://localhost:8080',
@@ -70,10 +70,16 @@ def get_cors_origins():
         'http://127.0.0.1:8080',
         'http://127.0.0.1:4000',
         'http://localhost:4000',
-        'capacitor://localhost',  # Pour les APK Capacitor
+        'capacitor://localhost',
         'ionic://localhost',
-        'http://localhost'  # Pour les tests locaux
+        'http://localhost',
+        # GitHub Pages (production frontends)
+        'https://logisclient.bomils.com',
+        'https://logisadmin.bomils.com',
+        'https://logissuperadmin.bomils.com',
+        'https://bomilslt.github.io',
     ]
+    return defaults
 
 
 class Config:
@@ -190,9 +196,9 @@ class ProductionConfig(Config):
         if os.environ.get('CORS_ALLOW_ALL', '').lower() == 'true':
             errors.append('CORS_ALLOW_ALL must not be true in production')
         
-        # Durcir cookies JWT en production
+        # Cookies JWT en production (cross-origin: SameSite=None + Secure)
         cls.JWT_COOKIE_SECURE = True
-        cls.JWT_COOKIE_SAMESITE = 'Strict'
+        cls.JWT_COOKIE_SAMESITE = 'None'
 
         if errors:
             raise ValueError('Production configuration errors:\n- ' + '\n- '.join(errors))

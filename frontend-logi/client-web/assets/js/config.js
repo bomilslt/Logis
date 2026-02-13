@@ -73,8 +73,9 @@ const CONFIG = {
     APP_NAME: 'Express Cargo',
     APP_VERSION: '1.0.0',
 
-    // Auth mode: 'cookie' utilise les cookies HttpOnly du backend
-    AUTH_MODE: 'cookie',
+    // Auth mode: 'bearer' envoie le token dans le header Authorization
+    // (nécessaire en cross-origin: frontend GitHub Pages ≠ backend Railway)
+    AUTH_MODE: 'bearer',
     
     // Storage Keys
     STORAGE_KEYS: {
