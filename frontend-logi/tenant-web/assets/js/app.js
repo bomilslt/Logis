@@ -109,6 +109,7 @@ const App = {
         Router.register('/profile', () => Views.profile.render());
         Router.register('/subscription', () => Views.subscription.render());
         Router.register('/test-webhooks', () => Views.testWebhooks.render());
+        Router.register('/guide', () => Views.guide.render());
 
         // NOUVEAU: Route pour accès refusé
         Router.register('/access-denied', () => {

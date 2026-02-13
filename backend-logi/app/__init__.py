@@ -163,6 +163,10 @@ def create_app(config_name='default'):
     from app.routes.otp import otp_bp
     app.register_blueprint(otp_bp, url_prefix='/api/auth')
     
+    # Routes Support (tenant-side messaging)
+    from app.routes.support import support_bp
+    app.register_blueprint(support_bp, url_prefix='/api/support')
+    
     # Routes Super-Admin (niveau plateforme)
     from app.routes.superadmin import superadmin_bp
     app.register_blueprint(superadmin_bp, url_prefix='/api/superadmin')

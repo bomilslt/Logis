@@ -170,7 +170,8 @@ const Router = {
             '/warehouses': 'Entrepots',
             '/settings': 'Parametres',
             '/profile': 'Mon profil',
-            '/test-webhooks': 'Test Webhooks'
+            '/test-webhooks': 'Test Webhooks',
+            '/guide': 'Guide & Support'
         };
         const basePath = '/' + path.split('/')[1];
         const title = titles[basePath] || 'Admin';

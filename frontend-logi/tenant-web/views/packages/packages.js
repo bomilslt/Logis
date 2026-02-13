@@ -857,6 +857,13 @@ Views.packages = {
                         <span class="total-value" id="receive-total-value">-</span>
                     </div>
                     
+                    <div style="margin:12px 0;display:flex;align-items:center;gap:8px">
+                        <input type="checkbox" id="receive-print-label" checked>
+                        <label for="receive-print-label" style="cursor:pointer;font-size:14px">
+                            ${Icons.get('printer', {size:14})} Générer et imprimer l'étiquette
+                        </label>
+                    </div>
+                    
                     <div class="receive-actions">
                         <button class="btn btn-secondary" id="btn-cancel-receive">Annuler</button>
                         <button class="btn btn-primary" id="btn-confirm-receive" ${!configuredRate ? 'disabled title="Tarif non configuré pour cette route"' : ''}>
@@ -996,6 +1003,27 @@ Views.packages = {
             
             this.playSound('success');
             Toast.success(`Colis reçu: ${pkg.client?.name || 'Client'}`);
+            
+            // Auto-print label if checkbox is checked
+            const printLabel = document.getElementById('receive-print-label')?.checked;
+            if (printLabel) {
+                this.printDetailedLabel({
+                    tracking_number: pkg.tracking_number,
+                    supplier_tracking: pkg.supplier_tracking,
+                    client_name: pkg.client?.name || 'Client',
+                    client_phone: pkg.client?.phone || '',
+                    description: pkg.description || '',
+                    origin_country: pkg.origin_country || pkg.origin?.country || '',
+                    destination_country: pkg.destination_country || pkg.destination?.country || '',
+                    transport_mode: pkg.transport_mode,
+                    package_type: pkg.package_type,
+                    weight: weight,
+                    cbm: cbm,
+                    quantity: quantity,
+                    amount: Math.round(amount),
+                    created_at: new Date().toLocaleDateString('fr-FR')
+                });
+            }
             
             // Reset des variables
             this.currentReceivePackage = null;
@@ -1234,26 +1262,95 @@ Views.packages = {
         this.openLabelPrintWindow(packages);
     },
     
-    openLabelPrintWindow(packages) {
-        const labelsHtml = packages.map(p => `
+    printDetailedLabel(pkg) {
+        // Get tenant branding from settings
+        let companyName = 'Express Cargo';
+        let companyPhone = '';
+        let companyAddress = '';
+        try {
+            const user = Store.getUser();
+            if (user?.tenant_name) companyName = user.tenant_name;
+        } catch(e) {}
+
+        const tracking = pkg.tracking_number || pkg.tracking || '';
+        const originLabel = typeof RatesService !== 'undefined' ? RatesService.getOriginLabel(pkg.origin_country) : (pkg.origin_country || '');
+        const destLabel = typeof RatesService !== 'undefined' ? RatesService.getDestinationLabel(pkg.destination_country) : (pkg.destination_country || '');
+        const transportLabel = this.getTransportLabel(pkg.transport_mode);
+        const typeLabel = this.getTypeLabel(pkg.package_type);
+
+        const labelHtml = `
             <div class="label">
-                <div class="label-header"><strong>EXPRESS CARGO</strong></div>
-                <div class="label-qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(p.tracking)}" alt="QR"></div>
-                <div class="label-tracking">${p.tracking}</div>
+                <div class="label-header"><strong>${companyName}</strong></div>
+                <div class="label-qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(tracking)}" alt="QR"></div>
+                <div class="label-tracking">${tracking}</div>
+                ${pkg.supplier_tracking ? `<div class="label-sub-tracking">Ref: ${pkg.supplier_tracking}</div>` : ''}
+                <div class="label-divider"></div>
                 <div class="label-info">
-                    <div><strong>Client:</strong> ${p.client_name}</div>
-                    <div><strong>Tel:</strong> ${p.client_phone}</div>
-                    <div><strong>Desc:</strong> ${p.description}</div>
-                    ${p.weight ? `<div><strong>Poids:</strong> ${p.weight} kg</div>` : ''}
+                    <div class="label-row"><strong>Client:</strong> ${pkg.client_name}</div>
+                    <div class="label-row"><strong>Tel:</strong> ${pkg.client_phone}</div>
+                    <div class="label-row"><strong>Contenu:</strong> ${pkg.description || '-'}</div>
                 </div>
-                <div class="label-footer">${p.created_at}</div>
-            </div>
-        `).join('');
-        
+                <div class="label-divider"></div>
+                <div class="label-info">
+                    <div class="label-row"><strong>Route:</strong> ${originLabel} → ${destLabel}</div>
+                    <div class="label-row"><strong>Transport:</strong> ${transportLabel} | <strong>Type:</strong> ${typeLabel}</div>
+                    ${pkg.weight ? `<div class="label-row"><strong>Poids:</strong> ${pkg.weight} kg</div>` : ''}
+                    ${pkg.cbm ? `<div class="label-row"><strong>Volume:</strong> ${pkg.cbm} m³</div>` : ''}
+                    ${pkg.quantity && pkg.quantity > 1 ? `<div class="label-row"><strong>Qté:</strong> ${pkg.quantity}</div>` : ''}
+                    ${pkg.amount ? `<div class="label-row"><strong>Montant:</strong> ${pkg.amount.toLocaleString()} XAF</div>` : ''}
+                </div>
+                <div class="label-footer">${pkg.created_at || new Date().toLocaleDateString('fr-FR')}</div>
+            </div>`;
+
+        this._openPrintWindow(labelHtml);
+    },
+
+    openLabelPrintWindow(packages) {
+        let companyName = 'Express Cargo';
+        try { const u = Store.getUser(); if (u?.tenant_name) companyName = u.tenant_name; } catch(e) {}
+
+        const labelsHtml = packages.map(p => {
+            const tracking = p.tracking_number || p.tracking || '';
+            return `
+            <div class="label">
+                <div class="label-header"><strong>${companyName}</strong></div>
+                <div class="label-qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(tracking)}" alt="QR"></div>
+                <div class="label-tracking">${tracking}</div>
+                <div class="label-divider"></div>
+                <div class="label-info">
+                    <div class="label-row"><strong>Client:</strong> ${p.client?.name || p.client_name || '-'}</div>
+                    <div class="label-row"><strong>Tel:</strong> ${p.client?.phone || p.client_phone || '-'}</div>
+                    <div class="label-row"><strong>Desc:</strong> ${p.description || '-'}</div>
+                    ${p.weight ? `<div class="label-row"><strong>Poids:</strong> ${p.weight} kg</div>` : ''}
+                    ${p.amount ? `<div class="label-row"><strong>Montant:</strong> ${(p.amount||0).toLocaleString()} XAF</div>` : ''}
+                </div>
+                <div class="label-footer">${p.created_at ? new Date(p.created_at).toLocaleDateString('fr-FR') : ''}</div>
+            </div>`;
+        }).join('');
+
+        this._openPrintWindow(labelsHtml);
+    },
+
+    _openPrintWindow(labelsHtml) {
         const printWindow = window.open('', '_blank');
         printWindow.document.write(`<!DOCTYPE html><html><head><title>Etiquettes</title>
-            <style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;padding:10mm}.labels{display:flex;flex-wrap:wrap;gap:5mm}.label{width:80mm;border:1px solid #000;padding:3mm;page-break-inside:avoid}.label-header{text-align:center;font-size:14px;border-bottom:1px solid #000;padding-bottom:2mm;margin-bottom:2mm}.label-qr{text-align:center;margin:2mm 0}.label-qr img{width:25mm;height:25mm}.label-tracking{text-align:center;font-size:12px;font-weight:bold;margin:2mm 0;font-family:monospace}.label-info{font-size:10px;line-height:1.4}.label-footer{text-align:right;font-size:9px;margin-top:2mm;color:#666}</style>
-            </head><body><div class="labels">${labelsHtml}</div><script>window.onload=()=>window.print()</script></body></html>`);
+            <style>
+                *{margin:0;padding:0;box-sizing:border-box}
+                body{font-family:Arial,sans-serif;padding:10mm}
+                .labels{display:flex;flex-wrap:wrap;gap:5mm}
+                .label{width:80mm;border:2px solid #000;padding:3mm;page-break-inside:avoid;border-radius:2mm}
+                .label-header{text-align:center;font-size:14px;border-bottom:2px solid #000;padding-bottom:2mm;margin-bottom:2mm;letter-spacing:1px}
+                .label-qr{text-align:center;margin:2mm 0}
+                .label-qr img{width:25mm;height:25mm}
+                .label-tracking{text-align:center;font-size:14px;font-weight:bold;margin:1mm 0;font-family:monospace;letter-spacing:1px}
+                .label-sub-tracking{text-align:center;font-size:9px;color:#666;margin-bottom:1mm}
+                .label-divider{border-top:1px dashed #999;margin:2mm 0}
+                .label-info{font-size:10px;line-height:1.6}
+                .label-row{margin-bottom:0.5mm}
+                .label-footer{text-align:right;font-size:8px;margin-top:2mm;color:#666;border-top:1px solid #ccc;padding-top:1mm}
+                @media print{body{padding:0}.labels{gap:3mm}}
+            </style>
+        </head><body><div class="labels">${labelsHtml}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
         printWindow.document.close();
     },
     

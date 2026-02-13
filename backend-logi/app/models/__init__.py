@@ -29,6 +29,7 @@ from app.models.subscription import SubscriptionPlan, Subscription, Subscription
 from app.models.platform_config import PlatformConfig, PlatformPaymentProvider, SuperAdmin, CurrencyRate
 from app.models.device import UserDevice, DeviceVerificationLog
 from app.models.tenant_payment_provider import TenantPaymentProvider, TENANT_PROVIDER_TEMPLATES
+from app.models.support_message import SupportMessage
 
 __all__ = [
     # Enums
@@ -87,5 +88,7 @@ __all__ = [
     'DeviceVerificationLog',
     # Tenant Payment
     'TenantPaymentProvider',
-    'TENANT_PROVIDER_TEMPLATES'
+    'TENANT_PROVIDER_TEMPLATES',
+    # Support
+    'SupportMessage'
 ]

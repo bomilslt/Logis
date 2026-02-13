@@ -20,3 +20,4 @@ from app.routes.superadmin import providers
 from app.routes.superadmin import dashboard
 from app.routes.superadmin import config
 from app.routes.superadmin import billing
+from app.routes.superadmin import support

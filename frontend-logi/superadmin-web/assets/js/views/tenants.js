@@ -42,26 +42,29 @@ const TenantsView = (() => {
                 return;
             }
 
-            let rows = tenants.map(t => `
-                <tr>
+            let rows = tenants.map(t => {
+                const blocked = t.is_active === false;
+                return `
+                <tr style="${blocked ? 'opacity:0.6' : ''}">
                     <td>
                         <strong>${Utils.escapeHtml(t.name)}</strong>
                         <div class="text-muted text-sm">${Utils.escapeHtml(t.slug || '')}</div>
                     </td>
                     <td>${Utils.escapeHtml(t.contact_email || '—')}</td>
-                    <td>${Utils.statusBadge(t.subscription_status || 'none')}</td>
+                    <td>${blocked ? '<span class="badge badge-error">Bloqué</span>' : Utils.statusBadge(t.subscription_status || 'none')}</td>
                     <td>${Utils.formatDate(t.created_at)}</td>
                     <td>
                         <button class="btn btn-sm btn-ghost" onclick="TenantsView.viewTenant('${t.id}')">Voir</button>
                         <button class="btn btn-sm btn-primary" onclick="TenantsView.activatePlan('${t.id}', '${Utils.escapeHtml(t.name)}')">Activer plan</button>
+                        <button class="btn btn-sm ${blocked ? 'btn-success' : 'btn-danger'}" onclick="TenantsView.toggleBlock('${t.id}', ${blocked})">${blocked ? 'Débloquer' : 'Bloquer'}</button>
                     </td>
-                </tr>
-            `).join('');
+                </tr>`;
+            }).join('');
 
             container.innerHTML = `
                 <div class="table-wrapper">
                     <table>
-                        <thead><tr><th>Tenant</th><th>Email</th><th>Abonnement</th><th>Créé le</th><th>Actions</th></tr></thead>
+                        <thead><tr><th>Tenant</th><th>Email</th><th>Statut</th><th>Créé le</th><th>Actions</th></tr></thead>
                         <tbody>${rows}</tbody>
                     </table>
                 </div>
@@ -300,5 +303,18 @@ const TenantsView = (() => {
         }
     }
 
-    return { render, goToPage, viewTenant, activatePlan, submitActivation, showCreateForm, submitCreate };
+    async function toggleBlock(tenantId, isCurrentlyBlocked) {
+        const action = isCurrentlyBlocked ? 'débloquer' : 'bloquer';
+        if (!confirm(`Voulez-vous vraiment ${action} ce tenant ?`)) return;
+
+        try {
+            await API.put(`/api/superadmin/tenants/${tenantId}`, { is_active: isCurrentlyBlocked });
+            Utils.showToast(`Tenant ${isCurrentlyBlocked ? 'débloqué' : 'bloqué'} avec succès`, 'success');
+            loadTenants();
+        } catch (err) {
+            Utils.showToast(err.message, 'error');
+        }
+    }
+
+    return { render, goToPage, viewTenant, activatePlan, submitActivation, showCreateForm, submitCreate, toggleBlock };
 })();

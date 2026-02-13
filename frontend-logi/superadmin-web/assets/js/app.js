@@ -10,7 +10,8 @@ const App = (() => {
         payments: PaymentsView,
         providers: ProvidersView,
         config: ConfigView,
-        admins: AdminsView
+        admins: AdminsView,
+        support: SupportView
     };
 
     const pageTitles = {
@@ -21,7 +22,8 @@ const App = (() => {
         payments: 'Paiements',
         providers: 'Providers de paiement',
         config: 'Configuration',
-        admins: 'Administrateurs'
+        admins: 'Administrateurs',
+        support: 'Messages Support'
     };
 
     let currentPage = 'dashboard';

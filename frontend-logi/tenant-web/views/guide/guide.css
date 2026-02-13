@@ -1,0 +1,134 @@
+.guide-page { max-width: 900px; margin: 0 auto; }
+.guide-page .page-header { margin-bottom: 24px; }
+
+/* Support contact card */
+.support-contact-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.support-contact-card .support-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.support-contact-info { flex: 1; min-width: 200px; }
+.support-contact-info h3 { margin: 0 0 4px; font-size: 16px; }
+.support-contact-info p { margin: 0; color: var(--text-muted); font-size: 14px; }
+.support-contact-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* Guide sections */
+.guide-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+.guide-section-header {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+    transition: background 0.15s;
+}
+.guide-section-header:hover { background: var(--bg-hover); }
+.guide-section-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+}
+.guide-section-title { flex: 1; }
+.guide-section-title h3 { margin: 0; font-size: 15px; }
+.guide-section-title p { margin: 2px 0 0; font-size: 13px; color: var(--text-muted); }
+.guide-section-arrow { transition: transform 0.2s; color: var(--text-muted); }
+.guide-section.open .guide-section-arrow { transform: rotate(90deg); }
+.guide-section-body {
+    display: none;
+    padding: 0 20px 20px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+.guide-section.open .guide-section-body { display: block; }
+.guide-section-body ul { padding-left: 20px; margin: 8px 0; }
+.guide-section-body li { margin-bottom: 4px; }
+.guide-section-body strong { color: var(--text-primary); }
+.guide-step { display: flex; gap: 10px; margin-bottom: 10px; }
+.guide-step-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Support messaging */
+.support-messages { margin-top: 24px; }
+.support-msg-form { margin-bottom: 20px; }
+.support-msg-form .form-group { margin-bottom: 12px; }
+.support-msg-form textarea { min-height: 100px; resize: vertical; }
+.support-thread {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+.support-thread-header {
+    padding: 12px 16px;
+    background: var(--bg-hover);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.support-thread-header h4 { margin: 0; font-size: 14px; }
+.support-thread-meta { font-size: 12px; color: var(--text-muted); }
+.support-thread-body { display: none; padding: 16px; }
+.support-thread.open .support-thread-body { display: block; }
+.support-bubble {
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    max-width: 85%;
+    font-size: 14px;
+    line-height: 1.5;
+}
+.support-bubble.sent {
+    background: var(--primary);
+    color: #fff;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+.support-bubble.received {
+    background: var(--bg-hover);
+    border-bottom-left-radius: 4px;
+}
+.support-bubble-meta { font-size: 11px; opacity: 0.7; margin-top: 4px; }
+.unread-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: inline-block;
+}
+
+@media (max-width: 640px) {
+    .support-contact-card { flex-direction: column; text-align: center; }
+    .support-contact-actions { justify-content: center; }
+}
