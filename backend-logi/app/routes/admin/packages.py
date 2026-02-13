@@ -425,19 +425,19 @@ def admin_receive_package(package_id):
     if can_manage_amounts and package.unit_price:
         # Déterminer la quantité facturable selon le type
         if package.final_weight is not None:
-            package.amount = package.final_weight * package.unit_price
+            package.amount = round(package.final_weight * package.unit_price, 2)
         elif package.final_cbm is not None:
-            package.amount = package.final_cbm * package.unit_price
+            package.amount = round(package.final_cbm * package.unit_price, 2)
         elif package.final_quantity is not None:
-            package.amount = package.final_quantity * package.unit_price
+            package.amount = round(package.final_quantity * package.unit_price, 2)
         else:
             # Utiliser les estimations client si pas de valeurs finales
             if package.weight:
-                package.amount = package.weight * package.unit_price
+                package.amount = round(package.weight * package.unit_price, 2)
             elif package.cbm:
-                package.amount = package.cbm * package.unit_price
+                package.amount = round(package.cbm * package.unit_price, 2)
             elif package.quantity:
-                package.amount = package.quantity * package.unit_price
+                package.amount = round(package.quantity * package.unit_price, 2)
     
     # Historique
     notes_parts = ['Colis reçu en entrepôt']

@@ -266,7 +266,7 @@ class Package(db.Model):
                 'width': self.width,
                 'height': self.height
             },
-            'declared_value': self.declared_value,
+            'declared_value': round(self.declared_value, 2) if self.declared_value else self.declared_value,
             'currency': self.currency,
             'origin': {
                 'address': self.origin_address,
@@ -288,11 +288,11 @@ class Package(db.Model):
             'departure_id': self.departure_id,
             'status': self.status,
             'current_location': self.current_location,
-            'amount': self.amount,
+            'amount': round(self.amount, 2) if self.amount else self.amount,
             'amount_currency': self.amount_currency,
-            'paid_amount': self.paid_amount,
+            'paid_amount': round(self.paid_amount, 2) if self.paid_amount else self.paid_amount,
             'payment_status': self.payment_status,
-            'remaining_amount': self.remaining_amount,
+            'remaining_amount': round(self.remaining_amount, 2),
             'photos': self.photos or [],
             'is_editable': self.is_editable,
             'created_at': self.created_at.isoformat() if self.created_at else None,
