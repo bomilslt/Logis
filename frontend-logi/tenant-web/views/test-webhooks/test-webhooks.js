@@ -25,7 +25,8 @@ Views.testWebhooks = {
     
     async render() {
         const container = document.getElementById('main-content');
-        document.getElementById('header-title').textContent = 'Test Webhooks';
+        const headerTitle = document.getElementById('header-title');
+        if (headerTitle) headerTitle.textContent = 'Test Webhooks';
         
         container.innerHTML = `
             <div class="test-webhooks">

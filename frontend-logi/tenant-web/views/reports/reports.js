@@ -319,23 +319,30 @@ Views.reports = {
             const avgMargin = totalRevenue > 0 ? (totalGain / totalRevenue * 100).toFixed(1) : 0;
             
             // Mettre a jour les KPIs
-            document.getElementById('dep-total-revenue').textContent = this.formatMoney(totalRevenue);
-            document.getElementById('dep-total-expenses').textContent = this.formatMoney(totalExpenses);
-            document.getElementById('dep-total-gain').textContent = this.formatMoney(totalGain);
-            document.getElementById('dep-total-gain').classList.toggle('text-success', totalGain >= 0);
-            document.getElementById('dep-total-gain').classList.toggle('text-error', totalGain < 0);
-            document.getElementById('dep-avg-margin').textContent = avgMargin + '%';
+            const setDepEl = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+            setDepEl('dep-total-revenue', this.formatMoney(totalRevenue));
+            setDepEl('dep-total-expenses', this.formatMoney(totalExpenses));
+            setDepEl('dep-total-gain', this.formatMoney(totalGain));
+            const gainEl = document.getElementById('dep-total-gain');
+            if (gainEl) {
+                gainEl.classList.toggle('text-success', totalGain >= 0);
+                gainEl.classList.toggle('text-error', totalGain < 0);
+            }
+            setDepEl('dep-avg-margin', avgMargin + '%');
             
             // Afficher la liste
             this.renderDeparturesList(filtered);
         } catch (error) {
             console.error('Load departures error:', error);
-            document.getElementById('departures-list').innerHTML = `
-                <div class="empty-state">
-                    ${Icons.get('alert-circle', {size:32})}
-                    <p>Erreur de chargement: ${error.message}</p>
-                </div>
-            `;
+            const depList = document.getElementById('departures-list');
+            if (depList) {
+                depList.innerHTML = `
+                    <div class="empty-state">
+                        ${Icons.get('alert-circle', {size:32})}
+                        <p>Erreur de chargement: ${error.message}</p>
+                    </div>
+                `;
+            }
         }
     },
     
@@ -1267,20 +1274,25 @@ Views.reports = {
             return `<span class="${isPositive ? 'positive' : 'negative'}">${isPositive ? '+' : ''}${change}%</span>`;
         };
         
-        document.getElementById('kpi-revenue').textContent = this.formatMoney(kpis.revenue);
-        document.getElementById('kpi-revenue-change').innerHTML = formatChange(kpis.revenue, kpis.revenuePrev);
+        const setEl = (id, value, html = false) => {
+            const el = document.getElementById(id);
+            if (el) { html ? el.innerHTML = value : el.textContent = value; }
+        };
         
-        document.getElementById('kpi-packages').textContent = kpis.packages;
-        document.getElementById('kpi-packages-change').innerHTML = formatChange(kpis.packages, kpis.packagesPrev);
+        setEl('kpi-revenue', this.formatMoney(kpis.revenue));
+        setEl('kpi-revenue-change', formatChange(kpis.revenue, kpis.revenuePrev), true);
         
-        document.getElementById('kpi-clients').textContent = kpis.newClients;
-        document.getElementById('kpi-clients-change').innerHTML = formatChange(kpis.newClients, kpis.newClientsPrev);
+        setEl('kpi-packages', kpis.packages);
+        setEl('kpi-packages-change', formatChange(kpis.packages, kpis.packagesPrev), true);
         
-        document.getElementById('kpi-delivery-rate').textContent = kpis.deliveryRate + '%';
-        document.getElementById('kpi-delivery-change').innerHTML = formatChange(kpis.deliveryRate, kpis.deliveryRatePrev);
+        setEl('kpi-clients', kpis.newClients);
+        setEl('kpi-clients-change', formatChange(kpis.newClients, kpis.newClientsPrev), true);
         
-        document.getElementById('kpi-unpaid').textContent = this.formatMoney(kpis.unpaid);
-        document.getElementById('kpi-unpaid-change').innerHTML = formatChange(kpis.unpaidPrev, kpis.unpaid); // Inverse car moins = mieux
+        setEl('kpi-delivery-rate', kpis.deliveryRate + '%');
+        setEl('kpi-delivery-change', formatChange(kpis.deliveryRate, kpis.deliveryRatePrev), true);
+        
+        setEl('kpi-unpaid', this.formatMoney(kpis.unpaid));
+        setEl('kpi-unpaid-change', formatChange(kpis.unpaidPrev, kpis.unpaid), true);
     },
     
     renderRevenueChart(data) {
