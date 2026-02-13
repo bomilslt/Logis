@@ -481,12 +481,14 @@ Views.packageDetail = {
                         <span class="payment-label">Reste a payer</span>
                         <span class="payment-value text-error">${this.formatMoney(remaining, currency)}</span>
                     </div>
+                    ${CONFIG.FEATURES.online_payments ? `
                     <div class="payment-action">
                         <button class="btn btn-primary btn-block" id="btn-pay-online">
                             <svg class="icon-sm" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#credit-card"></use></svg>
                             Payer ${this.formatMoney(remaining, currency)} en ligne
                         </button>
                     </div>
+                    ` : ''}
                 ` : `
                     <div class="payment-notice payment-notice-success" style="margin-top:8px;">
                         <svg class="icon-sm" viewBox="0 0 24 24"><use href="assets/icons/icons.svg#check-circle"></use></svg>

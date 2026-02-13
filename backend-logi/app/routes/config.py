@@ -5,7 +5,7 @@ les tarifs, origines, destinations, départs programmés
 """
 
 from flask import Blueprint, request, jsonify
-from app.models import TenantConfig, Tenant, Announcement, Departure
+from app.models import TenantConfig, Tenant, Announcement, Departure, Subscription
 from datetime import datetime, date
 
 config_bp = Blueprint('config', __name__)
@@ -81,6 +81,15 @@ def get_tenant_config(tenant_id):
             branding['footer'] = invoice_config.get('footer', '')
             branding['primary_color'] = invoice_config.get('primary_color', '#2563eb')
     
+    # Vérifier les features du plan d'abonnement
+    features_flags = {
+        'online_payments': False
+    }
+    subscription = Subscription.query.filter_by(tenant_id=tenant.id).first()
+    if subscription and subscription.is_active and subscription.plan:
+        plan_limits = subscription.plan.limits or {}
+        features_flags['online_payments'] = bool(plan_limits.get('online_payments', False))
+    
     return jsonify({
         'tenant': {
             'id': tenant.id,
@@ -91,6 +100,7 @@ def get_tenant_config(tenant_id):
             'address': tenant.address
         },
         'branding': branding,
+        'features': features_flags,
         **config.to_dict(public_only=True)
     })
 

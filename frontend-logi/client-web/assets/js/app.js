@@ -122,6 +122,11 @@ const App = {
         
         // Charger le compteur depuis l'API
         await NotificationsService.init();
+        
+        // Ecouter les nouvelles notifications en temps reel
+        RealtimeService.on('notification', () => {
+            NotificationsService.fetchUnreadCount();
+        });
     },
     
     updateNotificationBadge(count) {

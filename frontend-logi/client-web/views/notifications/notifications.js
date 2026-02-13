@@ -43,6 +43,12 @@ Views.notifications = {
             // Mettre en cache
             CacheService.set(this.CACHE_KEY, notifications);
             
+            // Synchroniser le compteur de non-lues avec le badge
+            if (typeof data.unread_count === 'number') {
+                NotificationsService._cachedCount = data.unread_count;
+                NotificationsService._notifyListeners();
+            }
+            
             this.renderContent(main, notifications);
             
         } catch (error) {
@@ -72,6 +78,12 @@ Views.notifications = {
             const hasChanged = JSON.stringify(notifications) !== JSON.stringify(cached);
             
             CacheService.set(this.CACHE_KEY, notifications);
+            
+            // Synchroniser le compteur de non-lues avec le badge
+            if (typeof data.unread_count === 'number') {
+                NotificationsService._cachedCount = data.unread_count;
+                NotificationsService._notifyListeners();
+            }
             
             if (hasChanged) {
                 this.renderContent(main, notifications);

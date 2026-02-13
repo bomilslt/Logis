@@ -1379,5 +1379,19 @@ Views.packages = {
         const allTypes = [...(CONFIG.PACKAGE_TYPES?.air || []), ...(CONFIG.PACKAGE_TYPES?.sea || [])];
         return allTypes.find(t => t.value === type)?.label || type; 
     },
-    formatMoney(amount) { return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount) + ' XAF'; }
+    formatMoney(amount) { return new Intl.NumberFormat(I18n.locale === 'fr' ? 'fr-FR' : 'en-US').format(amount) + ' XAF'; },
+
+    playSound(type) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            gain.gain.value = 0.1;
+            osc.frequency.value = type === 'success' ? 800 : type === 'warning' ? 400 : 200;
+            osc.start();
+            osc.stop(ctx.currentTime + (type === 'success' ? 0.1 : type === 'warning' ? 0.2 : 0.3));
+        } catch (e) {}
+    }
 };

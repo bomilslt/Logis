@@ -7,6 +7,7 @@ import '../../config/theme.dart';
 import '../../models/package.dart';
 import '../../services/api_service.dart';
 import 'payment_screen.dart';
+import '../../config/tenant_features.dart';
 
 class PackageDetailScreen extends StatefulWidget {
   final String packageId;
@@ -355,15 +356,17 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
                   Text(formatAmt(remaining), style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: AppColors.error)),
                 ],
               ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () => PaymentSheet.show(context, pkg, onComplete: _loadPackage),
-                  icon: const Icon(LucideIcons.creditCard, size: 18),
-                  label: Text('Payer ${formatAmt(remaining)}'),
+              if (TenantFeatures.instance.onlinePayments) ...[
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () => PaymentSheet.show(context, pkg, onComplete: _loadPackage),
+                    icon: const Icon(LucideIcons.creditCard, size: 18),
+                    label: Text('Payer ${formatAmt(remaining)}'),
+                  ),
                 ),
-              ),
+              ],
             ] else ...[
               const SizedBox(height: 12),
               Container(

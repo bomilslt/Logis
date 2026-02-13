@@ -163,6 +163,15 @@ const CONFIG = {
         return { logo: null, header: '', footer: '', primary_color: '#2563eb' };
     },
     
+    // Features du plan (online_payments, etc.)
+    get FEATURES() {
+        const cached = localStorage.getItem('ec_cached_features');
+        if (cached) {
+            try { return JSON.parse(cached); } catch(e) {}
+        }
+        return { online_payments: false };
+    },
+    
     /**
      * Force la synchronisation (ignore le cache)
      */
@@ -211,6 +220,7 @@ const CONFIG = {
                 if (data.shipping_rates) localStorage.setItem('ec_cached_routes', JSON.stringify(data.shipping_rates));
                 if (data.tenant) localStorage.setItem('ec_cached_tenant', JSON.stringify(data.tenant));
                 if (data.branding) localStorage.setItem('ec_cached_branding', JSON.stringify(data.branding));
+                if (data.features) localStorage.setItem('ec_cached_features', JSON.stringify(data.features));
                 localStorage.setItem('ec_config_last_sync', Date.now().toString());
                 console.log('[CONFIG] Synchronized from API');
                 return true;

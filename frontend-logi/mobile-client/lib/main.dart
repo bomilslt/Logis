@@ -6,6 +6,7 @@ import 'config/router.dart';
 import 'services/api_service.dart';
 import 'providers/auth_provider.dart';
 import 'screens/splash_screen.dart';
+import 'config/tenant_features.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,8 @@ class _ExpressCargoAppState extends State<ExpressCargoApp> {
 
   Future<void> _initApp() async {
     await _authProvider.init();
+    // Load tenant features (online_payments, etc.)
+    await TenantFeatures.instance.load(_apiService);
     // Show splash for at least 2s for a smooth experience
     await Future.delayed(const Duration(milliseconds: 2000));
     if (mounted) setState(() => _showSplash = false);
