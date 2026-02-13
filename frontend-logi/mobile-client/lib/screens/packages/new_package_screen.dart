@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/theme.dart';
+import '../../config/tenant_features.dart';
 import '../../services/api_service.dart';
 
 class NewPackageScreen extends StatefulWidget {
@@ -31,17 +32,13 @@ class _NewPackageScreenState extends State<NewPackageScreen> {
   String? _packageType;
   String _currency = 'USD';
   bool _loading = false;
-  bool _configLoading = true;
 
   // Edit mode
   bool _editMode = false;
   String? _editPackageId;
 
-  // Config data loaded from API — no fallback, empty if API fails
-  Map<String, dynamic> _origins = {};
-  Map<String, dynamic> _destinations = {};
-  Map<String, dynamic> _shippingRates = {};
-  List<String> _currencies = [];
+  // Shortcut to the singleton
+  final _tc = TenantConfig.instance;
 
   // Departure info
   Map<String, dynamic>? _nextDeparture;
@@ -50,7 +47,6 @@ class _NewPackageScreenState extends State<NewPackageScreen> {
   @override
   void initState() {
     super.initState();
-    _loadConfig();
   }
 
   @override
@@ -82,27 +78,6 @@ class _NewPackageScreenState extends State<NewPackageScreen> {
     _recipientNameCtrl.dispose();
     _recipientPhoneCtrl.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadConfig() async {
-    try {
-      final api = context.read<ApiService>();
-      final data = await api.getTenantConfig();
-      if (mounted) {
-        setState(() {
-          _origins = (data['origins'] as Map<String, dynamic>?) ?? {};
-          _destinations = (data['destinations'] as Map<String, dynamic>?) ?? {};
-          _shippingRates = (data['shipping_rates'] as Map<String, dynamic>?) ?? {};
-          final apiCurrencies = data['currencies'];
-          if (apiCurrencies is List && apiCurrencies.isNotEmpty) {
-            _currencies = apiCurrencies.cast<String>();
-          }
-          _configLoading = false;
-        });
-      }
-    } catch (_) {
-      if (mounted) setState(() => _configLoading = false);
-    }
   }
 
   Future<void> _loadPackageForEdit(String packageId) async {
@@ -142,99 +117,28 @@ class _NewPackageScreenState extends State<NewPackageScreen> {
     });
   }
 
-  // ── Dynamic data helpers ──────────────────────────────────
+  // ── Dynamic data helpers (delegated to TenantConfig) ──────
 
   List<String> get _availableTransports {
     if (_originCountry == null || _destCountry == null) return [];
-    final routeKey = '${_originCountry}_$_destCountry';
-    final rates = _shippingRates[routeKey];
-    if (rates == null || rates is! Map) return [];
-    return (rates as Map<String, dynamic>).keys.where((k) => k != 'currency').toList();
+    return _tc.getAvailableTransports(_originCountry!, _destCountry!);
   }
 
-  /// Extract package types dynamically from shipping_rates for the selected route+transport
   List<Map<String, dynamic>> _getPackageTypesFromRates() {
     if (_originCountry == null || _destCountry == null || _transportMode == null) return [];
-    final routeKey = '${_originCountry}_$_destCountry';
-    final routeRates = _shippingRates[routeKey];
-    if (routeRates == null || routeRates is! Map) return [];
-    final transportRates = routeRates[_transportMode];
-    if (transportRates == null || transportRates is! Map) return [];
-
-    final types = <Map<String, dynamic>>[];
-    (transportRates as Map<String, dynamic>).forEach((key, value) {
-      if (key == 'currency') return;
-      if (value is Map) {
-        types.add({
-          'value': key,
-          'label': value['label'] ?? key,
-          'unit': value['unit'] ?? 'kg',
-          'rate': (value['rate'] as num?)?.toDouble() ?? 0,
-        });
-      } else if (value is num) {
-        types.add({
-          'value': key,
-          'label': _staticTypeLabel(key, _transportMode!),
-          'unit': _staticTypeUnit(key, _transportMode!),
-          'rate': value.toDouble(),
-        });
-      }
-    });
-    return types;
+    return _tc.getPackageTypes(_transportMode!, _originCountry!, _destCountry!);
   }
 
-  /// Fallback label for old-format rates (number only, no label/unit)
-  String _staticTypeLabel(String type, String transport) {
-    const labels = {
-      'container': 'Conteneur', 'baco': 'Baco', 'carton': 'Carton',
-      'vehicle': 'Véhicule', 'other_sea': 'Autre (au m³)',
-      'normal': 'Normal', 'risky': 'Risqué (batterie, liquide)',
-      'phone_boxed': 'Téléphone avec carton', 'phone_unboxed': 'Téléphone sans carton',
-      'laptop': 'Ordinateur', 'tablet': 'Tablette',
-    };
-    return labels[type] ?? type;
-  }
-
-  String _staticTypeUnit(String type, String transport) {
-    if (transport == 'sea') {
-      const cbmTypes = {'carton', 'other_sea'};
-      const fixedTypes = {'container', 'baco', 'vehicle'};
-      if (cbmTypes.contains(type)) return 'cbm';
-      if (fixedTypes.contains(type)) return 'fixed';
-      return 'cbm';
-    }
-    const pieceTypes = {'phone_boxed', 'phone_unboxed', 'laptop', 'tablet'};
-    if (pieceTypes.contains(type)) return 'piece';
-    return 'kg';
-  }
-
-  String _transportLabel(String mode) {
-    const labels = {
-      'sea': 'Bateau (Maritime)',
-      'air_normal': 'Avion - Normal',
-      'air_express': 'Avion - Express',
-      'road': 'Routier',
-    };
-    return labels[mode] ?? mode;
-  }
+  String _transportLabel(String mode) => _tc.transportLabel(mode);
 
   Map<String, dynamic>? get _selectedTypeConfig {
-    if (_packageType == null) return null;
-    final types = _getPackageTypesFromRates();
-    for (final t in types) {
-      if (t['value'] == _packageType) return t;
-    }
-    return null;
+    if (_packageType == null || _transportMode == null || _originCountry == null || _destCountry == null) return null;
+    return _tc.getTypeConfig(_packageType!, _transportMode!, _originCountry!, _destCountry!);
   }
 
   String? get _routeCurrency {
     if (_originCountry == null || _destCountry == null || _transportMode == null) return null;
-    final routeKey = '${_originCountry}_$_destCountry';
-    final routeRates = _shippingRates[routeKey];
-    if (routeRates == null || routeRates is! Map) return null;
-    final transportRates = routeRates[_transportMode];
-    if (transportRates is Map) return transportRates['currency']?.toString();
-    return routeRates['currency']?.toString();
+    return _tc.getRouteCurrency(_originCountry!, _destCountry!, _transportMode!);
   }
 
   // ── Cost estimation ───────────────────────────────────────
@@ -332,7 +236,7 @@ class _NewPackageScreenState extends State<NewPackageScreen> {
       // Resolve origin city name from city ID if needed
       String? originCityName = _originCity;
       if (_originCity != null && _originCountry != null) {
-        final cities = (_origins[_originCountry]?['cities'] as List?) ?? [];
+        final cities = _tc.getOriginCities(_originCountry!);
         for (final c in cities) {
           if (c['id'] == _originCity || c['name'] == _originCity) {
             originCityName = c['name']?.toString();
@@ -401,7 +305,7 @@ class _NewPackageScreenState extends State<NewPackageScreen> {
         leading: const BackButton(),
         title: Text(_editMode ? 'Modifier le colis' : 'Nouveau colis'),
       ),
-      body: _configLoading
+      body: !_tc.isLoaded
           ? const Center(child: CircularProgressIndicator())
           : Form(
               key: _formKey,
@@ -419,7 +323,7 @@ class _NewPackageScreenState extends State<NewPackageScreen> {
                   _sectionTitle('Origine'),
                   _buildLabeledDropdown(
                     'Pays de départ *',
-                    _origins.entries.map((e) => _DropdownItem(e.key, (e.value as Map)['label']?.toString() ?? e.key)).toList(),
+                    _tc.origins.entries.map((e) => _DropdownItem(e.key, (e.value as Map)['label']?.toString() ?? e.key)).toList(),
                     _originCountry,
                     (v) {
                       setState(() { _originCountry = v; _originCity = null; _transportMode = null; _packageType = null; _nextDeparture = null; });
@@ -429,7 +333,7 @@ class _NewPackageScreenState extends State<NewPackageScreen> {
                   if (_originCountry != null) ...[
                     _buildLabeledDropdown(
                       'Ville *',
-                      ((_origins[_originCountry]?['cities'] as List?) ?? [])
+                      _tc.getOriginCities(_originCountry!)
                           .map<_DropdownItem>((c) => _DropdownItem(c['name'].toString(), c['name'].toString()))
                           .toList(),
                       _originCity,
@@ -441,7 +345,7 @@ class _NewPackageScreenState extends State<NewPackageScreen> {
                   _sectionTitle('Destination'),
                   _buildLabeledDropdown(
                     'Pays de destination *',
-                    _destinations.entries.map((e) => _DropdownItem(e.key, (e.value as Map)['label']?.toString() ?? e.key)).toList(),
+                    _tc.destinations.entries.map((e) => _DropdownItem(e.key, (e.value as Map)['label']?.toString() ?? e.key)).toList(),
                     _destCountry,
                     (v) {
                       setState(() { _destCountry = v; _destWarehouse = null; _transportMode = null; _packageType = null; _nextDeparture = null; });
@@ -451,7 +355,7 @@ class _NewPackageScreenState extends State<NewPackageScreen> {
                   if (_destCountry != null) ...[
                     _buildLabeledDropdown(
                       'Point de retrait *',
-                      ((_destinations[_destCountry]?['warehouses'] as List?) ?? [])
+                      _tc.getWarehouses(_destCountry!)
                           .map<_DropdownItem>((w) => _DropdownItem(w['name'].toString(), w['name'].toString()))
                           .toList(),
                       _destWarehouse,
@@ -512,7 +416,7 @@ class _NewPackageScreenState extends State<NewPackageScreen> {
                       width: 100,
                       child: _buildLabeledDropdown(
                         'Devise',
-                        (_currencies.isNotEmpty ? _currencies : ['USD']).map((c) => _DropdownItem(c, c)).toList(),
+                        _tc.currencies.map((c) => _DropdownItem(c, c)).toList(),
                         _currency,
                         (v) => setState(() => _currency = v ?? 'USD'),
                       ),

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/theme.dart';
+import '../../config/tenant_features.dart';
 import '../../services/api_service.dart';
 
 class CalculatorScreen extends StatefulWidget {
@@ -21,12 +22,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   String? _destCountry;
   String? _transport;
   String? _packageType;
-  bool _configLoading = true;
 
-  // Config data loaded from API — no fallback
-  Map<String, dynamic> _origins = {};
-  Map<String, dynamic> _destinations = {};
-  Map<String, dynamic> _shippingRates = {};
+  // Shortcut to the singleton
+  final _tc = TenantConfig.instance;
 
   // Departure info
   Map<String, dynamic>? _nextDeparture;
@@ -35,7 +33,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   @override
   void initState() {
     super.initState();
-    _loadConfig();
   }
 
   @override
@@ -46,115 +43,28 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     super.dispose();
   }
 
-  Future<void> _loadConfig() async {
-    try {
-      final api = context.read<ApiService>();
-      final data = await api.getTenantConfig();
-      if (mounted) {
-        setState(() {
-          _origins = (data['origins'] as Map<String, dynamic>?) ?? {};
-          _destinations = (data['destinations'] as Map<String, dynamic>?) ?? {};
-          _shippingRates = (data['shipping_rates'] as Map<String, dynamic>?) ?? {};
-          _configLoading = false;
-        });
-      }
-    } catch (_) {
-      if (mounted) setState(() => _configLoading = false);
-    }
-  }
-
-  // ── Dynamic data helpers ──────────────────────────────────
+  // ── Dynamic data helpers (delegated to TenantConfig) ──────
 
   List<String> get _availableTransports {
     if (_originCountry == null || _destCountry == null) return [];
-    final routeKey = '${_originCountry}_$_destCountry';
-    final rates = _shippingRates[routeKey];
-    if (rates == null || rates is! Map) return [];
-    return (rates as Map<String, dynamic>).keys.where((k) => k != 'currency').toList();
+    return _tc.getAvailableTransports(_originCountry!, _destCountry!);
   }
 
-  /// Extract package types dynamically from shipping_rates
   List<Map<String, dynamic>> _getPackageTypesFromRates() {
     if (_originCountry == null || _destCountry == null || _transport == null) return [];
-    final routeKey = '${_originCountry}_$_destCountry';
-    final routeRates = _shippingRates[routeKey];
-    if (routeRates == null || routeRates is! Map) return [];
-    final transportRates = routeRates[_transport];
-    if (transportRates == null || transportRates is! Map) return [];
-
-    final types = <Map<String, dynamic>>[];
-    (transportRates as Map<String, dynamic>).forEach((key, value) {
-      if (key == 'currency') return;
-      if (value is Map) {
-        types.add({
-          'value': key,
-          'label': value['label'] ?? key,
-          'unit': value['unit'] ?? 'kg',
-          'rate': (value['rate'] as num?)?.toDouble() ?? 0,
-        });
-      } else if (value is num) {
-        types.add({
-          'value': key,
-          'label': _staticTypeLabel(key, _transport!),
-          'unit': _staticTypeUnit(key, _transport!),
-          'rate': value.toDouble(),
-        });
-      }
-    });
-    return types;
+    return _tc.getPackageTypes(_transport!, _originCountry!, _destCountry!);
   }
 
-  String _staticTypeLabel(String type, String transport) {
-    const labels = {
-      'container': 'Conteneur', 'baco': 'Baco', 'carton': 'Carton',
-      'vehicle': 'Véhicule', 'other_sea': 'Autre (au m³)',
-      'normal': 'Normal', 'risky': 'Risqué (batterie, liquide)',
-      'phone_boxed': 'Téléphone avec carton', 'phone_unboxed': 'Téléphone sans carton',
-      'laptop': 'Ordinateur', 'tablet': 'Tablette',
-    };
-    return labels[type] ?? type;
-  }
-
-  String _staticTypeUnit(String type, String transport) {
-    if (transport == 'sea') {
-      const cbmTypes = {'carton', 'other_sea'};
-      const fixedTypes = {'container', 'baco', 'vehicle'};
-      if (cbmTypes.contains(type)) return 'cbm';
-      if (fixedTypes.contains(type)) return 'fixed';
-      return 'cbm';
-    }
-    const pieceTypes = {'phone_boxed', 'phone_unboxed', 'laptop', 'tablet'};
-    if (pieceTypes.contains(type)) return 'piece';
-    return 'kg';
-  }
-
-  String _transportLabel(String mode) {
-    const labels = {
-      'sea': 'Bateau (Maritime)',
-      'air_normal': 'Avion - Normal',
-      'air_express': 'Avion - Express',
-      'road': 'Routier',
-    };
-    return labels[mode] ?? mode;
-  }
+  String _transportLabel(String mode) => _tc.transportLabel(mode);
 
   Map<String, dynamic>? get _selectedTypeConfig {
-    if (_packageType == null) return null;
-    final types = _getPackageTypesFromRates();
-    for (final t in types) {
-      if (t['value'] == _packageType) return t;
-    }
-    return null;
+    if (_packageType == null || _transport == null || _originCountry == null || _destCountry == null) return null;
+    return _tc.getTypeConfig(_packageType!, _transport!, _originCountry!, _destCountry!);
   }
 
   String? get _routeCurrency {
     if (_originCountry == null || _destCountry == null || _transport == null) return null;
-    final routeKey = '${_originCountry}_$_destCountry';
-    final routeRates = _shippingRates[routeKey];
-    if (routeRates == null || routeRates is! Map) return null;
-    final transportRates = routeRates[_transport];
-    if (transportRates is Map) return transportRates['currency']?.toString();
-    return routeRates['currency']?.toString();
+    return _tc.getRouteCurrency(_originCountry!, _destCountry!, _transport!);
   }
 
   // ── Cost estimation ───────────────────────────────────────
@@ -241,7 +151,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Calculateur de tarifs')),
-      body: _configLoading
+      body: !_tc.isLoaded
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -251,14 +161,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
                 _buildLabeledDropdown(
                   'Pays de départ',
-                  _origins.entries.map((e) => _CalcDropdownItem(e.key, (e.value as Map)['label']?.toString() ?? e.key)).toList(),
+                  _tc.origins.entries.map((e) => _CalcDropdownItem(e.key, (e.value as Map)['label']?.toString() ?? e.key)).toList(),
                   _originCountry,
                   (v) { setState(() { _originCountry = v; _transport = null; _packageType = null; _nextDeparture = null; }); },
                 ),
                 const SizedBox(height: 12),
                 _buildLabeledDropdown(
                   'Pays de destination',
-                  _destinations.entries.map((e) => _CalcDropdownItem(e.key, (e.value as Map)['label']?.toString() ?? e.key)).toList(),
+                  _tc.destinations.entries.map((e) => _CalcDropdownItem(e.key, (e.value as Map)['label']?.toString() ?? e.key)).toList(),
                   _destCountry,
                   (v) { setState(() { _destCountry = v; _transport = null; _packageType = null; _nextDeparture = null; }); },
                 ),
@@ -515,7 +425,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('Grille tarifaire', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 4),
-          Text('${_transportLabel(_transport!)} — ${_origins[_originCountry]?['label'] ?? _originCountry} → ${_destinations[_destCountry]?['label'] ?? _destCountry}',
+          Text('${_transportLabel(_transport!)} — ${_tc.originLabel(_originCountry!)} → ${_tc.destLabel(_destCountry!)}',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textMuted)),
           const SizedBox(height: 12),
           Table(

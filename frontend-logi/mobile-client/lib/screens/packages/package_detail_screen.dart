@@ -388,12 +388,7 @@ class _PackageDetailScreenState extends State<PackageDetailScreen> {
     );
   }
 
-  String _transportLabel(String mode) {
-    for (final t in AppConfig.transportModes) {
-      if (t.value == mode) return t.label;
-    }
-    return mode;
-  }
+  String _transportLabel(String mode) => TenantConfig.instance.transportLabel(mode);
 
   String _formatDateTime(String iso) {
     try {

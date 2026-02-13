@@ -31,13 +31,6 @@ class AppConfig {
     'delivered': PackageStatusInfo('Livré', 0xFF10B981),
   };
 
-  // Transport modes
-  static const List<TransportModeInfo> transportModes = [
-    TransportModeInfo('sea', 'Bateau (Maritime)'),
-    TransportModeInfo('air_normal', 'Avion - Normal'),
-    TransportModeInfo('air_express', 'Avion - Express'),
-  ];
-
   // Currencies (fallback only — prefer API-loaded currencies)
   static const List<String> currencies = ['XAF', 'XOF', 'USD'];
 
@@ -56,9 +49,3 @@ class PackageStatusInfo {
   const PackageStatusInfo(this.label, this.colorValue);
 }
 
-class TransportModeInfo {
-  final String value;
-  final String label;
-
-  const TransportModeInfo(this.value, this.label);
-}

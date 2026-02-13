@@ -36,8 +36,8 @@ class _ExpressCargoAppState extends State<ExpressCargoApp> {
 
   Future<void> _initApp() async {
     await _authProvider.init();
-    // Load tenant features (online_payments, etc.)
-    await TenantFeatures.instance.load(_apiService);
+    // Load tenant config (origins, destinations, rates, features, etc.)
+    await TenantConfig.instance.load(_apiService);
     // Show splash for at least 2s for a smooth experience
     await Future.delayed(const Duration(milliseconds: 2000));
     if (mounted) setState(() => _showSplash = false);
