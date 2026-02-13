@@ -56,19 +56,14 @@ def send_message():
     if not subject or not body:
         return jsonify({'error': 'Sujet et message requis'}), 400
 
-    user = None
-    try:
-        from app.models import User
-        user = User.query.get(g.user_id)
-    except Exception:
-        pass
+    user = g.user
 
     msg = SupportMessage(
         tenant_id=tenant_id,
         direction='tenant_to_admin',
         subject=subject,
         body=body,
-        sender_id=g.user_id,
+        sender_id=user.id if user else None,
         sender_name=user.full_name if user else None,
         sender_email=user.email if user else None
     )

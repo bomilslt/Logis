@@ -96,8 +96,30 @@ Views.payments = {
         await this.loadPaymentMethods();
         
         this.initFilters();
-        this.loadPayments();
+        
+        const cacheKey = 'payments:list:' + this.currentPage;
+        const cached = ViewCache.get(cacheKey);
+        if (cached) {
+            this._applyPaymentsData(cached);
+        }
+        
+        this.loadPayments(!!cached);
         this.attachEvents();
+    },
+    
+    _applyPaymentsData(data) {
+        const payments = data.payments || [];
+        this.allPayments = payments;
+        const stats = data.stats || {};
+        document.getElementById('stat-today').textContent = this.formatMoney(stats.today || 0);
+        document.getElementById('stat-week').textContent = this.formatMoney(stats.week || 0);
+        document.getElementById('stat-month').textContent = this.formatMoney(stats.month || 0);
+        document.getElementById('stat-pending').textContent = this.formatMoney(stats.pending || 0);
+        if (payments.length === 0) {
+            document.getElementById('payments-list').innerHTML = `<div class="empty-state">${Icons.get('dollar-sign', {size:48})}<p class="empty-state-title">Aucun paiement trouve</p></div>`;
+            return;
+        }
+        this.renderList(data.total || payments.length);
     },
     
     async loadPaymentMethods() {
@@ -155,12 +177,13 @@ Views.payments = {
         });
     },
 
-    async loadPayments() {
+    async loadPayments(silent = false) {
         const container = document.getElementById('payments-list');
-        container.innerHTML = Loader.page('Chargement...');
+        if (!silent) container.innerHTML = Loader.page('Chargement...');
+        
+        const cacheKey = 'payments:list:' + this.currentPage;
         
         try {
-            // Appel API
             const data = await API.payments.getAll({
                 page: this.currentPage,
                 per_page: this.pageSize,
@@ -170,38 +193,23 @@ Views.payments = {
                 date_to: this.filters.dateTo || undefined
             });
             
-            const payments = data.payments || [];
-            this.allPayments = payments;
-            
-            // Stats depuis l'API ou calcul local
-            const stats = data.stats || {};
-            document.getElementById('stat-today').textContent = this.formatMoney(stats.today || 0);
-            document.getElementById('stat-week').textContent = this.formatMoney(stats.week || 0);
-            document.getElementById('stat-month').textContent = this.formatMoney(stats.month || 0);
-            document.getElementById('stat-pending').textContent = this.formatMoney(stats.pending || 0);
-            
-            if (payments.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        ${Icons.get('dollar-sign', {size:48})}
-                        <p class="empty-state-title">Aucun paiement trouve</p>
-                    </div>
-                `;
-                return;
+            if (!silent || ViewCache.hasChanged(cacheKey, data)) {
+                ViewCache.set(cacheKey, data);
+                this._applyPaymentsData(data);
             }
-            
-            this.renderList(data.total || payments.length);
             
         } catch (error) {
             console.error('Load payments error:', error);
-            container.innerHTML = `
-                <div class="error-state">
-                    ${Icons.get('alert-circle', {size:48})}
-                    <h3>Erreur de chargement</h3>
-                    <p>${error.message}</p>
-                    <button class="btn btn-primary" onclick="Views.payments.loadPayments()">Reessayer</button>
-                </div>
-            `;
+            if (!ViewCache.get(cacheKey)) {
+                container.innerHTML = `
+                    <div class="error-state">
+                        ${Icons.get('alert-circle', {size:48})}
+                        <h3>Erreur de chargement</h3>
+                        <p>${error.message}</p>
+                        <button class="btn btn-primary" onclick="Views.payments.loadPayments()">Reessayer</button>
+                    </div>
+                `;
+            }
         }
     },
     

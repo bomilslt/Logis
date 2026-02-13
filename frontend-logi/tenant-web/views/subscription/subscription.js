@@ -25,7 +25,13 @@ const SubscriptionView = {
             </div>
         `;
 
-        this.loadSubscriptionData();
+        const cached = ViewCache.get('subscription:data');
+        if (cached) {
+            const sub = (cached.data && cached.data.subscription) || cached.subscription || {};
+            this.renderContent(sub);
+        }
+        
+        this.loadSubscriptionData(!!cached);
         this.loadAddons();
 
         // Inject styles if not present
@@ -38,23 +44,26 @@ const SubscriptionView = {
         }
     },
 
-    async loadSubscriptionData() {
+    async loadSubscriptionData(silent = false) {
         try {
-            // 1. Récupérer les infos d'abonnement depuis backend-logi
             const response = await API.request('/subscription');
-            const subscription = (response.data && response.data.subscription) || response.subscription || {};
-
-            this.renderContent(subscription);
+            if (!silent || ViewCache.hasChanged('subscription:data', response)) {
+                ViewCache.set('subscription:data', response);
+                const subscription = (response.data && response.data.subscription) || response.subscription || {};
+                this.renderContent(subscription);
+            }
         } catch (error) {
             console.error('Erreur chargement abonnement:', error);
-            document.getElementById('subscription-content').innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon text-danger">⚠️</div>
-                    <h3>Erreur de chargement</h3>
-                    <p>${error.message || "Impossible de récupérer les informations d'abonnement."}</p>
-                    <button class="btn btn-primary mt-md" onclick="SubscriptionView.render()">Réessayer</button>
-                </div>
-            `;
+            if (!ViewCache.get('subscription:data')) {
+                document.getElementById('subscription-content').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon text-danger">⚠️</div>
+                        <h3>Erreur de chargement</h3>
+                        <p>${error.message || "Impossible de récupérer les informations d'abonnement."}</p>
+                        <button class="btn btn-primary mt-md" onclick="SubscriptionView.render()">Réessayer</button>
+                    </div>
+                `;
+            }
         }
     },
 

@@ -11,10 +11,15 @@ Views.tarifs = {
     async render() {
         const main = document.getElementById('main-content');
         
-        // Afficher un loader pendant le chargement
-        main.innerHTML = `<div class="tarifs-page">${Loader.page('Chargement des tarifs...')}</div>`;
-        
-        await this.loadData();
+        const cached = ViewCache.get('tarifs:data');
+        if (cached) {
+            this.origins = cached.origins || {};
+            this.destinations = cached.destinations || {};
+            this.routes = cached.shipping_rates || {};
+        } else {
+            main.innerHTML = `<div class="tarifs-page">${Loader.page('Chargement des tarifs...')}</div>`;
+            await this.loadData();
+        }
         
         main.innerHTML = `
             <div class="tarifs-page">
@@ -43,23 +48,29 @@ Views.tarifs = {
         
         this.attachNavEvents();
         this.renderTab('origins');
+        
+        // Background refresh if we used cache
+        if (cached) this.loadData(true);
     },
     
-    async loadData() {
+    async loadData(silent = false) {
         try {
-            // Charger depuis l'API - pas de fallback sur des données mock
             const data = await API.settings.getRates();
-            this.origins = data.origins || {};
-            this.destinations = data.destinations || {};
-            this.routes = data.shipping_rates || {};
+            if (!silent || ViewCache.hasChanged('tarifs:data', data)) {
+                ViewCache.set('tarifs:data', data);
+                this.origins = data.origins || {};
+                this.destinations = data.destinations || {};
+                this.routes = data.shipping_rates || {};
+                if (silent) this.renderTab(this.activeTab);
+            }
         } catch (error) {
             console.error('Load rates error:', error);
-            // En cas d'erreur, initialiser avec des objets vides
-            // L'admin configurera ses propres origines/destinations/tarifs
-            this.origins = {};
-            this.destinations = {};
-            this.routes = {};
-            Toast.error('Erreur de chargement des tarifs');
+            if (!ViewCache.get('tarifs:data')) {
+                this.origins = {};
+                this.destinations = {};
+                this.routes = {};
+                Toast.error('Erreur de chargement des tarifs');
+            }
         }
     },
     

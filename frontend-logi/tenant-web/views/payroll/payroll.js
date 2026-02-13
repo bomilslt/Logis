@@ -42,7 +42,13 @@ Views.payroll = {
             </div>
         `;
         
-        this.loadData();
+        const cached = ViewCache.get('payroll:all');
+        if (cached) {
+            this._applyPayrollData(cached);
+            this.renderCurrentTab();
+        }
+        
+        this.loadData(!!cached);
         this.attachEvents();
     },
     
@@ -60,63 +66,52 @@ Views.payroll = {
         document.getElementById('btn-add-expense')?.addEventListener('click', () => this.showExpenseModal());
     },
     
-    async loadData() {
-        // ============================================
-        // Charger les données depuis les APIs
-        // ============================================
+    _applyPayrollData(raw) {
+        const staffData = raw.staffData || {};
+        const salariesData = raw.salariesData || {};
+        const expensesData = raw.expensesData || {};
+        this.employees = (staffData.staff || []).map(s => ({
+            id: s.id, name: s.full_name || `${s.first_name} ${s.last_name}`,
+            email: s.email, phone: s.phone || '', role: s.role,
+            position: s.position || s.role, salary: s.salary || 0,
+            hire_date: s.hire_date || s.created_at,
+            status: s.is_active ? 'active' : 'inactive',
+            last_login: s.last_login, permissions: s.permissions || []
+        }));
+        this.payments = (salariesData.salaries || []).map(s => ({
+            id: s.id, employee_id: s.employee_id, employee_name: s.employee_name,
+            amount: s.net_amount, month: s.period, paid_at: s.paid_date, method: s.payment_method
+        }));
+        this.expenses = (expensesData.expenses || []).map(e => ({
+            id: e.id, category: e.category, description: e.description, amount: e.amount, date: e.date
+        }));
+    },
+
+    async loadData(silent = false) {
         try {
-            // Charger en parallèle: staff, salaires, charges
             const [staffData, salariesData, expensesData] = await Promise.all([
                 API.staff.getAll(),
                 API.accounting.getSalaries(),
                 API.accounting.getExpenses()
             ]);
             
-            // Transformer les données staff en format attendu
-            this.employees = (staffData.staff || []).map(s => ({
-                id: s.id,
-                name: s.full_name || `${s.first_name} ${s.last_name}`,
-                email: s.email,
-                phone: s.phone || '',
-                role: s.role,
-                position: s.position || s.role,
-                salary: s.salary || 0,
-                hire_date: s.hire_date || s.created_at,
-                status: s.is_active ? 'active' : 'inactive',
-                last_login: s.last_login,
-                permissions: s.permissions || []
-            }));
+            const freshData = { staffData, salariesData, expensesData };
             
-            // Transformer les salaires
-            this.payments = (salariesData.salaries || []).map(s => ({
-                id: s.id,
-                employee_id: s.employee_id,
-                employee_name: s.employee_name,
-                amount: s.net_amount,
-                month: s.period,
-                paid_at: s.paid_date,
-                method: s.payment_method
-            }));
-            
-            // Transformer les charges
-            this.expenses = (expensesData.expenses || []).map(e => ({
-                id: e.id,
-                category: e.category,
-                description: e.description,
-                amount: e.amount,
-                date: e.date
-            }));
-            
+            if (!silent || ViewCache.hasChanged('payroll:all', freshData)) {
+                ViewCache.set('payroll:all', freshData);
+                this._applyPayrollData(freshData);
+                this.renderCurrentTab();
+            }
         } catch (error) {
             console.error('Load payroll data error:', error);
-            // En cas d'erreur, initialiser avec des tableaux vides
-            this.employees = [];
-            this.payments = [];
-            this.expenses = [];
-            Toast.error('Erreur de chargement des données');
+            if (!ViewCache.get('payroll:all')) {
+                this.employees = [];
+                this.payments = [];
+                this.expenses = [];
+                Toast.error('Erreur de chargement des données');
+                this.renderCurrentTab();
+            }
         }
-        
-        this.renderCurrentTab();
     },
     
     renderCurrentTab() {

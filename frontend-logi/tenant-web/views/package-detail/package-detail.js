@@ -8,24 +8,34 @@ Views.packageDetail = {
     
     async render(packageId) {
         const main = document.getElementById('main-content');
-        main.innerHTML = Loader.page('Chargement...');
+        const cacheKey = 'package:' + packageId;
+        
+        const cached = ViewCache.get(cacheKey);
+        if (cached?.package) {
+            this.currentPackage = cached.package;
+            this.renderDetail(cached.package);
+        } else {
+            main.innerHTML = Loader.page('Chargement...');
+        }
         
         try {
-            // Appel API pour récupérer le colis
             const response = await API.packages.getById(packageId);
             const pkg = response.package;
             
             if (!pkg) {
-                this.renderNotFound(main);
+                if (!cached) this.renderNotFound(main);
                 return;
             }
             
-            this.currentPackage = pkg;
-            this.renderDetail(pkg);
+            if (!cached || ViewCache.hasChanged(cacheKey, response)) {
+                ViewCache.set(cacheKey, response);
+                this.currentPackage = pkg;
+                this.renderDetail(pkg);
+            }
             
         } catch (error) {
             console.error('[package-detail] Load error:', error);
-            this.renderNotFound(main, error.message);
+            if (!cached) this.renderNotFound(main, error.message);
         }
     },
     

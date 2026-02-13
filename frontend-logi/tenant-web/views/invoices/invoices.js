@@ -27,23 +27,34 @@ Views.invoices = {
         
         document.getElementById('btn-new-invoice')?.addEventListener('click', () => this.showForm());
         
-        await this.loadData();
+        const cached = ViewCache.get('invoices:list');
+        if (cached) {
+            this.invoices = cached.invoices || [];
+            this.renderTable();
+        }
+        
+        await this.loadData(!!cached);
     },
     
-    async loadData() {
+    async loadData(silent = false) {
         try {
             const data = await API.invoices.getAll();
-            this.invoices = data.invoices || [];
-            this.renderTable();
+            if (!silent || ViewCache.hasChanged('invoices:list', data)) {
+                ViewCache.set('invoices:list', data);
+                this.invoices = data.invoices || [];
+                this.renderTable();
+            }
         } catch (error) {
             console.error('Load invoices error:', error);
-            document.getElementById('invoices-table').innerHTML = `
-                <div class="empty-state">
-                    ${Icons.get('alert-circle', {size:32})}
-                    <p>Erreur de chargement: ${error.message}</p>
-                    <button class="btn btn-outline" onclick="Views.invoices.loadData()">Reessayer</button>
-                </div>
-            `;
+            if (!ViewCache.get('invoices:list')) {
+                document.getElementById('invoices-table').innerHTML = `
+                    <div class="empty-state">
+                        ${Icons.get('alert-circle', {size:32})}
+                        <p>Erreur de chargement: ${error.message}</p>
+                        <button class="btn btn-outline" onclick="Views.invoices.loadData()">Reessayer</button>
+                    </div>
+                `;
+            }
         }
     },
     
