@@ -27,9 +27,8 @@ const App = (() => {
     let currentPage = 'dashboard';
 
     function init() {
-        // Detect API base URL (same origin or configurable)
-        const apiBase = window.LOGI_API_BASE || window.location.origin;
-        API.init(apiBase);
+        // Use SA_CONFIG.API_BASE_URL (set in api.js) — do NOT override with location.origin
+        API.init();
 
         API.setUnauthorizedHandler(() => {
             showLogin();
